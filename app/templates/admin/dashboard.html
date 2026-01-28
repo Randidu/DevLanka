@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - DevLanka</title>
+    <style>
+        /* Admin Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #65676b;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #dbdee1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--accent);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+        }
+
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .dash-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .dash-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1400px; margin:0 auto;">
+            <a href="dashboard.html" class="logo">DevLanka Admin</a>
+            <div class="nav-links" style="display:flex; gap:1.5rem;">
+                <a href="dashboard.html" class="nav-link" style="color:var(--accent)">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link">Categories</a>
+                <a href="manage_content.html" class="nav-link">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
+                <a href="approvals.html" class="nav-link">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link">Tickets</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+            </div>
+            <a href="../index.html" class="btn" style="font-size:0.9rem;">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1>Dashboard</h1>
+            <p>Welcome back, Admin. Here is what's happening today.</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Approvals -->
+            <a href="approvals.html" class="dash-card">
+                <div class="card-icon">🔔</div>
+                <div class="card-title">Pending Approvals</div>
+                <div class="card-desc">Review submitted resources and news.</div>
+            </a>
+
+            <!-- Categories -->
+            <a href="manage_categories.html" class="dash-card">
+                <div class="card-icon">📂</div>
+                <div class="card-title">Categories</div>
+                <div class="card-desc">Add, edit, or remove resource categories.</div>
+            </a>
+
+            <!-- Home Content -->
+            <a href="manage_content.html" class="dash-card">
+                <div class="card-icon">🏠</div>
+                <div class="card-title">Home Content</div>
+                <div class="card-desc">Manage sliders, trending items, and updates.</div>
+            </a>
+
+            <!-- Tutorials -->
+            <a href="manage_tutorials.html" class="dash-card">
+                <div class="card-icon">📺</div>
+                <div class="card-title">YouTube Tutorials</div>
+                <div class="card-desc">Curate video tutorials for the learning hub.</div>
+            </a>
+
+            <!-- Upload -->
+            <a href="/admin/upload" class="dash-card">
+                <div class="card-icon">📤</div>
+                <div class="card-title">Upload Content</div>
+                <div class="card-desc">Directly upload files or resources.</div>
+            </a>
+
+            <!-- Users -->
+            <a href="users.html" class="dash-card">
+                <div class="card-icon">👥</div>
+                <div class="card-title">Users</div>
+                <div class="card-desc">Manage user accounts and permissions.</div>
+            </a>
+
+            <!-- Pathways -->
+            <a href="admin_pathways.html" class="dash-card">
+                <div class="card-icon">🛣️</div>
+                <div class="card-title">Pathways</div>
+                <div class="card-desc">Edit learning pathways and steps.</div>
+            </a>
+
+            <!-- Tickets -->
+            <a href="tickets.html" class="dash-card">
+                <div class="card-icon">🎫</div>
+                <div class="card-title">Tickets</div>
+                <div class="card-desc">View and resolve support tickets.</div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

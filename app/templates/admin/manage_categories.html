@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Categories - Admin</title>
+    <style>
+        /* Reusing Admin/Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #65676b;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #dbdee1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--accent);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .cat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .cat-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+        }
+
+        .cat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .cat-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .cat-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-edit {
+            background: #e5e7eb;
+            color: var(--text-primary);
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1400px; margin:0 auto;">
+            <a href="dashboard.html" class="logo">DevLanka Admin</a>
+            <div class="nav-links" style="display:flex; gap:1.5rem;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link" style="color:var(--accent)">Categories</a>
+                <a href="manage_content.html" class="nav-link">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
+                <a href="approvals.html" class="nav-link">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link">Tickets</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+            </div>
+            <a href="../index.html" class="btn btn-outline"
+                style="padding:0.4rem 1rem; font-size:0.9rem; text-decoration:none;">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Manage Categories</h1>
+            <button class="btn btn-primary" onclick="openModal()">+ Add New</button>
+        </div>
+
+        <div class="cat-grid" id="catGrid">
+            <!-- Loaded via JS -->
+        </div>
+    </div>
+
+    <!-- Edit/Add Modal -->
+    <div class="modal-overlay" id="catModal">
+        <div class="modal-card">
+            <h2 id="modalTitle" style="margin-bottom:1.5rem;">Add Category</h2>
+            <form id="catForm" onsubmit="handleSave(event)">
+                <input type="hidden" id="catId">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" id="catName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Icon (Emoji or Image URL)</label>
+                    <input type="text" id="catIcon" class="form-control" placeholder="🐍 or http://..." required>
+                    <small style="color:var(--text-secondary)">Type an emoji or paste an image URL</small>
+                </div>
+                <!-- Emoji Picker Helper -->
+                <div style="margin-top:0.5rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <span style="cursor:pointer; font-size:1.5rem;" onclick="setInputIcon('🐍')">🐍</span>
+                    <span style="cursor:pointer; font-size:1.5rem;" onclick="setInputIcon('☕')">☕</span>
+                    <span style="cursor:pointer; font-size:1.5rem;" onclick="setInputIcon('🌐')">🌐</span>
+                    <span style="cursor:pointer; font-size:1.5rem;" onclick="setInputIcon('📱')">📱</span>
+                    <span style="cursor:pointer; font-size:1.5rem;" onclick="setInputIcon('🤖')">🤖</span>
+                    <span style="cursor:pointer; font-size:1.5rem;" onclick="setInputIcon('🎨')">🎨</span>
+                    <span style="cursor:pointer; font-size:1.5rem;" onclick="setInputIcon('☁️')">☁️</span>
+                </div>
+
+                <div style="margin-top:2rem; text-align:right; gap:0.5rem; display:flex; justify-content:flex-end;">
+                    <button type="button" class="btn btn-edit" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Using 127.0.0.1 to avoid localhost resolution issues
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${API_BASE}/resources/categories`);
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(`${res.status} ${res.statusText} - ${text}`);
+                }
+                const categories = await res.json();
+                render(categories);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('catGrid').innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
+            }
+        }
+
+        function render(categories) {
+            const grid = document.getElementById('catGrid');
+            grid.innerHTML = '';
+
+            if (categories.length === 0) {
+                grid.innerHTML = '<p class="text-secondary">No categories found.</p>';
+                return;
+            }
+
+            categories.forEach(cat => {
+                const isImg = cat.icon && cat.icon.startsWith('http');
+                const iconHtml = isImg ? `<img src="${cat.icon}" style="width:50px;height:50px;object-fit:cover;">` : (cat.icon || '📦');
+
+                grid.innerHTML += `
+                    <div class="cat-card">
+                        <div class="cat-icon">${iconHtml}</div>
+                        <div class="cat-name">${cat.name}</div>
+                        <div class="cat-actions">
+                            <button class="btn btn-sm btn-edit" onclick="editCat(${cat.id}, '${cat.name}', '${cat.icon}')">✏️</button>
+                            <button class="btn btn-sm btn-delete" onclick="deleteCat(${cat.id})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Modal
+        const modal = document.getElementById('catModal');
+        const form = document.getElementById('catForm');
+
+        function openModal() {
+            document.getElementById('modalTitle').textContent = 'Add Category';
+            document.getElementById('catId').value = '';
+            form.reset();
+            modal.classList.add('active');
+        }
+        function closeModal() { modal.classList.remove('active'); }
+
+        function setInputIcon(emoji) {
+            document.getElementById('catIcon').value = emoji;
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            const id = document.getElementById('catId').value;
+            const name = document.getElementById('catName').value;
+            const icon = document.getElementById('catIcon').value;
+            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+            const payload = { name, icon, slug };
+
+            try {
+                let res;
+                if (id) {
+                    // Update
+                    res = await fetch(`${API_BASE}/resources/categories/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    // Create
+                    res = await fetch(`${API_BASE}/resources/categories`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                if (res.ok) {
+                    alert('Category saved!');
+                    closeModal();
+                    loadCategories();
+                } else {
+                    const err = await res.json();
+                    alert('Failed: ' + (err.detail || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error saving');
+            }
+        }
+
+        async function deleteCat(id) {
+            if (!confirm('Delete this category?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/resources/categories/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadCategories();
+                } else {
+                    alert('Failed to delete');
+                }
+            } catch (err) {
+                alert('Error deleting');
+            }
+        }
+
+        function editCat(id, name, icon) {
+            document.getElementById('modalTitle').textContent = 'Edit Category';
+            document.getElementById('catId').value = id;
+            document.getElementById('catName').value = name;
+            document.getElementById('catIcon').value = icon;
+            modal.classList.add('active');
+        }
+
+        loadCategories();
+    </script>
+</body>
+
+</html>

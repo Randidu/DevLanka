@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Tickets - Admin</title>
+    <style>
+        /* Admin Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #65676b;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #dbdee1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--accent);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+        }
+
+        .btn {
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .empty-state {
+            background: var(--bg-card);
+            padding: 4rem;
+            text-align: center;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1400px; margin:0 auto;">
+            <a href="dashboard.html" class="logo">DevLanka Admin</a>
+            <div class="nav-links" style="display:flex; gap:1.5rem;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link">Categories</a>
+                <a href="manage_content.html" class="nav-link">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
+                <a href="approvals.html" class="nav-link">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link" style="color:var(--accent)">Tickets</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+            </div>
+            <a href="../index.html" class="btn btn-outline" style="font-size:0.9rem;">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Support Tickets</h1>
+        <div style="margin:2rem 0;"></div>
+
+        <div class="empty-state">
+            <h2>Ticket System Integrating...</h2>
+            <p>We are currently connecting this module to the support service.</p>
+        </div>
+    </div>
+</body>
+
+</html>

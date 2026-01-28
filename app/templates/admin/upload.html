@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Content - Admin</title>
+    <style>
+        /* Admin Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #65676b;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #dbdee1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--accent);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+        }
+
+        .upload-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1400px; margin:0 auto;">
+            <a href="dashboard.html" class="logo">DevLanka Admin</a>
+            <div class="nav-links" style="display:flex; gap:1.5rem;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link">Categories</a>
+                <a href="manage_content.html" class="nav-link">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
+                <a href="approvals.html" class="nav-link">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link">Tickets</a>
+                <a href="upload.html" class="nav-link" style="color:var(--accent)">Upload</a>
+            </div>
+            <a href="../index.html" class="btn btn-outline"
+                style="padding:0.4rem 1rem; font-size:0.9rem; text-decoration:none;">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Upload Content</h1>
+        <p style="color:var(--text-secondary); margin-bottom:2rem;">Upload new resources, PDFs, or other assets.</p>
+
+        <div class="upload-card">
+            <form action="/api/upload" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" placeholder="Resource Title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select name="category" class="form-control">
+                        <option>Web Development</option>
+                        <option>Python</option>
+                        <option>Mobile Apps</option>
+                        <option>AI & Data</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">File</label>
+                    <input type="file" name="file" class="form-control" style="padding:0.5rem; background:#f8f9fa;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description (Optional)</label>
+                    <textarea class="form-control" rows="3"></textarea>
+                </div>
+                <button class="btn btn-success">Upload Resource</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

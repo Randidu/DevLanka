@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Pathways - Admin</title>
+    <style>
+        /* Admin Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #65676b;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #dbdee1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--accent);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            height: fit-content;
+        }
+
+        .pathway-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .pathway-item {
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            transition: background 0.2s;
+        }
+
+        .pathway-item:hover,
+        .pathway-item.active {
+            background: var(--bg-primary);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .main-content {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1400px; margin:0 auto;">
+            <a href="dashboard.html" class="logo">DevLanka Admin</a>
+            <div class="nav-links" style="display:flex; gap:1.5rem;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link">Categories</a>
+                <a href="manage_content.html" class="nav-link">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
+                <a href="approvals.html" class="nav-link">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link" style="color:var(--accent)">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link">Tickets</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+            </div>
+            <a href="../index.html" class="btn btn-outline" style="font-size:0.9rem;">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="add_pathway.html" class="btn" style="width:100%; text-align:center;">+ New Pathway</a>
+            <ul class="pathway-list" id="pathwayList">
+                <!-- JS -->
+            </ul>
+        </div>
+
+        <!-- content -->
+        <div class="main-content" id="detailView" style="display:none;">
+            <h2 id="editTitle">Edit Pathway</h2>
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <div id="dTitle" style="padding:0.5rem; background:#eee; border-radius:4px;"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <div id="dDesc" style="padding:0.5rem; background:#eee; border-radius:4px;"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Slug</label>
+                <div id="dSlug" style="font-family:monospace; color:var(--accent);"></div>
+            </div>
+            <p>To edit detailed steps, please delete and recreate or use direct DB access for now.</p>
+        </div>
+        <div class="main-content" id="emptyMsg">
+            <h2>Select a pathway</h2>
+            <p style="color:var(--text-secondary)">Choose a pathway from the left to view details.</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        async function loadPathways() {
+            const list = document.getElementById('pathwayList');
+            list.innerHTML = '<li style="padding:1rem;">Loading...</li>';
+
+            try {
+                const res = await fetch(`${API_BASE}/pathways/`);
+                if (!res.ok) throw new Error('Failed to load');
+                const pathways = await res.json();
+
+                list.innerHTML = '';
+                if (pathways.length === 0) {
+                    list.innerHTML = '<li style="padding:1rem;color:grey;">No pathways found</li>';
+                    return;
+                }
+
+                pathways.forEach(p => {
+                    const li = document.createElement('li');
+                    li.className = 'pathway-item';
+                    li.innerHTML = `
+                        <span>${p.title}</span>
+                        <button onclick="deletePathway(${p.id}, event)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:1.1rem;">🗑️</button>
+                    `;
+                    li.onclick = (e) => {
+                        if (e.target.tagName !== 'BUTTON') showDetails(p, li);
+                    };
+                    list.appendChild(li);
+                });
+            } catch (err) {
+                list.innerHTML = '<li style="color:var(--danger)">Error loading pathways</li>';
+                console.error(err);
+            }
+        }
+
+        async function deletePathway(id, e) {
+            e.stopPropagation();
+            if (!confirm('Delete this pathway?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/pathways/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadPathways();
+                    document.getElementById('detailView').style.display = 'none';
+                    document.getElementById('emptyMsg').style.display = 'block';
+                } else {
+                    alert('Failed to delete');
+                }
+            } catch (err) {
+                alert('Error deleting');
+            }
+        }
+
+        function showDetails(pathway, element) {
+            document.querySelectorAll('.pathway-item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+
+            document.getElementById('emptyMsg').style.display = 'none';
+            const view = document.getElementById('detailView');
+            view.style.display = 'block';
+
+            document.getElementById('editTitle').textContent = pathway.title;
+            document.getElementById('dTitle').textContent = pathway.title;
+            document.getElementById('dDesc').textContent = pathway.description || 'No description';
+            document.getElementById('dSlug').textContent = pathway.slug;
+        }
+
+        loadPathways();
+    </script>
+</body>
+
+</html>

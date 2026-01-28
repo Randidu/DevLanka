@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Content - Admin</title>
+    <style>
+        /* Reusing Admin/Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #65676b;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #dbdee1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--accent);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+        }
+
+        /* Item List */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .content-item {
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-details h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .item-tag {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: #eee;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1400px; margin:0 auto;">
+            <a href="dashboard.html" class="logo">DevLanka Admin</a>
+            <div class="nav-links" style="display:flex; gap:1.5rem;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link">Categories</a>
+                <a href="manage_content.html" class="nav-link" style="color:var(--accent)">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
+                <a href="approvals.html" class="nav-link">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link">Tickets</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+            </div>
+            <a href="../index.html" class="btn btn-outline"
+                style="padding:0.4rem 1rem; font-size:0.9rem; text-decoration:none;">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hot News Management -->
+        <div class="section-header">
+            <div class="section-title">🔥 Hot News & Updates (Slider)</div>
+            <button class="btn btn-primary" onclick="openModal('slider')">+ Add Slide</button>
+        </div>
+        <div id="sliderList" class="item-list">
+            <!-- JS -->
+        </div>
+
+        <div style="margin: 3rem 0;"></div>
+
+        <!-- Trending Management -->
+        <div class="section-header">
+            <div class="section-title">📈 Trending Now</div>
+            <button class="btn btn-primary" onclick="openModal('trending')">+ Add Trending</button>
+        </div>
+        <div id="trendingList" class="item-list">
+            <!-- JS -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="contentModal">
+        <div class="modal-card">
+            <h2 id="modalTitle" style="margin-bottom:1.5rem;">Add Content</h2>
+            <form id="contentForm" onsubmit="handleSave(event)">
+                <input type="hidden" id="editId">
+                <input type="hidden" id="contentType"> <!-- slider or trending -->
+
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" id="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tag / Category</label>
+                    <input type="text" id="tag" class="form-control" placeholder="e.g. Tech, Popular, Featured, New"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="desc" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Icon (Emoji) OR Image URL</label>
+                    <input type="text" id="icon" class="form-control" placeholder="e.g. 🚀 or https://...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📤 Upload Image from PC (Recommended)</label>
+                    <input type="file" id="fileInput" class="form-control" accept="image/*">
+                    <small style="color: var(--text-secondary); display: block; margin-top: 0.25rem;">Choose a photo
+                        from your computer. This will override the URL/emoji above.</small>
+                </div>
+
+                <!-- Course-specific fields (shown only for trending) -->
+                <div class="form-group" id="priceGroup" style="display:none;">
+                    <label class="form-label">💰 Price Type</label>
+                    <div style="display:flex; gap:1rem; margin-bottom:0.5rem;">
+                        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                            <input type="radio" name="priceType" value="free" checked onclick="togglePriceInput(false)">
+                            <span>Free</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                            <input type="radio" name="priceType" value="paid" onclick="togglePriceInput(true)">
+                            <span>Paid</span>
+                        </label>
+                    </div>
+                    <div id="priceInputContainer" style="display:none;">
+                        <label class="form-label">Price ($)</label>
+                        <input type="number" id="price" class="form-control" placeholder="e.g. 49" min="0" step="0.01">
+                    </div>
+                </div>
+
+                <!-- Duration field for courses -->
+                <div class="form-group" id="durationGroup" style="display:none;">
+                    <label class="form-label">⏱️ Duration</label>
+                    <input type="text" id="duration" class="form-control" placeholder="e.g. 10 hours, Self-paced">
+                </div>
+
+                <div style="margin-top:2rem; text-align:right; gap:0.5rem; display:flex; justify-content:flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Content</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        const api = {
+            news: {
+                getAll: async () => {
+                    const res = await fetch(`${API_BASE}/news/`);
+                    return res.ok ? await res.json() : [];
+                },
+                create: async (data) => {
+                    const res = await fetch(`${API_BASE}/news/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    return res.ok;
+                },
+                delete: async (id) => {
+                    const res = await fetch(`${API_BASE}/news/${id}`, { method: 'DELETE' });
+                    return res.ok;
+                }
+            },
+            courses: {
+                getAll: async () => {
+                    const res = await fetch(`${API_BASE}/courses/`);
+                    return res.ok ? await res.json() : [];
+                },
+                create: async (data) => {
+                    const res = await fetch(`${API_BASE}/courses/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    return res.ok;
+                },
+                delete: async (id) => {
+                    const res = await fetch(`${API_BASE}/courses/${id}`, { method: 'DELETE' });
+                    return res.ok;
+                }
+            }
+        };
+
+        async function render() {
+            // Hot News (Slider)
+            const news = await api.news.getAll();
+            const sList = document.getElementById('sliderList');
+            sList.innerHTML = '';
+
+            if (news.length === 0) {
+                sList.innerHTML = '<p class="text-secondary">No news items found.</p>';
+            }
+
+            news.forEach(item => {
+                sList.innerHTML += `
+                    <div class="content-item">
+                        <div class="item-details">
+                            <h4><span class="item-tag">${item.category || 'News'}</span> ${item.title}</h4>
+                            <p>${item.short_description || item.content.substring(0, 50)}...</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline" onclick="deleteItem('news', ${item.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Trending Items
+            const courses = await api.courses.getAll();
+            const tList = document.getElementById('trendingList');
+            tList.innerHTML = '';
+
+            if (courses.length === 0) {
+                tList.innerHTML = '<p class="text-secondary">No trending items found.</p>';
+            }
+
+            courses.forEach(item => {
+                const priceTag = item.is_free ? '<span style="color:#10b981; font-weight:600;">Free</span>' : `<span style="color:#3b82f6; font-weight:600;">$${item.price || 0}</span>`;
+                tList.innerHTML += `
+                    <div class="content-item">
+                        <div class="item-details">
+                            <h4><span class="item-tag">${item.level || 'Trending'}</span> ${item.title} - ${priceTag}</h4>
+                            <p>${item.description || ''}</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline" onclick="deleteItem('course', ${item.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('contentModal');
+        const form = document.getElementById('contentForm');
+
+        function openModal(type) {
+            document.getElementById('modalTitle').textContent = type === 'slider' ? 'Add News Article (Slider)' : 'Add Trending Item';
+            document.getElementById('contentType').value = type;
+            form.reset();
+
+            // Show/hide course-specific fields
+            const priceGroup = document.getElementById('priceGroup');
+            const durationGroup = document.getElementById('durationGroup');
+
+            if (type === 'trending') {
+                priceGroup.style.display = 'block';
+                durationGroup.style.display = 'block';
+            } else {
+                priceGroup.style.display = 'none';
+                durationGroup.style.display = 'none';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function togglePriceInput(show) {
+            const priceContainer = document.getElementById('priceInputContainer');
+            if (show) {
+                priceContainer.style.display = 'block';
+            } else {
+                priceContainer.style.display = 'none';
+            }
+        }
+
+        function closeModal() { modal.classList.remove('active'); }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            const type = document.getElementById('contentType').value;
+
+            const title = document.getElementById('title').value;
+            const tag = document.getElementById('tag').value;
+            const desc = document.getElementById('desc').value;
+            // Using icon field for image_url or thumbnail
+            let iconValue = document.getElementById('icon').value;
+
+            // Handle File Upload - Convert to base64
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+
+                // Convert image to base64
+                const reader = new FileReader();
+                await new Promise((resolve) => {
+                    reader.onload = function (e) {
+                        iconValue = e.target.result; // This is the base64 data URL
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            if (type === 'slider') {
+                // News Payload
+                const payload = {
+                    title: title,
+                    slug: title.toLowerCase().replace(/ /g, '-'),
+                    category: tag,
+                    content: desc + " (Full content placeholder)",
+                    short_description: desc,
+                    image_url: iconValue
+                };
+                const success = await api.news.create(payload);
+                if (success) {
+                    alert('News created successfully!');
+                    closeModal();
+                    render();
+                } else {
+                    alert('Failed to create News.');
+                }
+
+            } else {
+                // Course Payload
+                const priceType = document.querySelector('input[name="priceType"]:checked').value;
+                const isFree = priceType === 'free';
+                const priceValue = isFree ? 0 : (parseFloat(document.getElementById('price').value) || 0);
+                const duration = document.getElementById('duration').value || 'Self-paced';
+
+                const payload = {
+                    title: title,
+                    level: tag,
+                    description: desc,
+                    thumbnail: iconValue,
+                    url: '#', // Default URL
+                    duration: duration,
+                    price: priceValue,
+                    is_free: isFree
+                };
+                const success = await api.courses.create(payload);
+                if (success) {
+                    alert('Course created successfully!');
+                    closeModal();
+                    render();
+                } else {
+                    alert('Failed to create Course.');
+                }
+            }
+        }
+
+        async function deleteItem(type, id) {
+            if (!confirm('Delete this item? This action cannot be undone.')) return;
+
+            let success = false;
+            if (type === 'news') {
+                success = await api.news.delete(id);
+            } else {
+                success = await api.courses.delete(id);
+            }
+
+            if (success) {
+                render();
+            } else {
+                alert('Failed to delete item.');
+            }
+        }
+
+        render();
+    </script>
+</body>
+
+</html>

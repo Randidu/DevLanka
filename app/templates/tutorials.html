@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Tutorials - DevLanka Hub</title>
+    <style>
+        /* Reusing styles from index.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --border: rgba(0, 0, 0, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --gradient-start: #3b82f6;
+            --gradient-end: #8b5cf6;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent: #60a5fa;
+            --accent-hover: #3b82f6;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        nav {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            padding: 0.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Tutorials Specific */
+        .page-header {
+            padding: 4rem 5%;
+            background: var(--bg-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-desc {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 5%;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .videos-grid {
+            padding: 0 5% 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .video-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-thumbnail:before {
+            content: '▶';
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+            position: absolute;
+            z-index: 1;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .video-card:hover .video-thumbnail img {
+            opacity: 0.6;
+        }
+
+        .video-content {
+            padding: 1.5rem;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-tag {
+            background: rgba(255, 0, 0, 0.1);
+            color: var(--accent);
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .video-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .video-channel {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .channel-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="news.html">Tech News</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="tutorials.html">YouTube Tutorials</a></li>
+                <li><a href="category.html">Resources</a></li>
+                <li><a href="support.html">Support</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="btn btn-outline" onclick="window.location.href='login.html'">Login</button>
+                <button class="btn btn-primary" onclick="window.location.href='register.html'">Register</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1 class="page-title">Curated Tech Tutorials</h1>
+        <p class="page-desc">The best programming and technology tutorials from YouTube, hand-picked for your learning
+            journey.</p>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search tutorials...">
+            <button class="btn btn-primary">Search</button>
+        </div>
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Python</button>
+        <button class="filter-btn">Web Development</button>
+        <button class="filter-btn">Data Science</button>
+        <button class="filter-btn">Mobile Apps</button>
+    </div>
+
+    <div class="videos-grid" id="videosGrid">
+        <!-- JS Loaded -->
+    </div>
+
+    <!-- Video Modal -->
+    <div id="videoModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; align-items:center; justify-content:center;">
+        <div
+            style="position:relative; width:90%; max-width:1000px; background:var(--bg-card); border-radius:15px; overflow:hidden;">
+            <div
+                style="padding:1rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border);">
+                <h3 id="videoModalTitle" style="margin:0;">Video Tutorial</h3>
+                <button onclick="closeVideoModal()"
+                    style="background:none; border:none; font-size:2rem; cursor:pointer; color:var(--text-primary);">&times;</button>
+            </div>
+            <div style="position:relative; padding-bottom:56.25%; height:0;">
+                <iframe id="videoIframe" style="position:absolute; top:0; left:0; width:100%; height:100%;"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2025 DevLanka Hub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        const tutorialApi = {
+            getAll: async (category = null, skip = 0, limit = 100) => {
+                let query = `${API_BASE}/tutorials/?skip=${skip}&limit=${limit}`;
+                if (category) {
+                    query += `&category=${category}`;
+                }
+                try {
+                    const response = await fetch(query);
+                    if (!response.ok) throw new Error('Failed to fetch tutorials');
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching tutorials:', error);
+                    return [];
+                }
+            }
+        };
+    </script>
+    <script>
+        let allTutorials = [];
+
+        async function loadTutorials(category = 'All') {
+            const grid = document.getElementById('videosGrid');
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;">Loading tutorials...</div>';
+
+            const tutorials = await tutorialApi.getAll(category === 'All' ? null : category);
+
+            if (!tutorials || tutorials.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;">No tutorials found for this category.</div>';
+                return;
+            }
+
+            allTutorials = tutorials;
+            renderTutorialList(tutorials);
+        }
+
+        function renderTutorialList(items) {
+            const grid = document.getElementById('videosGrid');
+            grid.innerHTML = '';
+
+            items.forEach(v => {
+                // First check if video_id exists directly (from database)
+                let videoId = v.video_id || '';
+
+                // If not, try to extract from video_url
+                if (!videoId && v.video_url) {
+                    const url = v.video_url;
+                    if (url.includes('v=')) {
+                        videoId = url.split('v=')[1].split('&')[0];
+                    } else if (url.includes('/')) {
+                        videoId = url.split('/').pop();
+                    }
+                }
+
+                const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : (v.thumbnail_url || 'https://via.placeholder.com/300x200?text=No+Thumbnail');
+
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.style.cursor = 'pointer';
+                card.onclick = () => openVideoModal(videoId, v.title);
+
+                card.innerHTML = `
+                    <div class="video-thumbnail">
+                        <img src="${thumb}" alt="${v.title}">
+                    </div>
+                    <div class="video-content">
+                        <div class="video-meta">
+                            <span class="video-tag">${v.category || 'Tech'}</span>
+                        </div>
+                        <h3 class="video-title">${v.title}</h3>
+                        <div class="video-channel">
+                            <div class="channel-avatar"></div>
+                            <span>${v.channel_title || 'Expert Hub'}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openVideoModal(videoId, title) {
+            if (!videoId) {
+                alert('Video ID not available');
+                return;
+            }
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('videoIframe');
+            const modalTitle = document.getElementById('videoModalTitle');
+
+            modalTitle.textContent = title || 'Video Tutorial';
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            modal.style.display = 'flex';
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('videoIframe');
+
+            iframe.src = '';
+            modal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('videoModal').onclick = function (e) {
+            if (e.target === this) {
+                closeVideoModal();
+            }
+        };
+
+        // Filter Logic
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.onclick = async () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                await loadTutorials(btn.innerText);
+            };
+        });
+
+        // Search Logic
+        document.querySelector('.search-input').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allTutorials.filter(v =>
+                v.title.toLowerCase().includes(term) ||
+                (v.description && v.description.toLowerCase().includes(term))
+            );
+            renderTutorialList(filtered);
+        });
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const currentTheme = html.getAttribute('data-theme');
+
+            if (currentTheme === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                icon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                icon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const icon = document.getElementById('theme-icon');
+        if (icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        loadTutorials();
+    </script>
+</body>
+
+</html>

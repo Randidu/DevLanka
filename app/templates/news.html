@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Feed - DevLanka Hub</title>
+    <style>
+        /* Core Styles from index.html (Theme & Nav) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Theme Variables matching index.html */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --border: rgba(0, 0, 0, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --gradient-start: #3b82f6;
+            --gradient-end: #8b5cf6;
+
+            /* Facebook-like Design Vars (blended) */
+            --fb-bg: #f0f2f5;
+            --fb-card-bg: #ffffff;
+            --fb-text: #050505;
+            --fb-text-secondary: #65676b;
+            --fb-accent: #1b74e4;
+            --fb-hover: #e4e6eb;
+            --fb-border: #dbdee1;
+            --fb-input-bg: #f0f2f5;
+        }
+
+        [data-theme="dark"] {
+            /* Theme Variables matching index.html */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent: #60a5fa;
+            --accent-hover: #3b82f6;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+
+            /* Facebook-like Design Vars (Dark) */
+            --fb-bg: #18191a;
+            --fb-card-bg: #242526;
+            --fb-text: #e4e6eb;
+            --fb-text-secondary: #b0b3b8;
+            --fb-accent: #2374e1;
+            --fb-hover: #3a3b3c;
+            --fb-border: #3e4042;
+            --fb-input-bg: #3a3b3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--fb-bg);
+            /* Use FB bg for news page */
+            color: var(--fb-text);
+            transition: background 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar Styles from index.html */
+        nav {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            padding: 0.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        /* News Layout Styles */
+        .news-layout {
+            display: flex;
+            justify-content: center;
+            padding-top: 1.5rem;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            flex: 1;
+            /* For Footer sticking */
+        }
+
+        /* Left Sidebar */
+        .sidebar-left {
+            flex: 0 0 280px;
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            display: block;
+        }
+
+        .sidebar-left::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar-left::-webkit-scrollbar-thumb {
+            background: var(--fb-hover);
+            border-radius: 4px;
+        }
+
+        /* Right Sidebar */
+        .sidebar-right {
+            flex: 0 0 280px;
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+            display: block;
+        }
+
+        /* Center Feed */
+        .feed-center {
+            flex: 1;
+            max-width: 590px;
+            min-width: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .sidebar-left {
+                display: none;
+            }
+
+            .feed-center {
+                max-width: 680px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar-right {
+                display: none;
+            }
+
+            .feed-center {
+                width: 100%;
+                max-width: 600px;
+            }
+        }
+
+        /* Navigation List (Left Sidebar) */
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--fb-text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--fb-hover);
+        }
+
+        .nav-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--fb-hover);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .nav-link.active .nav-icon {
+            background: var(--fb-accent);
+            color: white;
+        }
+
+        /* Create Post Card */
+        .create-post-card {
+            background: var(--fb-card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .cp-top {
+            display: flex;
+            gap: 0.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--fb-border);
+        }
+
+        .cp-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e4e6eb;
+            display: flex;
+            /* Placeholder center */
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #65676b;
+        }
+
+        .cp-input {
+            flex: 1;
+            background: var(--fb-input-bg);
+            border: none;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            color: var(--fb-text);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .cp-input:hover {
+            background: #ebedf0;
+        }
+
+        [data-theme="dark"] .cp-input:hover {
+            background: #4e4f50;
+        }
+
+        .cp-actions {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 1rem;
+        }
+
+        .cp-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: none;
+            background: transparent;
+            color: var(--fb-text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .cp-action-btn:hover {
+            background: var(--fb-hover);
+        }
+
+        /* Content Cards */
+        .post-card {
+            background: var(--fb-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .post-header {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .author-info h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--fb-text);
+            margin: 0;
+        }
+
+        .post-time {
+            font-size: 0.8rem;
+            color: var(--fb-text-secondary);
+        }
+
+        .post-menu {
+            margin-left: auto;
+            color: var(--fb-text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .post-menu:hover {
+            background: var(--fb-hover);
+        }
+
+        .post-content {
+            padding: 4px 16px 16px;
+        }
+
+        .post-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--fb-text);
+        }
+
+        .post-description {
+            color: var(--fb-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .read-more {
+            color: var(--fb-accent);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 350px;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            object-fit: cover;
+        }
+
+        .post-stats {
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--fb-text-secondary);
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--fb-border);
+        }
+
+        .post-actions {
+            display: flex;
+            padding: 4px;
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            color: var(--fb-text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--fb-hover);
+        }
+
+        .action-btn.liked {
+            color: var(--fb-accent);
+        }
+
+        /* Comment Section */
+        .comment-section {
+            border-top: 1px solid var(--fb-border);
+            padding: 8px 16px;
+            display: none;
+        }
+
+        .comment-section.active {
+            display: block;
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .comment-box {
+            flex: 1;
+            background: var(--fb-input-bg);
+            border-radius: 18px;
+            border: none;
+            padding: 8px 12px;
+            color: var(--fb-text);
+            resize: none;
+            font-family: inherit;
+        }
+
+        /* Right Sidebar Widgets */
+        .widget-card {
+            background: var(--fb-card-bg);
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        .widget-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--fb-text-secondary);
+        }
+
+        .trend-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .trend-item:hover {
+            background: var(--fb-hover);
+        }
+
+        .trend-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #e4e6eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trend-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--fb-text);
+        }
+
+        .trend-info p {
+            font-size: 0.8rem;
+            color: var(--fb-text-secondary);
+        }
+
+        /* Loading */
+        .loading-spinner {
+            text-align: center;
+            padding: 2rem;
+            color: var(--fb-text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            background: var(--fb-input-bg);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--fb-text-secondary);
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: var(--fb-hover);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar from index.html -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="news.html">Tech News</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="tutorials.html">YouTube Tutorials</a></li>
+                <li><a href="category.html">Resources</a></li>
+                <li><a href="support.html">Support</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="btn btn-outline" onclick="window.location.href='login.html'">Login</button>
+                <button class="btn btn-primary" onclick="window.location.href='register.html'">Register</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="news-layout">
+        <!-- Left Sidebar -->
+        <div class="sidebar-left">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <div class="nav-link active" onclick="filterCategory('all', this)">
+                        <div class="nav-icon">📰</div>
+                        <span>All News</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="filterCategory('ai', this)">
+                        <div class="nav-icon">🤖</div>
+                        <span>Artificial Intelligence</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="filterCategory('web', this)">
+                        <div class="nav-icon">🌐</div>
+                        <span>Web Development</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="filterCategory('mobile', this)">
+                        <div class="nav-icon">📱</div>
+                        <span>Mobile Apps</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="filterCategory('cybersecurity', this)">
+                        <div class="nav-icon">🔒</div>
+                        <span>Cyber Security</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="filterCategory('startups', this)">
+                        <div class="nav-icon">🚀</div>
+                        <span>Startups</span>
+                    </div>
+                </li>
+                <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--fb-border);">
+                <li class="nav-item">
+                    <div class="nav-link">
+                        <div class="nav-icon">🔖</div>
+                        <span>Saved</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Center Feed -->
+        <div class="feed-center">
+            <!-- Create Post -->
+            <div class="create-post-card">
+                <div class="cp-top">
+                    <div class="cp-avatar">You</div>
+                    <input type="text" class="cp-input" placeholder="What's new in tech today?"
+                        onclick="window.location.href='create_news.html'">
+                </div>
+                <div class="cp-actions">
+                    <button class="cp-action-btn">
+                        <span>🎥</span> Live Video
+                    </button>
+                    <button class="cp-action-btn">
+                        <span>🖼️</span> Photo/Video
+                    </button>
+                    <button class="cp-action-btn">
+                        <span>😊</span> Feeling/Activity
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feed Filters -->
+            <div class="feed-filters"
+                style="background: var(--fb-card-bg); padding: 10px; border-radius: 8px; margin-bottom: 1rem; display: flex; gap: 10px; overflow-x: auto; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+                <button class="filter-btn active" onclick="filterFeed('all', this)">All News</button>
+                <button class="filter-btn" onclick="filterFeed('new', this)">⚡ New</button>
+                <button class="filter-btn" onclick="filterFeed('hot', this)">🔥 Hot</button>
+                <button class="filter-btn" onclick="filterFeed('trending', this)">📈 Trending</button>
+                <button class="filter-btn" onclick="filterFeed('my_posts', this)">👤 My Posts</button>
+            </div>
+
+            <!-- Feed -->
+            <div id="feedContainer"></div> <!-- Cards go here -->
+
+            <div class="loading-spinner" id="loadingIndicator" style="display: none;">
+                <span>Loading...</span>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="sidebar-right">
+            <div class="widget-card">
+                <div class="widget-header">
+                    <span class="widget-title">Trending Topics</span>
+                </div>
+                <div class="trend-item">
+                    <div class="trend-icon">🔥</div>
+                    <div class="trend-info">
+                        <h4>#AIRevolution</h4>
+                        <p>125k Posts</p>
+                    </div>
+                </div>
+                <div class="trend-item">
+                    <div class="trend-icon">💻</div>
+                    <div class="trend-info">
+                        <h4>#Web3Future</h4>
+                        <p>98k Posts</p>
+                    </div>
+                </div>
+                <div class="trend-item">
+                    <div class="trend-icon">🐍</div>
+                    <div class="trend-info">
+                        <h4>#Python3.14</h4>
+                        <p>56k Posts</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget-card">
+                <div class="widget-header">
+                    <span class="widget-title">Suggested Pages</span>
+                </div>
+                <div class="trend-item">
+                    <div class="trend-icon" style="background: #333; color: #fff;">GH</div>
+                    <div class="trend-info">
+                        <h4>GitHub Education</h4>
+                        <p>Suggested for you</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="copyright">
+                <p>&copy; 2025 DevLanka Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        const newsApi = {
+            getAll: async (category = null, skip = 0, limit = 100) => {
+                let query = `${API_BASE}/news/?skip=${skip}&limit=${limit}`;
+                if (category && category !== 'all') {
+                    query += `&category=${category}`;
+                }
+                try {
+                    const response = await fetch(query);
+                    if (!response.ok) throw new Error('Failed to fetch news');
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching news:', error);
+                    return [];
+                }
+            },
+            getById: async (id) => {
+                try {
+                    const response = await fetch(`${API_BASE}/news/${id}`);
+                    if (!response.ok) throw new Error('Failed to fetch news item');
+                    return await response.json();
+                } catch (error) {
+                    console.error(`Error fetching news ${id}:`, error);
+                    return null;
+                }
+            }
+        };
+    </script>
+    <script>
+        let currentPosts = [];
+        let activeFilter = 'all';
+        let activeCategory = 'all';
+        let currentUser = null;
+
+        const authApi = {
+            getMe: async () => {
+                const token = localStorage.getItem('token');
+                if (!token) return null;
+                try {
+                    const response = await fetch(`${API_BASE}/auth/me`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (response.ok) return await response.json();
+                    return null;
+                } catch (error) {
+                    console.error('Auth User check failed', error);
+                    return null;
+                }
+            }
+        };
+
+        async function init() {
+            setupTheme();
+            currentUser = await authApi.getMe();
+            await loadNews();
+        }
+
+        async function loadNews() {
+            const container = document.getElementById('feedContainer');
+            const loader = document.getElementById('loadingIndicator');
+
+            container.innerHTML = '';
+            loader.style.display = 'block';
+
+            const news = await newsApi.getAll(activeCategory);
+
+            loader.style.display = 'none';
+
+            if (!news || news.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--fb-text-secondary);">No posts found. Maybe add some fresh news?</div>`;
+                return;
+            }
+
+            currentPosts = news;
+            applyFilters();
+        }
+
+        function filterFeed(filterType, element) {
+            activeFilter = filterType;
+            if (element) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                element.classList.add('active');
+            }
+            applyFilters();
+        }
+
+        async function filterCategory(category, element) {
+            activeCategory = category;
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            if (element) element.classList.add('active');
+            await loadNews();
+        }
+
+        function applyFilters() {
+            let filtered = [...currentPosts];
+
+            if (activeFilter === 'my_posts') {
+                if (currentUser) {
+                    filtered = filtered.filter(post => post.author_id === currentUser.id);
+                } else {
+                    alert('Please login to view your posts');
+                    filtered = [];
+                }
+            }
+
+            if (activeFilter === 'new' || activeFilter === 'all') {
+                filtered.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+            } else if (activeFilter === 'hot') {
+                filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+            }
+
+            renderPosts(filtered);
+        }
+
+        function renderPosts(posts) {
+            const container = document.getElementById('feedContainer');
+            container.innerHTML = '';
+            posts.forEach(post => {
+                container.appendChild(createPostElement(post));
+            });
+        }
+
+        function createPostElement(post) {
+            const div = document.createElement('div');
+            div.className = 'post-card';
+
+            const timeStr = new Date(post.published_at).toLocaleDateString();
+            const avatar = post.author_name ? post.author_name.charAt(0) : (post.title ? post.title.charAt(0) : 'T');
+
+            div.innerHTML = `
+                <div class="post-header">
+                    <div class="author-avatar">${avatar}</div>
+                    <div class="author-info">
+                        <h3>${post.author_name || 'Tech Hub'}</h3>
+                        <div class="post-time">${timeStr} · 🌍</div>
+                    </div>
+                    <div class="post-menu">•••</div>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">${post.title}</h2>
+                    <div class="post-description">${post.content}</div>
+                </div>
+                ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="post content">` : `<div class="post-image">📰</div>`}
+                <div class="post-stats">
+                    <span>👍 ${post.likes || 0}</span>
+                    <span>0 comments</span>
+                </div>
+                <div class="post-actions">
+                    <button class="action-btn like-btn" onclick="this.classList.toggle('liked')">
+                        👍 Like
+                    </button>
+                    <button class="action-btn" onclick="toggleComments(this)">
+                        💬 Comment
+                    </button>
+                    <button class="action-btn">
+                        ↪️ Share
+                    </button>
+                </div>
+                <div class="comment-section">
+                    <div class="comment-input-area">
+                        <div class="author-avatar" style="width:32px;height:32px;font-size:0.8rem;">U</div>
+                        <input class="comment-box" placeholder="Write a comment...">
+                    </div>
+                    <div class="comments-list"></div>
+                </div>
+            `;
+            return div;
+        }
+
+        function toggleComments(btn) {
+            const card = btn.closest('.post-card');
+            const section = card.querySelector('.comment-section');
+            section.classList.toggle('active');
+        }
+
+        function setupTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const icon = document.getElementById('theme-icon');
+            if (icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const currentTheme = html.getAttribute('data-theme');
+
+            if (currentTheme === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                icon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                icon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - DevLanka Hub</title>
+    <style>
+        /* Reusing styles from index.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --border: rgba(0, 0, 0, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --gradient-start: #3b82f6;
+            --gradient-end: #8b5cf6;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent: #60a5fa;
+            --accent-hover: #3b82f6;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        nav {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            padding: 0.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+
+        .courses-header {
+            padding: 4rem 5%;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+            text-align: center;
+        }
+
+        .courses-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .courses-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .courses-grid {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px var(--shadow);
+        }
+
+        .course-image {
+            height: 200px;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-tag {
+            align-self: flex-start;
+            padding: 0.3rem 0.8rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .course-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .course-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .course-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .course-price.free {
+            color: #10b981;
+        }
+
+        .enroll-btn {
+            width: 100%;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        footer {
+            background: var(--bg-secondary);
+            padding: 3rem 5%;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="news.html">Tech News</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="tutorials.html">YouTube Tutorials</a></li>
+                <li><a href="category.html">Resources</a></li>
+                <li><a href="support.html">Support</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="btn btn-outline" onclick="window.location.href='login.html'">Login</button>
+                <button class="btn btn-primary" onclick="window.location.href='register.html'">Register</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="courses-header">
+        <h1 class="courses-title">Master New Skills</h1>
+        <p>Explore our premium courses designed to take your career to the next level.</p>
+
+        <div style="margin-top: 2rem;">
+            <a href="pathways.html" class="btn btn-primary"
+                style="padding: 0.8rem 2rem; border-radius: 50px; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+                <span>🚀</span> Explore Learning Pathways
+            </a>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Choose from Web, Mobile,
+                Python, Java and more.</p>
+        </div>
+
+        <div class="courses-filter">
+            <button class="filter-btn active" onclick="filterCourses('all')">All Courses</button>
+            <button class="filter-btn" onclick="filterCourses('free')">Free</button>
+            <button class="filter-btn" onclick="filterCourses('paid')">Paid</button>
+            <button class="filter-btn" onclick="filterCourses('web')">Web Development</button>
+            <button class="filter-btn" onclick="filterCourses('data')">Data Science</button>
+            <button class="filter-btn" onclick="filterCourses('mobile')">Mobile Apps</button>
+            <button class="filter-btn" onclick="filterCourses('security')">Cyber Security</button>
+        </div>
+    </div>
+
+    <div class="courses-grid">
+        <!-- Course 1 -->
+        <div class="course-card">
+            <div class="course-image">💻</div>
+            <div class="course-content">
+                <span class="course-tag">Web Development</span>
+                <h3 class="course-title">Full Stack Web Developer Bootcamp</h3>
+                <div class="course-instructor">
+                    <div class="instructor-avatar"></div>
+                    <span>Prof. Sarah Smith</span>
+                </div>
+                <div class="course-meta">
+                    <span>⭐⭐⭐⭐⭐ 4.9</span>
+                    <span>42 Hours</span>
+                </div>
+                <a href="#" class="btn btn-primary enroll-btn">Enroll Now</a>
+            </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="course-card">
+            <div class="course-image">🐍</div>
+            <div class="course-content">
+                <span class="course-tag">Python</span>
+                <h3 class="course-title">Python for Data Analysis</h3>
+                <div class="course-instructor">
+                    <div class="instructor-avatar"></div>
+                    <span>Dr. John Doe</span>
+                </div>
+                <div class="course-meta">
+                    <span>⭐⭐⭐⭐☆ 4.7</span>
+                    <span>28 Hours</span>
+                </div>
+                <a href="#" class="btn btn-primary enroll-btn">Enroll Now</a>
+            </div>
+        </div>
+
+        <!-- Course 3 -->
+        <div class="course-card">
+            <div class="course-image">📱</div>
+            <div class="course-content">
+                <span class="course-tag">Mobile</span>
+                <h3 class="course-title">Flutter & Dart: The Complete Guide</h3>
+                <div class="course-instructor">
+                    <div class="instructor-avatar"></div>
+                    <span>Mike Johnson</span>
+                </div>
+                <div class="course-meta">
+                    <span>⭐⭐⭐⭐⭐ 4.8</span>
+                    <span>35 Hours</span>
+                </div>
+                <a href="#" class="btn btn-primary enroll-btn">Enroll Now</a>
+            </div>
+        </div>
+
+        <!-- Course 4 -->
+        <div class="course-card">
+            <div class="course-image">🔒</div>
+            <div class="course-content">
+                <span class="course-tag">Security</span>
+                <h3 class="course-title">Ethical Hacking Bootcamp</h3>
+                <div class="course-instructor">
+                    <div class="instructor-avatar"></div>
+                    <span>Alex Security</span>
+                </div>
+                <div class="course-meta">
+                    <span>⭐⭐⭐⭐☆ 4.6</span>
+                    <span>50 Hours</span>
+                </div>
+                <a href="#" class="btn btn-primary enroll-btn">Enroll Now</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="copyright">
+                <p>&copy; 2025 DevLanka Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        const courseApi = {
+            getAll: async (skip = 0, limit = 100) => {
+                try {
+                    const response = await fetch(`${API_BASE}/courses/?skip=${skip}&limit=${limit}`);
+                    if (!response.ok) throw new Error('Failed to fetch courses');
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching courses:', error);
+                    return [];
+                }
+            }
+        };
+    </script>
+    <script>
+        let allCourses = [];
+
+        function createCourseCard(course) {
+            const div = document.createElement('div');
+            div.className = 'course-card';
+
+            // Check if thumbnail is an image URL
+            const isImg = course.thumbnail && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('data:image'));
+            const imageHtml = isImg
+                ? `<img src="${course.thumbnail}" style="width:100%; height:100%; object-fit:cover;" alt="${course.title}">`
+                : (course.thumbnail || '💻');
+
+            // Truncate description
+            const shortDesc = course.description
+                ? (course.description.length > 120 ? course.description.substring(0, 120) + '...' : course.description)
+                : 'Learn and master this course.';
+
+            // Price display
+            const priceDisplay = course.is_free
+                ? '<div class="course-price free">Free</div>'
+                : `<div class="course-price">$${course.price || 0}</div>`;
+
+            div.innerHTML = `
+                <div class="course-image">${imageHtml}</div>
+                <div class="course-content">
+                    <span class="course-tag">${course.level || 'Beginner'}</span>
+                    <h3 class="course-title">${course.title}</h3>
+                    <p class="course-desc">${shortDesc}</p>
+                    ${priceDisplay}
+                    <a href="#" class="btn btn-primary enroll-btn">Enroll Now</a>
+                </div>
+            `;
+            return div;
+        }
+
+        async function loadCourses() {
+            const grid = document.querySelector('.courses-grid');
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Loading courses...</div>';
+
+            const courses = await courseApi.getAll();
+            allCourses = courses; // Store for filtering
+
+            if (!courses || courses.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">No courses found. Stay tuned!</div>';
+                return;
+            }
+
+            displayCourses(courses);
+        }
+
+        function displayCourses(courses) {
+            const grid = document.querySelector('.courses-grid');
+            grid.innerHTML = '';
+
+            if (courses.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">No courses match your filter.</div>';
+                return;
+            }
+
+            courses.forEach(course => {
+                grid.appendChild(createCourseCard(course));
+            });
+        }
+
+        function filterCourses(type) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let filtered = allCourses;
+
+            if (type === 'free') {
+                filtered = allCourses.filter(c => c.is_free === true);
+            } else if (type === 'paid') {
+                filtered = allCourses.filter(c => c.is_free === false);
+            } else if (type !== 'all') {
+                // Category filtering
+                filtered = allCourses.filter(c =>
+                    c.level && c.level.toLowerCase().includes(type.toLowerCase())
+                );
+            }
+
+            displayCourses(filtered);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const currentTheme = html.getAttribute('data-theme');
+
+            if (currentTheme === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                icon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                icon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const icon = document.getElementById('theme-icon');
+        if (icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        loadCourses();
+    </script>
+</body>
+
+</html>

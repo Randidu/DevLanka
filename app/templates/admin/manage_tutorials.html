@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Tutorials - Admin</title>
+    <style>
+        /* Admin Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #65676b;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --border: #dbdee1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--accent);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--accent);
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .video-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .video-item {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .video-thumb {
+            width: 120px;
+            height: 68px;
+            background: #000;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .video-info {
+            flex: 1;
+        }
+
+        .video-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag {
+            background: #e5e7eb;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1400px; margin:0 auto;">
+            <a href="dashboard.html" class="logo">DevLanka Admin</a>
+            <div class="nav-links" style="display:flex; gap:1.5rem;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link">Categories</a>
+                <a href="manage_content.html" class="nav-link">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link" style="color:var(--accent)">Tutorials</a>
+                <a href="approvals.html" class="nav-link">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link">Tickets</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+            </div>
+            <a href="../index.html" class="btn btn-outline"
+                style="padding:0.4rem 1rem; font-size:0.9rem; text-decoration:none;">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Manage Tutorials</h1>
+            <button class="btn" onclick="openModal()">+ Add Tutorial</button>
+        </div>
+
+        <div id="videoList" class="video-list">
+            <!-- JS -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-card">
+            <h2 style="margin-bottom:1.5rem">Add YouTube Tutorial</h2>
+            <form onsubmit="handleSave(event)">
+                <div class="form-group">
+                    <label class="form-label">Video Title</label>
+                    <input type="text" id="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">YouTube Video ID (e.g., _uQrJ0TkZlc)</label>
+                    <input type="text" id="videoId" class="form-control" placeholder="Found in URL after v=" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Channel Name</label>
+                    <input type="text" id="channel" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tags (comma separated)</label>
+                    <input type="text" id="tags" class="form-control" placeholder="Python, Beginner">
+                </div>
+                <div style="text-align:right; margin-top:2rem; gap:1rem; display:flex; justify-content:flex-end;">
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        async function loadTutorials() {
+            const list = document.getElementById('videoList');
+            list.innerHTML = '<p>Loading tutorials...</p>';
+
+            try {
+                // Fetch from your real tutorials endpoint
+                const res = await fetch(`${API_BASE}/tutorials/`);
+                if (!res.ok) throw new Error('Failed to load tutorials');
+                const videos = await res.json();
+                render(videos);
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<p style="color:red">Failed to load tutorials.</p>';
+            }
+        }
+
+        function render(videos) {
+            const list = document.getElementById('videoList');
+            list.innerHTML = '';
+
+            if (videos.length === 0) {
+                list.innerHTML = '<p>No tutorials found.</p>';
+                return;
+            }
+
+            videos.forEach(v => {
+                // Determine thumbnail
+                let thumb;
+                let videoId = v.video_id; // Assuming backend sends video_id
+
+                // Fallback extraction if only URL exists
+                if (!videoId && v.video_url) {
+                    const urlParts = v.video_url.split('v=');
+                    if (urlParts.length > 1) videoId = urlParts[1];
+                    else videoId = v.video_url.split('/').pop();
+                }
+
+                thumb = videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : (v.thumbnail_url || 'https://via.placeholder.com/120x68?text=No+Thumb');
+
+                list.innerHTML += `
+                    <div class="video-item">
+                        <img src="${thumb}" class="video-thumb" alt="Thumb">
+                        <div class="video-info">
+                            <div class="video-title">${v.title}</div>
+                            <div class="video-tags">
+                                <span class="tag">${v.category || 'General'}</span>
+                            </div>
+                            <small>${v.channel_title || 'Unknown Channel'}</small>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteVideo(${v.id})">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        function openModal() { document.getElementById('modal').classList.add('active'); }
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.querySelector('form').reset();
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const videoId = document.getElementById('videoId').value;
+            const channel = document.getElementById('channel').value;
+            // Simplified tags logic: just taking first tag as category for now
+            const tags = document.getElementById('tags').value; // comma separated
+            // Construct payload matching TutorialCreate schema
+            // Schema likely expects: title, description, video_url, thumbnail_url, category, tags
+
+            const payload = {
+                title: title,
+                description: "Uploaded via Admin",
+                video_url: `https://www.youtube.com/watch?v=${videoId}`,
+                video_id: videoId,
+                thumbnail_url: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+                channel_title: channel,
+                category: tags.split(',')[0].trim() || 'General',
+                tags: tags
+                // published_at? 
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/tutorials/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert('Tutorial added!');
+                    closeModal();
+                    loadTutorials();
+                } else {
+                    alert('Failed to add tutorial');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error saving tutorial');
+            }
+        }
+
+        async function deleteVideo(id) {
+            if (!confirm('Delete this tutorial?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/tutorials/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadTutorials();
+                } else {
+                    alert('Failed to delete');
+                }
+            } catch (err) {
+                alert('Error deleting');
+            }
+        }
+
+        loadTutorials();
+    </script>
+</body>
+
+</html>

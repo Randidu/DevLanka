@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Approvals - Admin Dashboard</title>
+    <style>
+        /* Reusing Admin/Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #65676b;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #dbdee1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--accent);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-view {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .btn-approve {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-reject {
+            background: var(--danger);
+            color: white;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .empty-state {
+            padding: 4rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .meta-info {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:1400px; margin:0 auto;">
+            <a href="dashboard.html" class="logo">DevLanka Admin</a>
+            <div class="nav-links" style="display:flex; gap:1.5rem;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link">Categories</a>
+                <a href="manage_content.html" class="nav-link">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
+                <a href="approvals.html" class="nav-link" style="color:var(--accent)">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link">Tickets</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+            </div>
+            <a href="../index.html" class="btn btn-outline"
+                style="padding:0.4rem 1rem; font-size:0.9rem; text-decoration:none;">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Pending Resource Approvals</h1>
+            <div id="count-badge"
+                style="background:var(--accent); color:white; padding:0.2rem 0.8rem; border-radius:20px; font-weight:bold;">
+                0</div>
+        </div>
+
+        <!-- Resources Section -->
+        <h2 style="margin-bottom:1rem;color:var(--text-secondary);">Resources</h2>
+    </div>
+
+    <div class="card">
+        <table id="approvalsTable">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">Title / Description</th>
+                    <th>Type & Lang</th>
+                    <th>Submitted By</th>
+                    <th>Link</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="approvalsList">
+                <!-- JS will populate -->
+            </tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display:none;">
+            <h3>No pending resource approvals</h3>
+        </div>
+    </div>
+
+    <div style="margin:3rem 0;"></div>
+
+    <!-- News Section -->
+    <div class="page-header">
+        <h1>Pending News Approvals</h1>
+        <div id="news-count-badge"
+            style="background:var(--accent); color:white; padding:0.2rem 0.8rem; border-radius:20px; font-weight:bold;">
+            0</div>
+    </div>
+    <div class="card">
+        <table id="newsTable">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">Title / Content</th>
+                    <th>Category</th>
+                    <th>Submitted By</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="newsList">
+                <!-- JS -->
+            </tbody>
+        </table>
+        <div id="newsEmptyState" class="empty-state" style="display:none;">
+            <h3>No pending news approvals</h3>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        function loadPending() {
+            const pending = JSON.parse(localStorage.getItem('pendingResources') || '[]');
+            const tbody = document.getElementById('approvalsList');
+            const emptyState = document.getElementById('emptyState');
+            const table = document.getElementById('approvalsTable');
+            const count = document.getElementById('count-badge');
+
+            count.textContent = pending.length;
+            tbody.innerHTML = '';
+
+            if (pending.length === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            table.style.display = 'table';
+            emptyState.style.display = 'none';
+
+            pending.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight:600; margin-bottom:0.25rem;">${item.title}</div>
+                        <div class="meta-info">${item.desc}</div>
+                    </td>
+                    <td>
+                        <span style="display:block;">${item.type}</span>
+                        <span class="meta-info">${item.lang}</span>
+                    </td>
+                    <td>
+                        User
+                        <div class="meta-info">${item.date}</div>
+                    </td>
+                    <td>
+                        <a href="${item.link || '#'}" target="_blank" class="btn btn-view">
+                            <span>🔗</span> View
+                        </a>
+                    </td>
+                    <td>
+                        <div style="display:flex; gap:0.5rem;">
+                            <button class="btn btn-approve" onclick="approveItem(${index})">
+                                ✓ Approve
+                            </button>
+                            <button class="btn btn-reject" onclick="rejectItem(${index})">
+                                ✗ Reject
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function approveItem(index) {
+            const pending = JSON.parse(localStorage.getItem('pendingResources') || '[]');
+            const approved = JSON.parse(localStorage.getItem('approvedResources') || '[]');
+
+            // Move item
+            const item = pending[index];
+            approved.unshift(item); // Add to approved list
+            pending.splice(index, 1); // Remove from pending
+
+            // Save
+            localStorage.setItem('pendingResources', JSON.stringify(pending));
+            localStorage.setItem('approvedResources', JSON.stringify(approved));
+
+            // Refresh
+            loadPending();
+            // Optional: alert('Approved!');
+        }
+
+        function rejectItem(index) {
+            if (!confirm('Are you sure you want to reject this resource?')) return;
+
+            const pending = JSON.parse(localStorage.getItem('pendingResources') || '[]');
+            pending.splice(index, 1); // Just remove
+
+            localStorage.setItem('pendingResources', JSON.stringify(pending));
+            loadPending();
+        }
+
+        // News Logic
+        function loadPendingNews() {
+            const pending = JSON.parse(localStorage.getItem('pendingNews') || '[]');
+            const tbody = document.getElementById('newsList');
+            const emptyState = document.getElementById('newsEmptyState');
+            const table = document.getElementById('newsTable');
+            const count = document.getElementById('news-count-badge');
+
+            count.textContent = pending.length;
+            tbody.innerHTML = '';
+
+            if (pending.length === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            table.style.display = 'table';
+            emptyState.style.display = 'none';
+
+            pending.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight:600; margin-bottom:0.25rem;">${item.title}</div>
+                        <div class="meta-info">${item.description.substring(0, 100)}...</div>
+                    </td>
+                    <td>
+                        <span class="status-badge">${item.category}</span>
+                    </td>
+                    <td>
+                        ${item.author}
+                        <div class="meta-info">${item.time}</div>
+                    </td>
+                    <td>
+                        <div style="display:flex; gap:0.5rem;">
+                            <button class="btn btn-approve" onclick="approveNews(${index})">✓</button>
+                            <button class="btn btn-reject" onclick="rejectNews(${index})">✗</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function approveNews(index) {
+            const pending = JSON.parse(localStorage.getItem('pendingNews') || '[]');
+            const approved = JSON.parse(localStorage.getItem('approvedNews') || '[]');
+
+            const item = pending[index];
+            approved.unshift(item);
+            pending.splice(index, 1);
+
+            localStorage.setItem('pendingNews', JSON.stringify(pending));
+            localStorage.setItem('approvedNews', JSON.stringify(approved));
+            loadPendingNews();
+        }
+
+        function rejectNews(index) {
+            if (!confirm('Reject this news?')) return;
+            const pending = JSON.parse(localStorage.getItem('pendingNews') || '[]');
+            pending.splice(index, 1);
+            localStorage.setItem('pendingNews', JSON.stringify(pending));
+            loadPendingNews();
+        }
+
+        // Init
+        loadPending();
+        loadPendingNews();
+    </script>
+</body>
+
+</html>

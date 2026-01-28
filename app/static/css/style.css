@@ -1,0 +1,136 @@
+:root {
+    --primary-color: #0d6efd;
+    --primary-glow: rgba(13, 110, 253, 0.5);
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --gradient-primary: linear-gradient(135deg, #0d6efd 0%, #00d4ff 100%);
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+.text-accent {
+    color: var(--accent);
+}
+
+.bg-card-glass {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bg-card-glass-dark {
+    background: rgba(15, 23, 42, 0.5);
+}
+
+.bg-gradient-primary {
+    background: var(--gradient-primary);
+}
+
+/* Glassmorphism Navbar */
+.bg-glass {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.main-content {
+    margin-top: 76px;
+    min-height: 80vh;
+}
+
+/* Buttons */
+.btn-glow {
+    box-shadow: 0 0 15px var(--primary-glow);
+    transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+    box-shadow: 0 0 25px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+/* Cards & Hover Effects */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+}
+
+.text-main {
+    color: var(--text-main);
+}
+
+.hover-white:hover {
+    color: #fff !important;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 120px 0 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-bg-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
+    top: -200px;
+    right: -200px;
+    z-index: 0;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.bg-gradient-overlay {
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.95), transparent);
+}
+
+.z-index-1 {
+    z-index: 1;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--bg-card);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.badge-custom {
+    background: rgba(13, 110, 253, 0.1);
+    color: var(--primary-color);
+    border: 1px solid rgba(13, 110, 253, 0.2);
+}
+
+/* Object Fit */
+.object-fit-cover {
+    object-fit: cover;
+}
