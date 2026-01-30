@@ -382,7 +382,7 @@
                     }
 
                     try {
-                        const response = await fetch('http://127.0.0.1:8000/auth/register', {
+                        const response = await fetch('https://devlanka-hub.onrender.com/auth/register', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ full_name: fullName, email, password })
@@ -412,7 +412,7 @@
                     const code = document.getElementById('verifyCode').value;
 
                     try {
-                        const response = await fetch('http://127.0.0.1:8000/auth/verify', {
+                        const response = await fetch('https://devlanka-hub.onrender.com/auth/verify', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email: userEmail, code })
