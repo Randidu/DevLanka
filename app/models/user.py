@@ -17,6 +17,8 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     role = Column(String, default=UserRole.STUDENT)
     avatar = Column(String, nullable=True)
+    verification_code = Column(String, nullable=True)
+    is_verified = Column(Boolean, default=False)
     
     # Relationships
     tickets = relationship("app.models.support.SupportTicket", back_populates="user")

@@ -7,6 +7,7 @@ class ResourceBase(BaseModel):
     url: str
     icon: Optional[str] = None
     category_id: Optional[int] = None
+    is_approved: bool = False
 
 class ResourceCreate(ResourceBase):
     pass
@@ -15,6 +16,7 @@ class ResourceUpdate(ResourceBase):
     title: Optional[str] = None
     url: Optional[str] = None
     category_id: Optional[int] = None
+    is_approved: Optional[bool] = None
 
 class Resource(ResourceBase):
     id: int

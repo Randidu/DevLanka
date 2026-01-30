@@ -24,9 +24,6 @@
             --shadow: rgba(0, 0, 0, 0.1);
             --gradient-start: #3b82f6;
             --gradient-end: #8b5cf6;
-            /* Extra vars for auth forms */
-            --error: #ef4444;
-            --success: #10b981;
         }
 
         [data-theme="dark"] {
@@ -41,16 +38,6 @@
             --shadow: rgba(0, 0, 0, 0.3);
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            transition: background 0.3s ease, color 0.3s ease;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        /* Navbar */
         /* Navbar */
         nav {
             background: var(--bg-card);
@@ -61,6 +48,7 @@
             z-index: 1000;
             border-bottom: 1px solid var(--border);
             box-shadow: 0 2px 10px var(--shadow);
+            width: 100%;
         }
 
         .nav-container {
@@ -88,6 +76,8 @@
             gap: 2rem;
             list-style: none;
             align-items: center;
+            margin: 0;
+            padding: 0;
         }
 
         .nav-menu a {
@@ -155,38 +145,27 @@
             color: white;
         }
 
-        /* Auth Container */
-        .auth-container {
-            min-height: calc(100vh - 80px);
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+            color: var(--text-primary);
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 2rem 1rem;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            padding: 0;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        .auth-box {
+        .auth-card {
             background: var(--bg-card);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            border-radius: 20px;
             padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px var(--shadow);
             width: 100%;
             max-width: 450px;
-            box-shadow: 0 10px 40px var(--shadow);
-            animation: slideUp 0.5s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .auth-header {
@@ -194,38 +173,20 @@
             margin-bottom: 2rem;
         }
 
-        .auth-icon {
-            font-size: 4rem;
+        .logo-large {
+            font-size: 2rem;
+            font-weight: bold;
             margin-bottom: 1rem;
             display: inline-block;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .auth-title {
-            font-size: 2rem;
-            font-weight: 700;
             background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 0.5rem;
         }
 
-        .auth-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
+        .auth-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .form-group {
@@ -235,226 +196,104 @@
         .form-label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .form-input {
             width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid var(--border);
+            padding: 0.8rem;
             border-radius: 10px;
+            border: 1px solid var(--border);
             background: var(--bg-secondary);
             color: var(--text-primary);
             font-size: 1rem;
             transition: all 0.3s;
-            outline: none;
         }
 
         .form-input:focus {
+            outline: none;
             border-color: var(--accent);
-            background: var(--bg-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        .form-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .password-wrapper {
-            position: relative;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            transition: color 0.3s;
-        }
-
-        .password-toggle:hover {
-            color: var(--accent);
-        }
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .checkbox-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .checkbox-wrapper input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .forgot-link {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .forgot-link:hover {
-            color: var(--accent-hover);
-        }
-
-        .btn-submit {
+        .btn-full {
             width: 100%;
-            padding: 1rem;
+            padding: 0.8rem;
             border: none;
             border-radius: 10px;
             background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
             color: white;
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            margin-bottom: 1.5rem;
         }
 
-        .btn-submit:hover {
+        .btn-full:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px var(--shadow);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            position: relative;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 100%;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .divider span {
-            background: var(--bg-card);
-            padding: 0 1rem;
-            position: relative;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .social-login {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .social-btn {
-            flex: 1;
-            padding: 0.875rem;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            background: var(--bg-secondary);
-            cursor: pointer;
-            font-size: 1.5rem;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .social-btn:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent);
             box-shadow: 0 5px 15px var(--shadow);
         }
 
         .auth-footer {
             text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            font-size: 0.95rem;
         }
 
-        .auth-footer a {
+        .auth-link {
             color: var(--accent);
             text-decoration: none;
-            font-weight: 700;
-            transition: color 0.3s;
+            font-weight: 600;
         }
 
-        .auth-footer a:hover {
-            color: var(--accent-hover);
+        .social-login {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
         }
 
-        .error-message {
-            background: var(--error);
-            color: white;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+        .social-title {
             font-size: 0.9rem;
-            display: none;
-        }
-
-        .success-message {
-            background: var(--success);
-            color: white;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
+            color: var(--text-secondary);
             margin-bottom: 1rem;
-            font-size: 0.9rem;
-            display: none;
+            position: relative;
+            top: -2.7rem;
+            background: var(--bg-card);
+            display: inline-block;
+            padding: 0 1rem;
         }
 
-        .name-fields {
-            display: none;
-            gap: 1rem;
-        }
-
-        .name-fields.active {
+        .social-btn {
             display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
         }
 
-        @media (max-width: 480px) {
-            .auth-box {
-                padding: 2rem 1.5rem;
-            }
-
-            .auth-title {
-                font-size: 1.75rem;
-            }
-
-            .name-fields {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
+        .social-btn:hover {
+            background: var(--bg-secondary);
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="/" class="logo" style="text-decoration: none;">DevLanka Hub</a>
+            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
             <ul class="nav-menu">
-                <li><a href="/">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="news.html">Tech News</a></li>
                 <li><a href="courses.html">Courses</a></li>
                 <li><a href="tutorials.html">YouTube Tutorials</a></li>
@@ -466,220 +305,91 @@
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="btn btn-outline" onclick="window.location.href='login.html'">Login</button>
+                <button class="btn btn-outline" style="background: var(--accent); color: white;"
+                    onclick="window.location.href='login.html'">Login</button>
                 <button class="btn btn-primary" onclick="window.location.href='register.html'">Register</button>
             </div>
         </div>
     </nav>
 
-    <!-- Auth Container -->
-    <div class="auth-container">
-        <div class="auth-box">
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; padding: 2rem;">
+        <div class="auth-card">
             <div class="auth-header">
-                <div class="auth-icon" id="authIcon">🔐</div>
-                <h1 class="auth-title" id="authTitle">Welcome Back</h1>
-                <p class="auth-subtitle" id="authSubtitle">Login to access your account</p>
+                <a href="/" class="logo-large" style="text-decoration: none;">DevLanka Hub</a>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p style="color: var(--text-secondary)">Login to access your account</p>
             </div>
 
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
-
-            <form id="authForm">
-                <div class="name-fields" id="nameFields">
-                    <div class="form-group">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-input" id="firstName" placeholder="Enter first name">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-input" id="lastName" placeholder="Enter last name">
-                    </div>
-                </div>
-
+            <form id="loginForm">
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" id="email" placeholder="Enter your email" required>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" class="form-input" id="password" placeholder="Enter your password"
-                            required>
-                        <button type="button" class="password-toggle" onclick="togglePassword('password')">👁️</button>
-                    </div>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
                 </div>
-
-                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
-                    <label class="form-label">Confirm Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" class="form-input" id="confirmPassword"
-                            placeholder="Confirm your password">
-                        <button type="button" class="password-toggle"
-                            onclick="togglePassword('confirmPassword')">👁️</button>
-                    </div>
+                <div style="text-align: right; margin-bottom: 1.5rem;">
+                    <a href="#" class="auth-link" style="font-size: 0.9rem;">Forgot Password?</a>
                 </div>
-
-                <div class="form-options" id="loginOptions">
-                    <div class="checkbox-wrapper">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Remember me</label>
-                    </div>
-                    <a href="#" class="forgot-link">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="btn-submit" id="submitBtn">Login</button>
-
-                <div class="divider">
-                    <span>Or continue with</span>
-                </div>
-
-                <div class="social-login">
-                    <button type="button" class="social-btn" onclick="socialLogin('Google')">🔍</button>
-                    <button type="button" class="social-btn" onclick="socialLogin('Facebook')">📘</button>
-                    <button type="button" class="social-btn" onclick="socialLogin('GitHub')">⚫</button>
-                </div>
-
-                <div class="auth-footer">
-                    <span id="footerText">Don't have an account?</span>
-                    <a href="#" id="switchMode" onclick="toggleAuthMode(event)">Register</a>
-                </div>
+                <button type="submit" class="btn-full">Login</button>
             </form>
+
+            <div class="social-login">
+                <span class="social-title">Or login with</span>
+                <button class="social-btn">
+                    <span style="margin-right: 10px">G</span> Google
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="register.html" class="auth-link">Register Here</a>
+            </div>
         </div>
     </div>
 
     <script>
-        let isLoginMode = true;
+        const loginForm = document.getElementById('loginForm');
 
-        // Toggle between login and register
-        function toggleAuthMode(e) {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            isLoginMode = !isLoginMode;
-
-            const authIcon = document.getElementById('authIcon');
-            const authTitle = document.getElementById('authTitle');
-            const authSubtitle = document.getElementById('authSubtitle');
-            const submitBtn = document.getElementById('submitBtn');
-            const footerText = document.getElementById('footerText');
-            const switchMode = document.getElementById('switchMode');
-            const loginOptions = document.getElementById('loginOptions');
-            const nameFields = document.getElementById('nameFields');
-            const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
-
-            if (isLoginMode) {
-                authIcon.textContent = '🔐';
-                authTitle.textContent = 'Welcome Back';
-                authSubtitle.textContent = 'Login to access your account';
-                submitBtn.textContent = 'Login';
-                footerText.textContent = "Don't have an account?";
-                switchMode.textContent = 'Register';
-                loginOptions.style.display = 'flex';
-                nameFields.classList.remove('active');
-                confirmPasswordGroup.style.display = 'none';
-            } else {
-                authIcon.textContent = '🚀';
-                authTitle.textContent = 'Create Account';
-                authSubtitle.textContent = 'Join DevLanka Hub today';
-                submitBtn.textContent = 'Register';
-                footerText.textContent = 'Already have an account?';
-                switchMode.textContent = 'Login';
-                loginOptions.style.display = 'none';
-                nameFields.classList.add('active');
-                confirmPasswordGroup.style.display = 'block';
-            }
-
-            // Clear form
-            document.getElementById('authForm').reset();
-            hideMessages();
-        }
-
-        // Toggle password visibility
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
-
-        // Show error message
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 4000);
-        }
-
-        // Show success message
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
-            setTimeout(() => {
-                successDiv.style.display = 'none';
-            }, 4000);
-        }
-
-        // Hide messages
-        function hideMessages() {
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-
-        // Form submission
-        document.getElementById('authForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            hideMessages();
-
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            if (isLoginMode) {
-                // Login logic
-                if (email && password) {
-                    showSuccess('Login successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1500);
+            try {
+                const response = await fetch('http://127.0.0.1:8000/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store ALL tokens for compatibility
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('token', data.access_token); // Legacy support
+                    localStorage.setItem('user_role', data.role);
+
+                    if (data.user_id) localStorage.setItem('user_id', data.user_id);
+                    if (data.email) localStorage.setItem('user_email', data.email);
+
+                    alert('Login successful! Redirecting...');
+
+                    if (data.role === 'admin') {
+                        window.location.href = 'admin/dashboard.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
                 } else {
-                    showError('Please fill in all fields');
+                    alert(data.detail || 'Login failed. Please check your credentials.');
                 }
-            } else {
-                // Register logic
-                const firstName = document.getElementById('firstName').value;
-                const lastName = document.getElementById('lastName').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-
-                if (!firstName || !lastName) {
-                    showError('Please enter your full name');
-                    return;
-                }
-
-                if (password.length < 6) {
-                    showError('Password must be at least 6 characters long');
-                    return;
-                }
-
-                if (password !== confirmPassword) {
-                    showError('Passwords do not match');
-                    return;
-                }
-
-                showSuccess('Registration successful! Redirecting to login...');
-                setTimeout(() => {
-                    toggleAuthMode(e);
-                }, 1500);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Check console or backend connection.');
             }
         });
 
-        // Social login
-        function socialLogin(provider) {
-            showSuccess(`Connecting to ${provider}...`);
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1500);
-        }
-
-        // Theme toggle
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
@@ -696,16 +406,9 @@
             }
         }
 
-        // Initialize theme
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
-        // Check URL for mode (register or login)
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('mode') === 'register' && isLoginMode) {
-            toggleAuthMode(new Event('click'));
-        }
     </script>
 </body>
 

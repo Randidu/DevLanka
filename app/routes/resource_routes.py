@@ -69,7 +69,18 @@ def read_resources(
     category_id: int = None
 ) -> Any:
     if category_id:
-        return crud.resource.get_multi_by_category(db, category_id=category_id, skip=skip, limit=limit)
+        return crud.resource.get_multi_approved(db, category_id=category_id, skip=skip, limit=limit)
+    return crud.resource.get_multi_approved(db, skip=skip, limit=limit)
+
+@router.get("/all", response_model=List[Resource])
+def read_all_resources(
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100,
+    approved: bool = None
+) -> Any:
+    if approved is not None:
+        return db.query(crud.resource.model).filter(crud.resource.model.is_approved == approved).offset(skip).limit(limit).all()
     return crud.resource.get_multi(db, skip=skip, limit=limit)
 
 @router.post("/", response_model=Resource)
@@ -78,7 +89,21 @@ def create_resource(
     db: Session = Depends(get_db),
     resource_in: ResourceCreate
 ) -> Any:
+    # Force is_approved to False for public submissions
+    resource_in.is_approved = False
     return crud.resource.create(db, obj_in=resource_in)
+
+@router.put("/{resource_id}/approve", response_model=Resource)
+def approve_resource(
+    *,
+    db: Session = Depends(get_db),
+    resource_id: int
+) -> Any:
+    resource = crud.resource.get(db, id=resource_id)
+    if not resource:
+        raise HTTPException(status_code=404, detail="Resource not found")
+    resource_in = ResourceUpdate(is_approved=True)
+    return crud.resource.update(db, db_obj=resource, obj_in=resource_in)
 
 @router.get("/{resource_id}", response_model=Resource)
 def read_resource(

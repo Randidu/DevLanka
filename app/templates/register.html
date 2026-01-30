@@ -303,9 +303,9 @@
 <body>
     <nav>
         <div class="nav-container">
-            <a href="/" class="logo" style="text-decoration: none;">DevLanka Hub</a>
+            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
             <ul class="nav-menu">
-                <li><a href="/">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="news.html">Tech News</a></li>
                 <li><a href="courses.html">Courses</a></li>
                 <li><a href="tutorials.html">YouTube Tutorials</a></li>
@@ -332,25 +332,105 @@
                 <p style="color: var(--text-secondary)">Join our community of developers today</p>
             </div>
 
-            <form action="/auth/register" method="POST">
+            <form id="registerForm">
                 <div class="form-group">
                     <label class="form-label">Full Name</label>
-                    <input type="text" class="form-input" placeholder="Enter your full name" required>
+                    <input type="text" id="fullName" class="form-input" placeholder="Enter your full name" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" placeholder="Enter your email" required>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" class="form-input" placeholder="Create a password" required>
+                    <input type="password" id="password" class="form-input" placeholder="Create a password" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Confirm Password</label>
-                    <input type="password" class="form-input" placeholder="Confirm your password" required>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password"
+                        required>
                 </div>
                 <button type="submit" class="btn-primary">Sign Up</button>
             </form>
+
+            <form id="verifyForm" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Verification Code</label>
+                    <input type="text" id="verifyCode" class="form-input" placeholder="Enter verification code"
+                        required>
+                </div>
+                <button type="submit" class="btn-primary">Verify Account</button>
+            </form>
+
+            <script>
+                const registerForm = document.getElementById('registerForm');
+                const verifyForm = document.getElementById('verifyForm');
+                const authTitle = document.querySelector('.auth-title');
+                const authDesc = document.querySelector('.auth-header p');
+                let userEmail = '';
+
+                registerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const fullName = document.getElementById('fullName').value;
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    if (password !== confirmPassword) {
+                        alert('Passwords do not match');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('http://127.0.0.1:8000/auth/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ full_name: fullName, email, password })
+                        });
+
+                        if (response.ok) {
+                            userEmail = email;
+                            registerForm.style.display = 'none';
+                            verifyForm.style.display = 'block';
+                            authTitle.textContent = 'Verify Account';
+                            authDesc.textContent = `A code has been sent to ${email}`;
+                            document.querySelector('.social-login').style.display = 'none';
+                            document.querySelector('.auth-footer').style.display = 'none';
+                        } else {
+                            const data = await response.json();
+                            alert(data.detail || 'Registration failed');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        // Try to parse text response if JSON failed (often indicates 500 error)
+                        alert('An error occurred. Check console or try again.');
+                    }
+                });
+
+                verifyForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const code = document.getElementById('verifyCode').value;
+
+                    try {
+                        const response = await fetch('http://127.0.0.1:8000/auth/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: userEmail, code })
+                        });
+
+                        if (response.ok) {
+                            alert('Verification successful! Please login.');
+                            window.location.href = 'login.html';
+                        } else {
+                            const data = await response.json();
+                            alert(data.detail || 'Verification failed');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred during verification');
+                    }
+                });
+            </script>
 
             <div class="social-login">
                 <span class="social-title">Or sign up with</span>

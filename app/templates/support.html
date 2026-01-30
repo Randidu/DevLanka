@@ -14,29 +14,40 @@
         }
 
         :root {
+            /* Light theme - Matching index.html */
             --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --accent: #3b82f6;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
             --accent-hover: #2563eb;
-            --border: rgba(0, 0, 0, 0.1);
-            --shadow: rgba(0, 0, 0, 0.1);
-            --gradient-start: #3b82f6;
-            --gradient-end: #8b5cf6;
+            --border: #e2e8f0;
+            --shadow-sm: rgba(0, 0, 0, 0.05);
+            --shadow-md: rgba(0, 0, 0, 0.1);
+            --shadow-lg: rgba(0, 0, 0, 0.15);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
         }
 
         [data-theme="dark"] {
+            /* Dark theme - Matching index.html */
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
-            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-tertiary: #334155;
+            --bg-card: #1e293b;
             --text-primary: #f1f5f9;
             --text-secondary: #cbd5e1;
-            --accent: #60a5fa;
+            --text-tertiary: #64748b;
+            --accent-primary: #60a5fa;
+            --accent-secondary: #a78bfa;
             --accent-hover: #3b82f6;
-            --border: rgba(255, 255, 255, 0.1);
-            --shadow: rgba(0, 0, 0, 0.3);
+            --border: #334155;
+            --shadow-sm: rgba(0, 0, 0, 0.2);
+            --shadow-md: rgba(0, 0, 0, 0.3);
+            --shadow-lg: rgba(0, 0, 0, 0.4);
         }
 
         body {
@@ -51,52 +62,80 @@
         }
 
         /* Navbar */
+        /* Navbar */
         nav {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 1rem 5%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid var(--border);
-            box-shadow: 0 2px 10px var(--shadow);
+            box-shadow: 0 1px 3px var(--shadow-sm);
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(15, 23, 42, 0.95);
         }
 
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            font-weight: 800;
+            background: var(--gradient-hero);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .nav-menu {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             list-style: none;
             align-items: center;
         }
 
         .nav-menu a {
-            color: var(--text-primary);
+            color: var(--text-secondary);
             text-decoration: none;
-            transition: color 0.3s;
             font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-hero);
+            transition: width 0.3s ease;
         }
 
         .nav-menu a:hover {
-            color: var(--accent);
+            color: var(--accent-primary);
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
         }
 
         .nav-actions {
@@ -107,50 +146,56 @@
 
         .theme-toggle {
             background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            padding: 0.5rem;
-            border-radius: 50px;
+            border: 1px solid var(--border);
+            padding: 0.6rem;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            transition: all 0.3s ease;
         }
 
         .theme-toggle:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-md);
         }
 
         .btn {
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.65rem 1.5rem;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            font-family: inherit;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: var(--gradient-hero);
             color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px var(--shadow);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .btn-outline {
             background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
         }
 
         .btn-outline:hover {
-            background: var(--accent);
-            color: white;
+            border-color: var(--accent-primary);
+            background: var(--bg-secondary);
         }
 
         .support-container {
@@ -269,22 +314,21 @@
 <body>
     <nav>
         <div class="nav-container">
-            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
+            <a href="index.html" class="logo">DevLanka Hub</a>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="news.html">Tech News</a></li>
                 <li><a href="courses.html">Courses</a></li>
-                <li><a href="tutorials.html">YouTube Tutorials</a></li>
+                <li><a href="tutorials.html">Tutorials</a></li>
                 <li><a href="category.html">Resources</a></li>
                 <li><a href="support.html">Support</a></li>
-                <li><a href="profile.html">Profile</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <span id="theme-icon">🌙</span>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <span id="theme-icon" style="font-size: 1.3rem;">🌙</span>
                 </button>
-                <button class="btn btn-outline" onclick="window.location.href='login.html'">Login</button>
-                <button class="btn btn-primary" onclick="window.location.href='register.html'">Register</button>
+                <button class="btn btn-outline" onclick="window.location.href='login.html'">Sign In</button>
+                <button class="btn btn-primary" onclick="window.location.href='register.html'">Get Started</button>
             </div>
         </div>
     </nav>
@@ -299,24 +343,26 @@
             <!-- Contact Form -->
             <div class="contact-form">
                 <h2 style="margin-bottom: 1.5rem;">Send us a message</h2>
-                <form>
+                <form id="supportForm">
                     <div class="form-group">
                         <label class="form-label">Your Name</label>
-                        <input type="text" class="form-input" placeholder="John Doe">
+                        <input type="text" class="form-input" id="nameInput" placeholder="John Doe">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" class="form-input" placeholder="john@example.com">
+                        <input type="email" class="form-input" id="emailInput" placeholder="john@example.com">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Subject</label>
-                        <input type="text" class="form-input" placeholder="How can I...">
+                        <input type="text" class="form-input" id="subjectInput" required placeholder="How can I...">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Message</label>
-                        <textarea class="form-textarea" placeholder="Describe your issue..."></textarea>
+                        <textarea class="form-textarea" id="messageInput" required
+                            placeholder="Describe your issue..."></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+                    <div id="formStatus" style="margin-top:1rem; text-align:center;"></div>
                 </form>
             </div>
 
@@ -392,6 +438,93 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    </script>
+
+    <script>
+        // Auth Check Logic
+        function checkAuthStatus() {
+            const token = localStorage.getItem('access_token');
+            const role = localStorage.getItem('user_role');
+            const navActions = document.querySelector('.nav-actions');
+
+            if (token && navActions) {
+                // Keep Theme Toggle
+                const themeBtn = navActions.querySelector('.theme-toggle');
+                navActions.innerHTML = '';
+                if (themeBtn) navActions.appendChild(themeBtn);
+
+                // Add Profile/Admin button
+                if (role === 'admin') {
+                    navActions.innerHTML += `
+                        <button class="btn btn-outline" style="margin-left:1rem" onclick="window.location.href='admin/dashboard.html'">Admin Panel</button>
+                    `;
+                } else {
+                    navActions.innerHTML += `
+                        <button class="btn btn-outline" style="margin-left:1rem" onclick="window.location.href='profile.html'">Profile</button>
+                    `;
+                }
+
+                // Auto-fill form if user data exists
+                const email = localStorage.getItem('user_email');
+                if (email) {
+                    const emailInput = document.getElementById('emailInput');
+                    if (emailInput) emailInput.value = email;
+                }
+            }
+        }
+        checkAuthStatus();
+
+        // Support Form Handling
+        document.getElementById('supportForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const statusDiv = document.getElementById('formStatus');
+            const subject = document.getElementById('subjectInput').value;
+            const message = document.getElementById('messageInput').value;
+
+            const token = localStorage.getItem('access_token');
+            const userId = localStorage.getItem('user_id');
+
+            if (!token || !userId) {
+                statusDiv.innerHTML = '<span style="color: red;">Please login to send a message.</span>';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            statusDiv.innerHTML = '';
+
+            try {
+                // Send to backend
+                const response = await fetch(`http://127.0.0.1:8000/api/support/?user_id=${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        subject: subject,
+                        message: message,
+                        priority: 'medium'
+                    })
+                });
+
+                if (response.ok) {
+                    statusDiv.innerHTML = '<span style="color: green;">Message sent successfully! We will get back to you soon.</span>';
+                    document.getElementById('supportForm').reset();
+                } else {
+                    const data = await response.json();
+                    statusDiv.innerHTML = `<span style="color: red;">Failed to send: ${data.detail || 'Unknown error'}</span>`;
+                }
+            } catch (error) {
+                console.error('Support error:', error);
+                statusDiv.innerHTML = '<span style="color: red;">Connection error. Please check backend.</span>';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            }
+        });
     </script>
 </body>
 

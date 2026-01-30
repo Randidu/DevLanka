@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -20,6 +20,8 @@ class Resource(Base):
     description = Column(Text)
     url = Column(String)
     icon = Column(String, nullable=True) # Emoji or image URL
+    is_approved = Column(Boolean, default=False)
+
     
     category_id = Column(Integer, ForeignKey("resource_categories.id"))
     category = relationship("ResourceCategory", back_populates="resources")

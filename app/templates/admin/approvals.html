@@ -156,6 +156,14 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
+
+        .resource-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #eee;
+        }
     </style>
 </head>
 
@@ -166,16 +174,11 @@
             <a href="dashboard.html" class="logo">DevLanka Admin</a>
             <div class="nav-links" style="display:flex; gap:1.5rem;">
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="manage_categories.html" class="nav-link">Categories</a>
                 <a href="manage_content.html" class="nav-link">Home Content</a>
-                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
                 <a href="approvals.html" class="nav-link" style="color:var(--accent)">Approvals</a>
-                <a href="admin_pathways.html" class="nav-link">Pathways</a>
-                <a href="users.html" class="nav-link">Users</a>
-                <a href="tickets.html" class="nav-link">Tickets</a>
                 <a href="upload.html" class="nav-link">Upload</a>
             </div>
-            <a href="../index.html" class="btn btn-outline"
+            <a href="../../index.html" class="btn btn-outline"
                 style="padding:0.4rem 1rem; font-size:0.9rem; text-decoration:none;">Back to Site</a>
         </div>
     </nav>
@@ -190,209 +193,134 @@
 
         <!-- Resources Section -->
         <h2 style="margin-bottom:1rem;color:var(--text-secondary);">Resources</h2>
-    </div>
 
-    <div class="card">
-        <table id="approvalsTable">
-            <thead>
-                <tr>
-                    <th style="width: 30%;">Title / Description</th>
-                    <th>Type & Lang</th>
-                    <th>Submitted By</th>
-                    <th>Link</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="approvalsList">
-                <!-- JS will populate -->
-            </tbody>
-        </table>
-        <div id="emptyState" class="empty-state" style="display:none;">
-            <h3>No pending resource approvals</h3>
+        <div class="card">
+            <table id="approvalsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">Img</th>
+                        <th style="width: 30%;">Title / Description</th>
+                        <th>Category</th>
+                        <th>Link</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="approvalsList">
+                    <!-- JS will populate -->
+                </tbody>
+            </table>
+            <div id="emptyState" class="empty-state" style="display:none;">
+                <h3>No pending resource approvals</h3>
+            </div>
         </div>
-    </div>
-
-    <div style="margin:3rem 0;"></div>
-
-    <!-- News Section -->
-    <div class="page-header">
-        <h1>Pending News Approvals</h1>
-        <div id="news-count-badge"
-            style="background:var(--accent); color:white; padding:0.2rem 0.8rem; border-radius:20px; font-weight:bold;">
-            0</div>
-    </div>
-    <div class="card">
-        <table id="newsTable">
-            <thead>
-                <tr>
-                    <th style="width: 30%;">Title / Content</th>
-                    <th>Category</th>
-                    <th>Submitted By</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="newsList">
-                <!-- JS -->
-            </tbody>
-        </table>
-        <div id="newsEmptyState" class="empty-state" style="display:none;">
-            <h3>No pending news approvals</h3>
-        </div>
-    </div>
     </div>
 
     <script>
-        function loadPending() {
-            const pending = JSON.parse(localStorage.getItem('pendingResources') || '[]');
-            const tbody = document.getElementById('approvalsList');
-            const emptyState = document.getElementById('emptyState');
-            const table = document.getElementById('approvalsTable');
-            const count = document.getElementById('count-badge');
+        const API_BASE = 'http://127.0.0.1:8000/api';
 
-            count.textContent = pending.length;
-            tbody.innerHTML = '';
+        async function loadPending() {
+            try {
+                // Fetch unapproved resources
+                const response = await fetch(`${API_BASE}/resources/all?approved=false`);
+                if (!response.ok) throw new Error('Failed to fetch pending resources');
 
-            if (pending.length === 0) {
-                table.style.display = 'none';
-                emptyState.style.display = 'block';
-                return;
+                const pending = await response.json();
+
+                const tbody = document.getElementById('approvalsList');
+                const emptyState = document.getElementById('emptyState');
+                const table = document.getElementById('approvalsTable');
+                const count = document.getElementById('count-badge');
+
+                count.textContent = pending.length;
+                tbody.innerHTML = '';
+
+                if (pending.length === 0) {
+                    table.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                table.style.display = 'table';
+                emptyState.style.display = 'none';
+
+                pending.forEach(item => {
+                    // Check if icon is an image URL
+                    const isImg = item.icon && (item.icon.startsWith('http') || item.icon.startsWith('data:image'));
+                    const imgHtml = isImg
+                        ? `<img src="${item.icon}" class="resource-thumb" alt="icon">`
+                        : `<div class="resource-thumb" style="display:flex;align-items:center;justify-content:center;font-size:1.5rem;">${item.icon || '📄'}</div>`;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${imgHtml}</td>
+                        <td>
+                            <div style="font-weight:600; margin-bottom:0.25rem;">${item.title}</div>
+                            <div class="meta-info">${item.description || 'No description'}</div>
+                        </td>
+                        <td>
+                            <span class="status-badge">${item.category_id || 'General'}</span>
+                        </td>
+                        <td>
+                            <a href="${item.url}" target="_blank" class="btn btn-view">
+                                <span>🔗</span> View
+                            </a>
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:0.5rem;">
+                                <button class="btn btn-approve" onclick="approveItem(${item.id})">
+                                    ✓ Approve
+                                </button>
+                                <button class="btn btn-reject" onclick="rejectItem(${item.id})">
+                                    ✗ Reject
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to load pending approvals');
             }
-
-            table.style.display = 'table';
-            emptyState.style.display = 'none';
-
-            pending.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>
-                        <div style="font-weight:600; margin-bottom:0.25rem;">${item.title}</div>
-                        <div class="meta-info">${item.desc}</div>
-                    </td>
-                    <td>
-                        <span style="display:block;">${item.type}</span>
-                        <span class="meta-info">${item.lang}</span>
-                    </td>
-                    <td>
-                        User
-                        <div class="meta-info">${item.date}</div>
-                    </td>
-                    <td>
-                        <a href="${item.link || '#'}" target="_blank" class="btn btn-view">
-                            <span>🔗</span> View
-                        </a>
-                    </td>
-                    <td>
-                        <div style="display:flex; gap:0.5rem;">
-                            <button class="btn btn-approve" onclick="approveItem(${index})">
-                                ✓ Approve
-                            </button>
-                            <button class="btn btn-reject" onclick="rejectItem(${index})">
-                                ✗ Reject
-                            </button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
         }
 
-        function approveItem(index) {
-            const pending = JSON.parse(localStorage.getItem('pendingResources') || '[]');
-            const approved = JSON.parse(localStorage.getItem('approvedResources') || '[]');
+        async function approveItem(id) {
+            try {
+                const response = await fetch(`${API_BASE}/resources/${id}/approve`, {
+                    method: 'PUT'
+                });
 
-            // Move item
-            const item = pending[index];
-            approved.unshift(item); // Add to approved list
-            pending.splice(index, 1); // Remove from pending
-
-            // Save
-            localStorage.setItem('pendingResources', JSON.stringify(pending));
-            localStorage.setItem('approvedResources', JSON.stringify(approved));
-
-            // Refresh
-            loadPending();
-            // Optional: alert('Approved!');
-        }
-
-        function rejectItem(index) {
-            if (!confirm('Are you sure you want to reject this resource?')) return;
-
-            const pending = JSON.parse(localStorage.getItem('pendingResources') || '[]');
-            pending.splice(index, 1); // Just remove
-
-            localStorage.setItem('pendingResources', JSON.stringify(pending));
-            loadPending();
-        }
-
-        // News Logic
-        function loadPendingNews() {
-            const pending = JSON.parse(localStorage.getItem('pendingNews') || '[]');
-            const tbody = document.getElementById('newsList');
-            const emptyState = document.getElementById('newsEmptyState');
-            const table = document.getElementById('newsTable');
-            const count = document.getElementById('news-count-badge');
-
-            count.textContent = pending.length;
-            tbody.innerHTML = '';
-
-            if (pending.length === 0) {
-                table.style.display = 'none';
-                emptyState.style.display = 'block';
-                return;
+                if (response.ok) {
+                    // alert('Resource approved successfully!');
+                    loadPending(); // Refresh list
+                } else {
+                    alert('Failed to approve resource');
+                }
+            } catch (error) {
+                console.error('Error approving:', error);
             }
-
-            table.style.display = 'table';
-            emptyState.style.display = 'none';
-
-            pending.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>
-                        <div style="font-weight:600; margin-bottom:0.25rem;">${item.title}</div>
-                        <div class="meta-info">${item.description.substring(0, 100)}...</div>
-                    </td>
-                    <td>
-                        <span class="status-badge">${item.category}</span>
-                    </td>
-                    <td>
-                        ${item.author}
-                        <div class="meta-info">${item.time}</div>
-                    </td>
-                    <td>
-                        <div style="display:flex; gap:0.5rem;">
-                            <button class="btn btn-approve" onclick="approveNews(${index})">✓</button>
-                            <button class="btn btn-reject" onclick="rejectNews(${index})">✗</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
         }
 
-        function approveNews(index) {
-            const pending = JSON.parse(localStorage.getItem('pendingNews') || '[]');
-            const approved = JSON.parse(localStorage.getItem('approvedNews') || '[]');
+        async function rejectItem(id) {
+            if (!confirm('Are you sure you want to PERMANENTLY delete this request?')) return;
 
-            const item = pending[index];
-            approved.unshift(item);
-            pending.splice(index, 1);
+            try {
+                const response = await fetch(`${API_BASE}/resources/${id}`, {
+                    method: 'DELETE'
+                });
 
-            localStorage.setItem('pendingNews', JSON.stringify(pending));
-            localStorage.setItem('approvedNews', JSON.stringify(approved));
-            loadPendingNews();
-        }
-
-        function rejectNews(index) {
-            if (!confirm('Reject this news?')) return;
-            const pending = JSON.parse(localStorage.getItem('pendingNews') || '[]');
-            pending.splice(index, 1);
-            localStorage.setItem('pendingNews', JSON.stringify(pending));
-            loadPendingNews();
+                if (response.ok) {
+                    loadPending(); // Refresh list
+                } else {
+                    alert('Failed to delete resource');
+                }
+            } catch (error) {
+                console.error('Error deleting:', error);
+            }
         }
 
         // Init
         loadPending();
-        loadPendingNews();
     </script>
 </body>
 

@@ -16,6 +16,14 @@ class CRUDResource(CRUDBase[Resource, ResourceCreate, ResourceUpdate]):
             .all()
         )
 
+    def get_multi_approved(
+        self, db: Session, *, category_id: int = None, skip: int = 0, limit: int = 100
+    ) -> List[Resource]:
+        query = db.query(self.model).filter(Resource.is_approved == True)
+        if category_id:
+            query = query.filter(Resource.category_id == category_id)
+        return query.offset(skip).limit(limit).all()
+
 class CRUDResourceCategory(CRUDBase[ResourceCategory, ResourceCategoryCreate, ResourceCategoryUpdate]):
     def get_by_slug(self, db: Session, *, slug: str) -> ResourceCategory:
         return db.query(self.model).filter(ResourceCategory.slug == slug).first()

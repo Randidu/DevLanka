@@ -501,16 +501,117 @@
         </div>
     </footer>
 
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <div class="card-header">
+                <h3>Edit Profile</h3>
+            </div>
+
+            <form id="editProfileForm">
+                <div style="text-align:center; margin-bottom:1.5rem;">
+                    <!-- Current Avatar Display -->
+                    <div id="previewAvatar"
+                        style="width:100px; height:100px; border-radius:50%; background:#ddd; margin:0 auto; display:flex; align-items:center; justify-content:center; overflow:hidden; border:3px solid var(--accent); font-size: 3rem;">
+                        👤
+                    </div>
+                    <br>
+                    <label for="avatarUpload" class="btn btn-outline" style="font-size:0.8rem; cursor:pointer;">Change
+                        Photo</label>
+                    <input type="file" id="avatarUpload" accept="image/*" style="display:none"
+                        onchange="handleAvatarUpload(this)">
+                    <input type="hidden" id="avatarUrl">
+                </div>
+
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:500;">Full Name</label>
+                    <input type="text" id="editFullName"
+                        style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; background:var(--bg-secondary); color:var(--text-primary);">
+                </div>
+
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:500;">Email</label>
+                    <input type="email" id="editEmail" readonly
+                        style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; background:var(--bg-card); color:var(--text-secondary); cursor:not-allowed;">
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid var(--border);">
+
+                <h4 style="margin-bottom:1rem;">Change Password <small
+                        style="color:var(--text-secondary); font-weight:normal;">(Leave blank to keep current)</small>
+                </h4>
+
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <input type="password" id="newPassword" placeholder="New Password"
+                        style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; background:var(--bg-secondary); color:var(--text-primary);">
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <input type="password" id="confirmNewPassword" placeholder="Confirm New Password"
+                        style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; background:var(--bg-secondary); color:var(--text-primary);">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            margin: 5% auto;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .close-modal {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+        }
+
+        .close-modal:hover,
+        .close-modal:focus {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+
     <script>
         const API_BASE = 'http://127.0.0.1:8000';
 
         const authApi = {
             getMe: async () => {
-                const token = localStorage.getItem('token');
-                if (!token) return null;
+                // Try both keys in case of legacy storage
+                const token = localStorage.getItem('access_token') || localStorage.getItem('token');
+                if (!token) return { error: "No token found locally" };
 
                 try {
-                    const response = await fetch(`${API_BASE}/auth/users/me`, {
+                    const response = await fetch(`${API_BASE}/auth/me`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -518,31 +619,308 @@
 
                     if (response.ok) {
                         return await response.json();
+                    } else {
+                        const status = response.status;
+                        // If token is invalid (401), clear it
+                        if (status === 401) {
+                            console.warn("Token expired or invalid");
+                            authApi.logout();
+                            return { error: "Session expired (401). Please login again." };
+                        }
+                        return { error: `Server Error: ${status}` };
                     }
-                    return null;
                 } catch (error) {
                     console.error('Auth check failed', error);
+                    return { error: `Network Error: ${error.message}` };
+                }
+            },
+            updateMe: async (data) => {
+                const token = localStorage.getItem('access_token') || localStorage.getItem('token');
+                if (!token) return null;
+
+                try {
+                    const response = await fetch(`${API_BASE}/auth/me`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    if (response.ok) return await response.json();
+                    const err = await response.json();
+                    alert(err.detail || "Update failed");
+                    return null;
+                } catch (e) {
+                    console.error(e);
+                    alert("Update failed");
+                    return null;
+                }
+            },
+            logout: () => {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('token'); // Clear legacy key
+                localStorage.removeItem('user_role');
+                localStorage.removeItem('user_email');
+                localStorage.removeItem('user_id');
+                window.location.href = 'login.html';
+            }
+        };
+
+        const uploadApi = {
+            upload: async (file) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                try {
+                    const response = await fetch(`${API_BASE}/api/upload/`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.url;
+                    }
+                    return null;
+                } catch (e) {
+                    console.error(e);
                     return null;
                 }
             }
         };
-    </script>
-    <script>
+
+        const newsApi = {
+            getAll: async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/api/news`);
+                    if (response.ok) return await response.json();
+                    return [];
+                } catch (e) { console.error(e); return []; }
+            }
+        }
+
+        let currentUser = null;
+
         async function loadProfile() {
             try {
-                const user = await authApi.getMe();
+                const result = await authApi.getMe();
+                // Check if result is a user object (has id) or an error object
+                let user = (result && result.id) ? result : null;
+
+                // --- 1. Navigation Bar Update ---
+                const navActions = document.querySelector('.nav-actions');
+
+                // --- DEMO MODE: If no user, show Guest Profile ---
+                // Only if the user specifically asked to bypass login check
+                if (!user) {
+                    console.log("Using Guest Profile");
+                    user = {
+                        id: 9999,
+                        full_name: "Guest User",
+                        email: "guest@devlanka.com",
+                        avatar: "👤",
+                        role: "student"
+                    };
+                }
+
+                currentUser = user; // Store globally for modal
+
                 if (user) {
+                    // Check if Logout button already exists
+                    if (!document.querySelector('.btn-logout')) {
+                        const loginBtn = navActions.querySelector('button[onclick*="login.html"]');
+                        const registerBtn = navActions.querySelector('button[onclick*="register.html"]');
+                        if (loginBtn) loginBtn.style.display = 'none';
+                        if (registerBtn) registerBtn.style.display = 'none';
+
+                        const logoutBtn = document.createElement('button');
+                        logoutBtn.className = 'btn btn-outline btn-logout';
+                        logoutBtn.textContent = 'Logout';
+                        logoutBtn.onclick = authApi.logout;
+                        navActions.appendChild(logoutBtn);
+                    }
+                }
+
+                if (user) {
+                    // --- 2. Profile Header ---
                     document.querySelector('.profile-info h1').textContent = user.full_name || user.username || 'User';
                     document.querySelector('.profile-info p').textContent = user.email;
-                    // You could add logic to update stats if the backend provided them
-                } else {
-                    // Redirect to login if not authenticated
-                    // window.location.href = 'login.html';
+
+                    // Avatar logic
+                    if (user.avatar) {
+                        const avatarEl = document.querySelector('.profile-avatar');
+                        if (user.avatar.startsWith('http') || user.avatar.startsWith('/')) {
+                            avatarEl.innerHTML = `<img src="${user.avatar}" alt="Profile" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                        } else {
+                            avatarEl.textContent = user.avatar; // If it's an emoji
+                        }
+                    }
+
+                    // Wire up Edit Profile button
+                    const editBtn = document.querySelector('.profile-info .btn-primary');
+                    if (editBtn && editBtn.textContent.includes('Edit')) {
+                        editBtn.onclick = openEditModal;
+                    }
+
+                    // --- 3. Fetch Data for Dashboard ---
+                    // Fetch all news to filter by author (Client-side filtering for now)
+                    const allNews = await newsApi.getAll();
+                    // Filter posts where author_id matches user.id
+                    const myPosts = allNews.filter(post => post.author_id === user.id);
+
+                    // --- 4. Update Stats ---
+                    const statValues = document.querySelectorAll('.stat-value');
+
+                    // Courses (Mocked as 0 for now)
+                    statValues[0].textContent = "0";
+
+                    // Tutorials Watched (Mocked as 0)
+                    statValues[1].textContent = "0";
+
+                    // Points Earned (Calculated: 50 points per post + 100 bonus)
+                    const points = (myPosts.length * 50) + 100;
+                    statValues[2].textContent = points;
+
+                    // --- 5. Update "My Posts" Section ---
+                    const myPostsCard = document.querySelector('.dashboard-card:first-child');
+                    const postsContainer = myPostsCard.querySelector('.activity-list');
+
+                    // Update header to show count
+                    myPostsCard.querySelector('h3').textContent = `My Posts (${myPosts.length})`;
+
+                    if (myPosts.length > 0) {
+                        // Sort by date desc
+                        myPosts.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
+                        postsContainer.innerHTML = myPosts.slice(0, 3).map(post => `
+                            <li class="activity-item">
+                                <div class="activity-icon">📝</div>
+                                <div class="activity-details">
+                                    <h4>${post.title}</h4>
+                                    <p>${new Date(post.published_at).toLocaleDateString()} • ${post.category || 'Tech News'}</p>
+                                </div>
+                            </li>
+                        `).join('');
+
+                        // Check if "View All" button exists, if not add it
+                        if (!postsContainer.nextElementSibling || !postsContainer.nextElementSibling.querySelector('button')) {
+                            const btnLi = document.createElement('li');
+                            btnLi.style.textAlign = 'center';
+                            btnLi.style.paddingTop = '1rem';
+                            btnLi.innerHTML = `<button class="btn btn-outline" style="font-size:0.8rem; width:100%;" onclick="window.location.href='news.html'">View All</button>`;
+                            postsContainer.parentNode.insertBefore(btnLi, postsContainer.nextSibling);
+                        }
+
+                    } else {
+                        postsContainer.innerHTML = `
+                            <li class="activity-item">
+                                <div class="activity-details">
+                                    <p style="color: var(--text-secondary);">You haven't posted any news yet.</p>
+                                </div>
+                            </li>
+                             <li style="text-align:center; padding-top:1rem;">
+                                <button class="btn btn-primary" style="font-size:0.8rem; width:100%;" onclick="window.location.href='create_news.html'">Create Post</button>
+                            </li>
+                        `;
+                    }
                 }
             } catch (error) {
                 console.error("Failed to load profile", error);
             }
         }
+
+        // --- Edit Profile Modal Functions ---
+        const modal = document.getElementById('editProfileModal');
+
+        function openEditModal() {
+            if (!currentUser) return;
+
+            // Pre-fill form with current user data
+            document.getElementById('editFullName').value = currentUser.full_name || "";
+            document.getElementById('editEmail').value = currentUser.email || "";
+            document.getElementById('avatarUrl').value = currentUser.avatar || "";
+
+            // Update preview avatar
+            const prev = document.getElementById('previewAvatar');
+            if (currentUser.avatar && currentUser.avatar.startsWith('http')) {
+                prev.innerHTML = `<img src="${currentUser.avatar}" style="width:100%; height:100%; object-fit:cover;">`;
+            } else {
+                prev.textContent = currentUser.avatar || "👤";
+            }
+
+            modal.style.display = "block";
+        }
+
+        function closeEditModal() {
+            modal.style.display = "none";
+            // Clear password fields
+            document.getElementById('newPassword').value = "";
+            document.getElementById('confirmNewPassword').value = "";
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                closeEditModal();
+            }
+        }
+
+        // Handle Avatar Upload
+        async function handleAvatarUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+
+                // Show local preview immediately
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('previewAvatar').innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+                reader.readAsDataURL(file);
+
+                // Upload to server
+                const url = await uploadApi.upload(file);
+                if (url) {
+                    document.getElementById('avatarUrl').value = url;
+                } else {
+                    alert('Image upload failed');
+                }
+            }
+        }
+
+        // Handle Form Submit
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = document.getElementById('editFullName').value;
+            const avatar = document.getElementById('avatarUrl').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmNewPassword').value;
+
+            const payload = {
+                full_name: fullName,
+                avatar: avatar
+            };
+
+            // Add password if provided
+            if (newPass) {
+                if (newPass !== confirmPass) {
+                    alert("Passwords do not match");
+                    return;
+                }
+                if (newPass.length < 6) {
+                    alert("Password must be at least 6 characters");
+                    return;
+                }
+                payload.password = newPass;
+            }
+
+            // Call API
+            const updatedUser = await authApi.updateMe(payload);
+            if (updatedUser) {
+                alert("Profile Updated Successfully!");
+                closeEditModal();
+                loadProfile(); // Refresh profile
+            }
+        });
 
         // Theme Toggle Logic
         function toggleTheme() {

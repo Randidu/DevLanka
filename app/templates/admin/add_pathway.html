@@ -223,7 +223,7 @@
         let steps = [];
 
         function addStep() {
-            steps.push({ title: '', desc: '', videoId: '' });
+            steps.push({ title: '', desc: '', videoId: '', resourceUrl: '' });
             renderSteps();
         }
 
@@ -260,6 +260,10 @@
                         <label class="form-label">YouTube Video ID (Optional)</label>
                         <input type="text" class="form-control" value="${step.videoId}" oninput="updateStep(${index}, 'videoId', this.value)" placeholder="e.g. qz0aGYrrlhU">
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Resource/Doc URL (Optional)</label>
+                        <input type="text" class="form-control" value="${step.resourceUrl || ''}" oninput="updateStep(${index}, 'resourceUrl', this.value)" placeholder="e.g. https://docs.python.org">
+                    </div>
                 `;
                 container.appendChild(div);
             });
@@ -290,13 +294,17 @@
                 title: s.title,
                 description: s.desc,
                 video_id: s.videoId || null,
+                resource_url: s.resourceUrl || null,
                 step_type: 'video' // Default
             }));
+
+            const icon = document.getElementById('pIcon').value;
 
             const newPathway = {
                 title: title,
                 slug: slug,
                 description: description,
+                icon: icon, // Add icon field
                 steps: mappedSteps
             };
 

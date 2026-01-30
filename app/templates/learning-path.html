@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Pathway - DevLanka Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,90 +17,130 @@
         }
 
         :root {
+            /* Light theme */
             --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --accent: #3b82f6;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
             --accent-hover: #2563eb;
-            --border: rgba(0, 0, 0, 0.1);
-            --shadow: rgba(0, 0, 0, 0.1);
-            --gradient-start: #3b82f6;
-            --gradient-end: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border: #e2e8f0;
+            --shadow-sm: rgba(0, 0, 0, 0.05);
+            --shadow-md: rgba(0, 0, 0, 0.1);
+            --shadow-lg: rgba(0, 0, 0, 0.15);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
 
         [data-theme="dark"] {
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
-            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-tertiary: #334155;
+            --bg-card: #1e293b;
             --text-primary: #f1f5f9;
             --text-secondary: #cbd5e1;
-            --accent: #60a5fa;
+            --text-tertiary: #64748b;
+            --accent-primary: #60a5fa;
+            --accent-secondary: #a78bfa;
             --accent-hover: #3b82f6;
-            --border: rgba(255, 255, 255, 0.1);
-            --shadow: rgba(0, 0, 0, 0.3);
+            --border: #334155;
+            --shadow-sm: rgba(0, 0, 0, 0.2);
+            --shadow-md: rgba(0, 0, 0, 0.3);
+            --shadow-lg: rgba(0, 0, 0, 0.4);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             transition: background 0.3s ease, color 0.3s ease;
             line-height: 1.6;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Navbar */
+        /* Navigation */
         nav {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 1rem 5%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid var(--border);
-            box-shadow: 0 2px 10px var(--shadow);
+            box-shadow: 0 1px 3px var(--shadow-sm);
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(15, 23, 42, 0.95);
         }
 
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            font-weight: 800;
+            background: var(--gradient-hero);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-decoration: none;
+            letter-spacing: -0.5px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .nav-menu {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             list-style: none;
             align-items: center;
         }
 
         .nav-menu a {
-            color: var(--text-primary);
+            color: var(--text-secondary);
             text-decoration: none;
-            transition: color 0.3s;
             font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-hero);
+            transition: width 0.3s ease;
         }
 
         .nav-menu a:hover {
-            color: var(--accent);
+            color: var(--accent-primary);
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
         }
 
         .nav-actions {
@@ -107,123 +151,257 @@
 
         .theme-toggle {
             background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            padding: 0.5rem;
-            border-radius: 50px;
+            border: 1px solid var(--border);
+            padding: 0.6rem;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            transition: all 0.3s ease;
         }
 
         .theme-toggle:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-md);
         }
 
         .btn {
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.65rem 1.5rem;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            font-family: inherit;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: var(--gradient-hero);
             color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px var(--shadow);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .btn-outline {
             background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
         }
 
         .btn-outline:hover {
-            background: var(--accent);
-            color: white;
+            border-color: var(--accent-primary);
+            background: var(--bg-secondary);
         }
 
-        /* Roadmap Header */
+        /* Header Section */
         .roadmap-header {
+            padding: 5rem 2rem 3rem;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roadmap-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
             text-align: center;
-            padding: 4rem 5%;
-            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
-            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 1;
+        }
+
+        .pathway-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px var(--shadow-sm);
         }
 
         .roadmap-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-hero);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            animation: fadeInUp 0.8s ease-out;
         }
 
         .roadmap-desc {
-            max-width: 600px;
-            margin: 0 auto;
+            font-size: 1.2rem;
             color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
-        /* ... existing styles ... */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
 
-        /* ... existing styles ... */
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-        /* Enhanced Timeline Container */
+        /* Pathway Filters */
+        .pathway-filters {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .filter-chip {
+            padding: 0.7rem 1.8rem;
+            border-radius: 50px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-family: inherit;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            color: var(--accent-primary);
+            box-shadow: 0 4px 12px var(--shadow-md);
+        }
+
+        .filter-chip.active {
+            background: var(--gradient-hero);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Progress Stats */
+        .progress-stats {
+            max-width: 900px;
+            margin: 2rem auto 0;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            box-shadow: 0 4px 12px var(--shadow-sm);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Timeline Container */
+        .timeline-section {
+            padding: 4rem 2rem;
+            background: var(--bg-secondary);
+        }
+
         .timeline-container {
             max-width: 1200px;
-            /* Restored wider width */
             margin: 0 auto;
-            padding: 4rem 2rem;
             position: relative;
         }
 
-        /* Gradient Vertical Line */
-        .timeline-container::after {
+        /* Animated vertical line */
+        .timeline-container::before {
             content: '';
             position: absolute;
-            width: 6px;
-            /* Slightly thicker line */
-            background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+            width: 4px;
+            background: linear-gradient(to bottom,
+                    var(--accent-primary) 0%,
+                    var(--accent-secondary) 50%,
+                    var(--accent-primary) 100%);
             top: 0;
             bottom: 0;
             left: 50%;
-            margin-left: -3px;
-            /* Centered */
-            border-radius: 3px;
-            z-index: 0;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-            /* Glow effect */
+            margin-left: -2px;
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            animation: lineGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes lineGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            }
         }
 
         /* Timeline Item */
         .timeline-item {
-            padding: 10px 40px;
-            /* Restored padding for spacing */
+            padding: 0 40px;
             position: relative;
-            background-color: inherit;
             width: 50%;
-            margin-bottom: 3rem;
-            /* Increased vertical spacing */
-            z-index: 1;
+            margin-bottom: 4rem;
             opacity: 0;
-            /* For animation */
-            animation: slideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            /* Smooth cubic-bezier */
+            animation: slideIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        /* Staggered animation delays handled in JS or manual nth-child */
         .timeline-item:nth-child(1) {
             animation-delay: 0.1s;
         }
@@ -248,10 +426,18 @@
             animation-delay: 0.6s;
         }
 
+        .timeline-item:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .timeline-item:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(40px);
+                transform: translateY(50px);
             }
 
             to {
@@ -264,246 +450,172 @@
         .left {
             left: 0;
             text-align: right;
-            /* Align text to spine */
-            padding-right: 50px;
+            padding-right: 60px;
         }
 
         /* Right side */
         .right {
             left: 50%;
             text-align: left;
-            /* Align text to spine */
-            padding-left: 50px;
+            padding-left: 60px;
         }
 
-        /* Ensure content box text alignment is reset if needed, mostly for title/desc flow */
-        .left .content {
-            text-align: right;
-            margin-left: auto;
-            /* Push to right side of its container */
-        }
-
-        .right .content {
-            text-align: left;
-            margin-right: auto;
-            /* Push to left side of its container */
-        }
-
-        /* Reset internal text alignment for readability */
-        .content {
-            text-align: left;
-        }
-
-        /* Enhanced Circles */
+        /* Timeline dots */
         .timeline-item::after {
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: var(--bg-primary);
-            border: 4px solid var(--accent);
-            top: 25px;
-            /* Aligned with top of content */
+            width: 24px;
+            height: 24px;
+            background: var(--bg-primary);
+            border: 4px solid var(--accent-primary);
+            top: 30px;
             border-radius: 50%;
             z-index: 2;
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Positioning dots correctly on the line */
         .left::after {
-            right: -10px;
-            /* Center on line (width 6px) -> 20px circle -> right -10px puts center at edge? No needs calc */
-            /* Line is at 50% left. Left item is width 50%. Right edge is at 50%. 
-               Circle width 20px + border 4px*2 = 28px? No, border is included or not? box-sizing border-box.
-               So width 20px. Center is 10px. 
-               We want center at right edge. So right: -10px.
-            */
-            right: -13px;
-            /* visual adjustment for thicker line */
+            right: -12px;
         }
 
         .right::after {
-            left: -13px;
-            /* visual adjustment */
+            left: -12px;
         }
 
         .timeline-item:hover::after {
-            background-color: var(--accent);
+            background: var(--gradient-hero);
+            border-color: var(--accent-secondary);
             box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.3);
-            transform: scale(1.2);
+            transform: scale(1.3);
         }
 
-
-        /* Enhanced Circles - Global definition reused above but ensuring cleanup of old styles if any remain */
-        /* Removed duplicate blocks to avoid conflict, relying on the main block above */
-
-
-        /* Premium Content Box */
+        /* Content Card */
         .content {
-            padding: 3rem;
+            padding: 2.5rem;
             background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             border-radius: 24px;
             border: 1px solid var(--border);
-            box-shadow: 0 15px 35px -10px var(--shadow);
+            box-shadow: 0 10px 40px -10px var(--shadow-md);
             position: relative;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            width: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-hero);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
         }
 
         .content:hover {
-            transform: translateY(-5px) scale(1.02);
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--accent-primary);
+            box-shadow: 0 20px 60px -10px rgba(59, 130, 246, 0.3);
+        }
+
+        .content:hover::before {
+            transform: scaleX(1);
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
         }
 
         .step-number {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent);
+            letter-spacing: 1.5px;
+            color: white;
             font-weight: 800;
-            margin-bottom: 0.8rem;
-            display: inline-block;
-            background: rgba(59, 130, 246, 0.1);
-            padding: 0.2rem 0.8rem;
+            background: var(--gradient-hero);
+            padding: 0.4rem 1rem;
             border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .step-icon {
+            font-size: 2.5rem;
+            opacity: 0.9;
+            transition: transform 0.3s ease;
+        }
+
+        .content:hover .step-icon {
+            transform: scale(1.2) rotate(10deg);
         }
 
         .step-title {
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
+            margin-bottom: 1rem;
             line-height: 1.3;
+            letter-spacing: -0.5px;
         }
 
         .step-desc {
-            margin-bottom: 1.5rem;
             color: var(--text-secondary);
             font-size: 1rem;
-            line-height: 1.7;
+            line-height: 1.8;
+            margin-bottom: 2rem;
         }
 
-        /* Resources List */
-        .resources-list {
-            list-style: none;
-            display: flex;
-            gap: 1rem;
+        /* Resources Section */
+        .resources-section {
             padding-top: 2rem;
-            /* Increased spacing */
             border-top: 1px solid var(--border);
+        }
+
+        .resources-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-tertiary);
+            margin-bottom: 1rem;
+        }
+
+        .resources-list {
+            display: flex;
+            gap: 0.8rem;
             flex-wrap: wrap;
-            /* Allow wrapping if too many buttons */
-            justify-content: flex-start;
-            /* Align to start */
         }
 
         .resource-link {
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.3rem;
             background: var(--bg-secondary);
-            padding: 0.5rem 1rem;
-            /* Smaller padding */
-            border-radius: 8px;
-            /* Box shape (not pill) */
+            border: 2px solid var(--border);
+            border-radius: 12px;
             text-decoration: none;
             color: var(--text-primary);
-            transition: all 0.3s;
-            border: 2px solid var(--border);
-            /* Thicker border */
-            font-size: 0.85rem;
-            /* Smaller font */
-            font-weight: 700;
-        }
-
-        .resource-link span:nth-child(2) {
-            flex: initial;
-            /* Don't stretch */
-            margin-right: 0.5rem;
-            white-space: nowrap;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .resource-link:hover {
-            background: var(--accent);
-            /* Solid accent color on hover */
-            border-color: var(--accent);
+            background: var(--gradient-hero);
+            border-color: transparent;
             color: white;
-            /* White text on hover */
-            transform: translateY(-2px);
-            /* Slight lift */
-            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
-        }
-
-        /* Specific coloring for Video links */
-        .resource-link[onclick] {
-            border-color: var(--accent);
-            /* Visible accent border */
-            background: rgba(59, 130, 246, 0.05);
-            color: var(--accent);
-        }
-
-        .resource-link[onclick]:hover {
-            background: var(--accent);
-            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
         }
 
         .resource-icon {
-            margin-right: 8px;
-            font-size: 1.1rem;
-        }
-
-        .resource-type {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: rgba(0, 0, 0, 0.1);
-            /* Subtle background */
-            margin-left: 0.5rem;
-            color: inherit;
-            /* Inherit color from parent (white on hover) */
-            font-weight: 600;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-
-        /* Pathway Filters */
-        .pathway-filters {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            padding: 1rem 5%;
-            margin-top: 1rem;
-            position: relative;
-            z-index: 10;
-        }
-
-        .filter-chip {
-            padding: 0.6rem 1.5rem;
-            border-radius: 50px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            backdrop-filter: blur(5px);
-        }
-
-        .filter-chip:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            color: var(--accent);
-        }
-
-        .filter-chip.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+            font-size: 1.2rem;
         }
 
         /* Video Modal */
@@ -515,60 +627,86 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .modal-content {
-            background-color: var(--bg-card);
-            margin: auto;
-            padding: 0;
-            border-radius: 12px;
+            background: var(--bg-card);
+            margin: 2rem;
+            border-radius: 24px;
             width: 90%;
-            max-width: 900px;
-            position: relative;
+            max-width: 1000px;
+            overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: modalFadeIn 0.3s;
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .modal-header {
-            padding: 1rem 1.5rem;
+            padding: 1.5rem 2rem;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: var(--bg-secondary);
         }
 
         .modal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-size: 1.3rem;
+            font-weight: 700;
         }
 
         .close-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: var(--bg-card);
             color: var(--text-secondary);
             font-size: 1.5rem;
-            font-weight: bold;
             cursor: pointer;
-            transition: color 0.2s;
-            background: none;
-            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .close-btn:hover {
-            color: var(--accent);
+            background: var(--accent-primary);
+            color: white;
+            transform: rotate(90deg);
         }
 
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
-            /* 16:9 aspect ratio */
             height: 0;
             overflow: hidden;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
             background: #000;
         }
 
@@ -581,245 +719,209 @@
             border: none;
         }
 
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
             }
 
-            to {
-                opacity: 1;
-                transform: scale(1);
+            100% {
+                transform: rotate(360deg);
             }
         }
 
-        /* Responsive */
+        /* Responsive Design */
         @media screen and (max-width: 768px) {
-            .timeline-container::after {
-                left: 31px;
-                /* Line position on mobile */
+            .nav-menu {
+                display: none;
+            }
+
+            .roadmap-title {
+                font-size: 2.5rem;
+            }
+
+            .roadmap-desc {
+                font-size: 1rem;
+            }
+
+            .timeline-container::before {
+                left: 30px;
             }
 
             .timeline-item {
                 width: 100%;
-                padding-left: 70px;
-                /* Space for line */
-                padding-right: 25px;
-                margin-bottom: 2rem;
+                padding-left: 80px;
+                padding-right: 20px;
+                margin-bottom: 3rem;
             }
 
-            /* Reset left/right specific positioning for mobile stack */
             .left,
             .right {
                 left: 0;
                 text-align: left;
-                /* Reset alignment */
+                padding-left: 80px;
+                padding-right: 20px;
             }
 
             .timeline-item::after {
-                left: 21px;
-                /* Circle position aligns with line at 31px center */
-                right: auto;
+                left: 18px;
             }
 
-            /* Specific fix for left items wanting to put dot on right */
-            .left::after {
-                left: 21px;
-                right: auto;
-            }
-
+            .left::after,
             .right::after {
-                left: 21px;
+                left: 18px;
+                right: auto;
             }
 
             .content:hover {
                 transform: translateY(-5px);
+            }
+
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
+            <a href="index.html" class="logo">DevLanka Hub</a>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="news.html">Tech News</a></li>
                 <li><a href="courses.html">Courses</a></li>
-                <li><a href="tutorials.html">YouTube Tutorials</a></li>
+                <li><a href="tutorials.html">Tutorials</a></li>
+                <li><a href="category.html">Resources</a></li>
                 <li><a href="support.html">Support</a></li>
-                <li><a href="profile.html">Profile</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <span id="theme-icon">🌙</span>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <span id="theme-icon" style="font-size: 1.3rem;">🌙</span>
                 </button>
-                <button class="btn btn-outline" onclick="window.location.href='login.html'">Login</button>
-                <button class="btn btn-primary" onclick="window.location.href='register.html'">Register</button>
+                <button class="btn btn-outline" onclick="window.location.href='login.html'">Sign In</button>
+                <button class="btn btn-primary" onclick="window.location.href='register.html'">Get Started</button>
             </div>
         </div>
     </nav>
 
+    <!-- Header Section -->
     <header class="roadmap-header">
-        <h1 class="roadmap-title" id="pathTitle">Learning Pathway</h1>
-        <p class="roadmap-desc" id="pathDesc">Loading pathway...</p>
+        <div class="header-content">
+            <div class="pathway-badge">
+                <span>🎯</span> Your Learning Journey
+            </div>
+            <h1 class="roadmap-title" id="pathTitle">Loading Pathway...</h1>
+            <p class="roadmap-desc" id="pathDesc">Discover a structured path to mastering your chosen technology.</p>
 
-        <div class="pathway-filters">
-            <button class="filter-chip" onclick="switchPath('web')" id="btn-web">Web Dev</button>
-            <button class="filter-chip" onclick="switchPath('mobile')" id="btn-mobile">Mobile App</button>
-            <button class="filter-chip" onclick="switchPath('python')" id="btn-python">Python</button>
-            <button class="filter-chip" onclick="switchPath('java')" id="btn-java">Java</button>
-            <button class="filter-chip" onclick="switchPath('backend')" id="btn-backend">Backend</button>
-            <button class="filter-chip" onclick="switchPath('htmlcss')" id="btn-htmlcss">HTML/CSS</button>
+            <!-- Pathway Filters -->
+            <div class="pathway-filters">
+                <button class="filter-chip" onclick="switchPath('web')" id="btn-web">🌐 Web Dev</button>
+                <button class="filter-chip" onclick="switchPath('mobile')" id="btn-mobile">📱 Mobile App</button>
+                <button class="filter-chip" onclick="switchPath('python')" id="btn-python">🐍 Python</button>
+                <button class="filter-chip" onclick="switchPath('java')" id="btn-java">☕ Java</button>
+                <button class="filter-chip" onclick="switchPath('backend')" id="btn-backend">⚙️ Backend</button>
+                <button class="filter-chip" onclick="switchPath('htmlcss')" id="btn-htmlcss">🎨 HTML/CSS</button>
+            </div>
+
+            <!-- Progress Stats -->
+            <div class="progress-stats" id="progressStats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSteps">0</div>
+                    <div class="stat-label">Total Steps</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalVideos">0</div>
+                    <div class="stat-label">Video Tutorials</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalResources">0</div>
+                    <div class="stat-label">Resources</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="estimatedTime">0</div>
+                    <div class="stat-label">Hours</div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <div class="timeline-container" id="timelineContainer">
-        <!-- Content will be injected via JS -->
-    </div>
+    <!-- Timeline Section -->
+    <section class="timeline-section">
+        <div class="timeline-container" id="timelineContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading your learning pathway...</p>
+            </div>
+        </div>
+    </section>
 
     <!-- Video Modal -->
     <div id="videoModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="modalVideoTitle">Tutorial Video</h3>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <button class="close-btn" onclick="closeModal()" aria-label="Close modal">×</button>
             </div>
             <div class="video-container">
-                <iframe id="videoFrame" src="" allowfullscreen></iframe>
+                <iframe id="videoFrame" src="" allowfullscreen allow="autoplay"></iframe>
             </div>
         </div>
     </div>
 
-    <script src="/static/js/api.js"></script>
     <script>
-        async function renderPathway() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const customId = urlParams.get('custom');
-            const slug = urlParams.get('slug') || urlParams.get('path') || 'web-development';
+        const API_BASE = 'http://127.0.0.1:8000/api';
 
-            let data = null;
-
-            // Check if this is a custom pathway from localStorage
-            if (customId) {
-                const customPathways = JSON.parse(localStorage.getItem('pathways') || '[]');
-                data = customPathways.find(p => p.id == customId);
-
-                if (data) {
-                    // Normalize custom pathway data structure to match database format
-                    data = {
-                        title: data.title,
-                        description: data.desc,
-                        steps: data.steps.map((step, idx) => ({
-                            step_number: idx + 1,
-                            title: step.title,
-                            description: step.desc,
-                            video_id: step.videoId,
-                            video_url: step.videoUrl,
-                            resource_url: step.resourceUrl
-                        }))
-                    };
+        // API Services
+        const pathwayApi = {
+            getAll: async (skip = 0, limit = 100) => {
+                try {
+                    const response = await fetch(`${API_BASE}/pathways/?skip=${skip}&limit=${limit}`);
+                    if (!response.ok) throw new Error('Failed to fetch pathways');
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching pathways:', error);
+                    return [];
                 }
-            } else {
-                // Try fetching from database
-                data = await pathwayApi.getBySlug(slug);
-
-                if (!data) {
-                    // Try fetching by ID or just get all and filter
-                    const all = await pathwayApi.getAll();
-                    data = all.find(p => p.slug === slug || p.id == slug);
+            },
+            getBySlug: async (slug) => {
+                try {
+                    const response = await fetch(`${API_BASE}/pathways/${slug}`);
+                    if (!response.ok) throw new Error('Failed to fetch pathway');
+                    return await response.json();
+                } catch (error) {
+                    console.error(`Error fetching pathway ${slug}:`, error);
+                    return null;
                 }
             }
+        };
 
-            if (!data) {
-                document.getElementById('pathTitle').textContent = 'Pathway Not Found';
-                document.getElementById('pathDesc').textContent = 'Please select a valid pathway from the hub.';
-                return;
-            }
-
-            document.getElementById('pathTitle').textContent = data.title;
-            document.getElementById('pathDesc').textContent = data.description;
-
-            const container = document.getElementById('timelineContainer');
-            container.innerHTML = '';
-
-            // Assuming data.steps exists and is an array
-            const steps = data.steps || [];
-            if (steps.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">No steps defined for this pathway yet.</p>';
-                return;
-            }
-
-            steps.forEach((step, index) => {
-                const item = document.createElement('div');
-                const type = index % 2 === 0 ? 'left' : 'right';
-                item.className = `timeline-item ${type}`;
-
-                // Extract video ID from either video_id or video_url
-                let videoId = step.video_id;
-                if (!videoId && step.video_url) {
-                    if (step.video_url.includes('v=')) {
-                        videoId = step.video_url.split('v=')[1].split('&')[0];
-                    } else {
-                        videoId = step.video_url.split('/').pop();
-                    }
-                }
-
-                const icons = ['🎯', '🛠️', '🚀', '🧠', '🏆'];
-                const stepIcon = icons[index % icons.length];
-
-                item.innerHTML = `
-                    <div class="content">
-                        <div style="display:flex; justify-content:space-between; align-items:start;">
-                            <span class="step-number">Step 0${index + 1}</span>
-                            <span style="font-size:1.5rem;">${stepIcon}</span>
-                        </div>
-                        <h2 class="step-title">${step.title}</h2>
-                        <p class="step-desc">${step.description}</p>
-                        <div class="resources-list">
-                            ${videoId ? `
-                            <button class="resource-link" onclick="openModal('${videoId}', '${step.title}')">
-                                <span class="resource-icon">🎥</span>
-                                <span>Watch Video</span>
-                            </button>
-                            ` : ''}
-                            ${step.resource_url ? `
-                            <a href="${step.resource_url}" target="_blank" class="resource-link">
-                                <span class="resource-icon">📚</span>
-                                <span>Resources</span>
-                            </a>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        const modal = document.getElementById('videoModal');
-        const videoFrame = document.getElementById('videoFrame');
-        const modalTitle = document.getElementById('modalVideoTitle');
-
-        function openModal(videoId, title) {
-            modal.style.display = 'flex';
-            modalTitle.textContent = title + ' - Tutorial';
-            videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-        }
-
-        function closeModal() {
-            modal.style.display = 'none';
-            videoFrame.src = '';
-        }
-
-        window.onclick = function (event) {
-            if (event.target == modal) closeModal();
-        }
-
+        // Theme Toggle
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
             const currentTheme = html.getAttribute('data-theme');
+
             if (currentTheme === 'dark') {
                 html.setAttribute('data-theme', 'light');
                 icon.textContent = '🌙';
@@ -831,12 +933,211 @@
             }
         }
 
+        // Initialize theme
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        const icon = document.getElementById('theme-icon');
-        if (icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
 
+        // Video Modal Functions
+        const modal = document.getElementById('videoModal');
+        const videoFrame = document.getElementById('videoFrame');
+        const modalTitle = document.getElementById('modalVideoTitle');
+
+        function openModal(videoId, title) {
+            modal.style.display = 'flex';
+            modalTitle.textContent = title;
+            videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            videoFrame.src = '';
+            document.body.style.overflow = '';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) closeModal();
+        }
+
+        // Extract video ID from URL
+        function extractVideoId(url) {
+            if (!url) return null;
+            if (url.includes('v=')) {
+                return url.split('v=')[1].split('&')[0];
+            } else if (url.includes('youtu.be/')) {
+                return url.split('youtu.be/')[1].split('?')[0];
+            }
+            return url;
+        }
+
+        // Render Pathway
+        async function renderPathway() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const customId = urlParams.get('custom');
+            const slug = urlParams.get('slug') || urlParams.get('path') || 'web-development';
+
+            let data = null;
+
+            // Check for custom pathway
+            if (customId) {
+                const customPathways = JSON.parse(localStorage.getItem('pathways') || '[]');
+                const customPath = customPathways.find(p => p.id == customId);
+
+                if (customPath) {
+                    data = {
+                        title: customPath.title,
+                        description: customPath.desc,
+                        steps: customPath.steps.map((step, idx) => ({
+                            step_number: idx + 1,
+                            title: step.title,
+                            description: step.desc,
+                            video_id: step.videoId,
+                            video_url: step.videoUrl,
+                            resource_url: step.resourceUrl
+                        }))
+                    };
+                }
+            } else {
+                // Fetch from API
+                data = await pathwayApi.getBySlug(slug);
+
+                if (!data) {
+                    const all = await pathwayApi.getAll();
+                    data = all.find(p => p.slug === slug || p.id == slug);
+                }
+            }
+
+            if (!data) {
+                document.getElementById('timelineContainer').innerHTML = `
+                    <div class="loading">
+                        <p style="font-size: 1.2rem; color: var(--text-primary);">❌ Pathway Not Found</p>
+                        <p>Please select a valid pathway from the homepage.</p>
+                        <button class="btn btn-primary" onclick="window.location.href='index.html'" style="margin-top: 1rem;">
+                            Go to Homepage
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Update header
+            document.getElementById('pathTitle').textContent = data.title;
+            document.getElementById('pathDesc').textContent = data.description;
+
+            // Update stats
+            const steps = data.steps || [];
+            const videoCount = steps.filter(s => s.video_id || s.video_url).length;
+            const resourceCount = steps.filter(s => s.resource_url).length;
+            const estimatedHours = steps.length * 2; // Estimate 2 hours per step
+
+            document.getElementById('totalSteps').textContent = steps.length;
+            document.getElementById('totalVideos').textContent = videoCount;
+            document.getElementById('totalResources').textContent = resourceCount;
+            document.getElementById('estimatedTime').textContent = estimatedHours;
+
+            // Render timeline
+            const container = document.getElementById('timelineContainer');
+            container.innerHTML = '';
+
+            if (steps.length === 0) {
+                container.innerHTML = `
+                    <div class="loading">
+                        <p>No steps defined for this pathway yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const icons = ['🎯', '🛠️', '🚀', '🧠', '🏆', '⚡', '🎨', '💡', '🔥', '✨'];
+
+            steps.forEach((step, index) => {
+                const item = document.createElement('div');
+                const position = index % 2 === 0 ? 'left' : 'right';
+                item.className = `timeline-item ${position}`;
+
+                const videoId = extractVideoId(step.video_id || step.video_url);
+                const stepIcon = icons[index % icons.length];
+
+                item.innerHTML = `
+                    <div class="content">
+                        <div class="step-header">
+                            <span class="step-number">Step ${String(index + 1).padStart(2, '0')}</span>
+                            <span class="step-icon">${stepIcon}</span>
+                        </div>
+                        <h2 class="step-title">${step.title}</h2>
+                        <p class="step-desc">${step.description}</p>
+                        
+                        ${videoId || step.resource_url ? `
+                            <div class="resources-section">
+                                <div class="resources-label">📚 Learning Resources</div>
+                                <div class="resources-list">
+                                    ${videoId ? `
+                                        <button class="resource-link" onclick="openModal('${videoId}', '${step.title.replace(/'/g, "\\'")}')">
+                                            <span class="resource-icon">🎥</span>
+                                            <span>Watch Tutorial</span>
+                                        </button>
+                                    ` : ''}
+                                    ${step.resource_url ? `
+                                        <a href="${step.resource_url}" target="_blank" class="resource-link">
+                                            <span class="resource-icon">📖</span>
+                                            <span>Read Docs</span>
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        // Path Switcher
+        function switchPath(pathSlug) {
+            const pathMap = {
+                'web': 'web-development',
+                'mobile': 'mobile-development',
+                'python': 'python-programming',
+                'java': 'java-programming',
+                'backend': 'backend-development',
+                'htmlcss': 'html-css-basics'
+            };
+
+            const slug = pathMap[pathSlug] || pathSlug;
+            window.location.href = `pathway.html?slug=${slug}`;
+        }
+
+        // Initialize
         renderPathway();
+    </script>
+    <script>
+        // Auth Check Logic
+        function checkAuthStatus() {
+            const token = localStorage.getItem('access_token');
+            const role = localStorage.getItem('user_role');
+            const navActions = document.querySelector('.nav-actions');
+
+            if (token && navActions) {
+                // Keep Theme Toggle
+                const themeBtn = navActions.querySelector('.theme-toggle');
+                navActions.innerHTML = '';
+                if (themeBtn) navActions.appendChild(themeBtn);
+
+                // Add Profile/Admin button
+                if (role === 'admin') {
+                    navActions.innerHTML += `
+                        <button class="btn btn-outline" style="margin-left:1rem" onclick="window.location.href='admin/dashboard.html'">Admin Panel</button>
+                    `;
+                } else {
+                    navActions.innerHTML += `
+                        <button class="btn btn-outline" style="margin-left:1rem" onclick="window.location.href='profile.html'">Profile</button>
+                    `;
+                }
+            }
+        }
+        checkAuthStatus();
     </script>
 </body>
 

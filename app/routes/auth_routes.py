@@ -7,6 +7,21 @@ from app.core.database import get_db
 
 router = APIRouter()
 
+from datetime import timedelta
+from app.core import security
+from app.config import settings
+from pydantic import BaseModel
+import random
+import string
+from app.utils.email import send_verification_email
+
+def generate_verification_code(length=6):
+    return ''.join(random.choices(string.digits, k=length))
+
+class VerifyRequest(BaseModel):
+    email: str
+    code: str
+
 @router.post("/register", response_model=User)
 def register_user(
     *,
@@ -20,10 +35,46 @@ def register_user(
     if user:
         raise HTTPException(
             status_code=400,
-            detail="The user with this username already exists in the system.",
+            detail="The user with this email already exists in the system.",
         )
+    print(f"Registering user: {user_in.email}")
     user = crud.user.create(db, obj_in=user_in)
+    
+    # Generate verification code
+    code = generate_verification_code()
+    user.verification_code = code
+    user.is_verified = False
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    
+    # Send email
+    print(f"Sending email to {user.email}")
+    email_status = send_verification_email(user.email, code)
+    print(f"Email sent status: {email_status}")
+    
     return user
+
+@router.post("/verify")
+def verify_email(
+    verify_in: VerifyRequest,
+    db: Session = Depends(get_db)
+):
+    user = crud.user.get_by_email(db, email=verify_in.email)
+    if not user:
+         raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.is_verified:
+        return {"message": "Email already verified"}
+
+    if user.verification_code == verify_in.code:
+        user.is_verified = True
+        user.verification_code = None 
+        db.add(user)
+        db.commit()
+        return {"message": "Email verified successfully"}
+    else:
+        raise HTTPException(status_code=400, detail="Invalid verification code")
 
 from datetime import timedelta
 from app.core import security
@@ -86,13 +137,39 @@ def read_users(
 
 @router.put("/me", response_model=User)
 def update_user_me(
-    user_id: int, # Mocking current user for now
     *,
     db: Session = Depends(get_db),
-    user_in: UserUpdate
+    user_in: UserUpdate,
+    current_user: User = Depends(get_current_user)
 ) -> Any:
     """
     Update own user.
+    """
+    user = crud.user.update(db, db_obj=current_user, obj_in=user_in)
+    return user
+
+@router.delete("/users/{user_id}", response_model=User)
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Delete a user.
+    """
+    user = crud.user.get(db, id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user = crud.user.remove(db, id=user_id)
+    return user
+
+@router.put("/users/{user_id}", response_model=User)
+def update_user(
+    user_id: int,
+    user_in: UserUpdate,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Update a user.
     """
     user = crud.user.get(db, id=user_id)
     if not user:

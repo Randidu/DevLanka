@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resources - DevLanka Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,88 +18,124 @@
 
         :root {
             --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-card: rgba(255, 255, 255, 0.7);
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --accent: #3b82f6;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
             --accent-hover: #2563eb;
-            --border: rgba(0, 0, 0, 0.1);
-            --shadow: rgba(0, 0, 0, 0.1);
-            --gradient-start: #3b82f6;
-            --gradient-end: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border: #e2e8f0;
+            --shadow-sm: rgba(0, 0, 0, 0.05);
+            --shadow-md: rgba(0, 0, 0, 0.1);
+            --shadow-lg: rgba(0, 0, 0, 0.15);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
         }
 
         [data-theme="dark"] {
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
-            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-tertiary: #334155;
+            --bg-card: #1e293b;
             --text-primary: #f1f5f9;
             --text-secondary: #cbd5e1;
-            --accent: #60a5fa;
+            --text-tertiary: #64748b;
+            --accent-primary: #60a5fa;
+            --accent-secondary: #a78bfa;
             --accent-hover: #3b82f6;
-            --border: rgba(255, 255, 255, 0.1);
-            --shadow: rgba(0, 0, 0, 0.3);
+            --border: #334155;
+            --shadow-sm: rgba(0, 0, 0, 0.2);
+            --shadow-md: rgba(0, 0, 0, 0.3);
+            --shadow-lg: rgba(0, 0, 0, 0.4);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             transition: background 0.3s ease, color 0.3s ease;
             line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Navbar */
+        /* Navigation */
         nav {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 1rem 5%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
             border-bottom: 1px solid var(--border);
-            box-shadow: 0 2px 10px var(--shadow);
+            box-shadow: 0 1px 3px var(--shadow-sm);
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(15, 23, 42, 0.95);
         }
 
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            font-weight: 800;
+            background: var(--gradient-hero);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .nav-menu {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             list-style: none;
             align-items: center;
         }
 
         .nav-menu a {
-            color: var(--text-primary);
+            color: var(--text-secondary);
             text-decoration: none;
-            transition: color 0.3s;
             font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-hero);
+            transition: width 0.3s ease;
         }
 
         .nav-menu a:hover {
-            color: var(--accent);
+            color: var(--accent-primary);
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
         }
 
         .nav-actions {
@@ -106,105 +146,266 @@
 
         .theme-toggle {
             background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            padding: 0.5rem;
-            border-radius: 50px;
+            border: 1px solid var(--border);
+            padding: 0.6rem;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            transition: all 0.3s ease;
         }
 
         .theme-toggle:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-md);
         }
 
         .btn {
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.65rem 1.5rem;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            font-family: inherit;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: var(--gradient-hero);
             color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px var(--shadow);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .btn-outline {
             background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
         }
 
         .btn-outline:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-
-        /* Header Section */
-        .page-header {
+            border-color: var(--accent-primary);
             background: var(--bg-secondary);
-            padding: 3rem 5%;
-            border-bottom: 1px solid var(--border);
         }
 
-        .header-content {
+        /* Hero Section */
+        .hero-section {
+            padding: 5rem 2rem 3rem;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
             max-width: 1400px;
             margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
         }
 
-        .breadcrumb {
-            color: var(--text-secondary);
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px var(--shadow-sm);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
             margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .breadcrumb a {
-            color: var(--text-secondary);
-            text-decoration: none;
-        }
-
-        .breadcrumb a:hover {
-            color: var(--accent);
-        }
-
-        .page-title {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: var(--gradient-hero);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
         }
 
-        .page-desc {
+        .hero-desc {
+            font-size: 1.2rem;
             color: var(--text-secondary);
-            max-width: 600px;
-            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Categories Section */
+        .categories-section {
+            padding: 3rem 2rem;
+            background: var(--bg-secondary);
+        }
+
+        .section-header {
+            max-width: 1400px;
+            margin: 0 auto 2rem;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .categories-scroll {
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .categories-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .categories-scroll::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        .categories-scroll::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
+        }
+
+        .categories-grid {
+            display: flex;
+            gap: 1rem;
+            min-width: min-content;
+        }
+
+        .category-chip {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 140px;
+            white-space: nowrap;
+        }
+
+        .category-chip:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px var(--shadow-md);
+            border-color: var(--accent-primary);
+        }
+
+        .category-chip.active {
+            background: var(--gradient-hero);
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .category-chip.active .category-name {
+            color: white;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+        }
+
+        .category-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
         /* Filter Bar */
         .filter-bar {
             background: var(--bg-card);
-            padding: 1.5rem 5%;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 73px;
-            /* Adjust based on navbar height */
             z-index: 900;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 8px var(--shadow-sm);
         }
 
         .filter-container {
@@ -216,321 +417,264 @@
             flex-wrap: wrap;
         }
 
-        .search-input {
+        .search-wrapper {
             flex: 1;
-            min-width: 250px;
-            padding: 0.7rem 1.2rem;
-            border-radius: 50px;
-            border: 1px solid var(--border);
+            min-width: 280px;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--text-tertiary);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.85rem 1.2rem 0.85rem 3.2rem;
+            border-radius: 12px;
+            border: 2px solid var(--border);
             background: var(--bg-secondary);
             color: var(--text-primary);
             outline: none;
-            transition: border 0.3s;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 0.95rem;
         }
 
         .search-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .filter-select {
-            padding: 0.7rem 2rem 0.7rem 1rem;
-            border-radius: 10px;
-            border: 1px solid var(--border);
+            padding: 0.85rem 2.5rem 0.85rem 1.2rem;
+            border-radius: 12px;
+            border: 2px solid var(--border);
             background: var(--bg-secondary);
             color: var(--text-primary);
             outline: none;
             cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s;
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 0.7rem center;
-            background-size: 1em;
+            background-position: right 0.8rem center;
+            background-size: 1.2em;
         }
 
         .filter-select:hover {
-            border-color: var(--accent);
+            border-color: var(--accent-primary);
         }
 
-        .clear-filters {
-            color: var(--text-secondary);
-            background: none;
+        .btn-add {
+            background: var(--gradient-hero);
+            color: white;
+            padding: 0.85rem 1.8rem;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
-            font-size: 0.9rem;
-            text-decoration: underline;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            font-family: inherit;
+            font-size: 0.95rem;
         }
 
-        .clear-filters:hover {
-            color: var(--accent);
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
-        /* Grid */
+        .btn-clear {
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-clear:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Resources Grid */
+        .resources-section {
+            padding: 3rem 2rem;
+            min-height: 60vh;
+        }
+
         .resource-grid {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 3rem 5%;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 2rem;
         }
 
         .resource-card {
             background: var(--bg-card);
-            border-radius: 15px;
+            border-radius: 20px;
             border: 1px solid var(--border);
-            padding: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow: hidden;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .resource-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 30px var(--shadow);
-            border-color: var(--accent);
+            box-shadow: 0 20px 40px var(--shadow-lg);
+            border-color: transparent;
         }
 
-        .card-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .file-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--bg-secondary);
-            border-radius: 12px;
+        .card-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            color: var(--accent);
+            overflow: hidden;
+            position: relative;
         }
 
-        .lang-badge {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--accent);
-            padding: 0.3rem 0.6rem;
-            border-radius: 6px;
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .resource-card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-image.icon-mode {
+            height: 140px;
+            font-size: 4rem;
+        }
+
+        .card-content {
+            padding: 1.8rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 0.35rem 0.9rem;
+            border-radius: 50px;
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-primary {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-primary);
+        }
+
+        .badge-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
 
         .card-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
         }
 
         .card-desc {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
             margin-bottom: 1.5rem;
-            flex-grow: 1;
-            line-height: 1.5;
-        }
-
-        .card-tags {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-
-        .tag {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            padding: 0.2rem 0.6rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            border: 1px solid var(--border);
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: auto;
-            border-top: 1px solid var(--border);
-            padding-top: 1rem;
-        }
-
-        .action-btn {
             flex: 1;
-            padding: 0.6rem;
-            border-radius: 8px;
+        }
+
+        .card-footer {
+            display: flex;
+            gap: 0.8rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .card-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.9rem;
-            transition: all 0.2s;
+            transition: all 0.3s;
             text-align: center;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
         }
 
         .btn-view {
             background: var(--bg-secondary);
             color: var(--text-primary);
+            border: 2px solid var(--border);
         }
 
         .btn-view:hover {
-            background: var(--border);
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
         }
 
         .btn-download {
-            background: var(--accent);
+            background: var(--gradient-hero);
             color: white;
         }
 
         .btn-download:hover {
-            background: var(--accent-hover);
-        }
-
-        .file-size {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            text-align: right;
-            display: block;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--bg-secondary);
-            padding: 3rem 5%;
-            margin-top: auto;
-            text-align: center;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border);
-        }
-
-        /* Loading */
-        .loading-sentinel {
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 2rem;
-        }
-
-        .spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--bg-secondary);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-
-            .filter-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .header-content {
-                text-align: center;
-            }
-        }
-
-        /* Categories Section from index.html */
-        .categories {
-            padding: 4rem 5%;
-            background: var(--bg-primary);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 3rem;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .categories-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .category-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: block;
-        }
-
-        .category-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px var(--shadow);
-            border-color: var(--accent);
-        }
-
-        .category-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .category-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* Adjustments for category.html */
-        .page-header {
-            display: none;
-            /* Hiding the old header as we are remaking it */
-        }
-
-        /* Add Button */
-        .btn-add {
-            background: var(--accent);
-            color: white;
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-add:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
 
         /* Modal */
@@ -540,12 +684,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.75);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -558,39 +702,61 @@
         .modal-container {
             background: var(--bg-card);
             width: 90%;
-            max-width: 600px;
-            border-radius: 15px;
-            border: 1px solid var(--border);
-            padding: 2rem;
-            transform: translateY(20px);
+            max-width: 700px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(30px) scale(0.95);
             transition: transform 0.3s;
             max-height: 90vh;
             overflow-y: auto;
         }
 
         .modal-overlay.active .modal-container {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
         }
 
         .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .modal-close {
-            background: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             border: none;
-            font-size: 1.5rem;
+            background: var(--bg-card);
             color: var(--text-secondary);
+            font-size: 1.5rem;
             cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
         }
 
         .form-group {
@@ -599,103 +765,249 @@
 
         .form-label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
             font-weight: 600;
             color: var(--text-primary);
+            font-size: 0.95rem;
         }
 
         .form-input,
         .form-select,
         .form-textarea {
             width: 100%;
-            padding: 0.8rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            border: 2px solid var(--border);
             background: var(--bg-secondary);
             color: var(--text-primary);
             outline: none;
             font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s;
         }
 
         .form-input:focus,
         .form-select:focus,
         .form-textarea:focus {
-            border-color: var(--accent);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        .form-divider {
+            text-align: center;
+            color: var(--text-secondary);
+            margin: 1rem 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Loading & Empty States */
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            grid-column: 1 / -1;
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+
+        .empty-desc {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .categories-grid {
+                padding-bottom: 1rem;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
+            <a href="index.html" class="logo">DevLanka Hub</a>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="news.html">Tech News</a></li>
+                <li><a href="news.html">News</a></li>
                 <li><a href="courses.html">Courses</a></li>
-                <li><a href="tutorials.html">YouTube Tutorials</a></li>
+                <li><a href="tutorials.html">Tutorials</a></li>
                 <li><a href="category.html">Resources</a></li>
                 <li><a href="support.html">Support</a></li>
-                <li><a href="profile.html">Profile</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <span id="theme-icon">🌙</span>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <span id="theme-icon" style="font-size: 1.3rem;">🌙</span>
                 </button>
-                <button class="btn btn-outline" onclick="window.location.href='login.html'">Login</button>
-                <button class="btn btn-primary" onclick="window.location.href='register.html'">Register</button>
+                <button class="btn btn-outline" onclick="window.location.href='login.html'">Sign In</button>
+                <button class="btn btn-primary" onclick="window.location.href='register.html'">Get Started</button>
             </div>
         </div>
     </nav>
 
-    <!-- Categories Header Section -->
-    <section class="categories">
-        <h1 class="section-title">Explore Categories</h1>
-        <div class="categories-grid" id="categoriesGrid">
-            <!-- Loaded via JS -->
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>📚</span> Curated Learning Materials
+            </div>
+            <h1 class="hero-title">Resource Library</h1>
+            <p class="hero-desc">
+                Discover premium learning materials, documentation, templates, and tools carefully curated to accelerate
+                your development journey.
+            </p>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalResources">0</div>
+                    <div class="stat-label">Resources</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCategories">0</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Access</div>
+                </div>
+            </div>
         </div>
     </section>
 
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="section-header">
+            <h2 class="section-title">Browse by Category</h2>
+            <p class="section-subtitle">Find resources tailored to your learning path</p>
+        </div>
+
+        <div class="categories-scroll">
+            <div class="categories-grid" id="categoriesGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading categories...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Bar -->
     <div class="filter-bar">
         <div class="filter-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search by title or keyword...">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search resources...">
+            </div>
 
             <select id="langFilter" class="filter-select">
-                <option value="all">Language: All</option>
+                <option value="all">All Languages</option>
                 <option value="English">English</option>
                 <option value="Sinhala">Sinhala</option>
                 <option value="Tamil">Tamil</option>
             </select>
 
             <select id="typeFilter" class="filter-select">
-                <option value="all">Type: All</option>
-                <option value="PDF">PDF Guide</option>
+                <option value="all">All Types</option>
+                <option value="PDF">PDF</option>
                 <option value="Docs">Documentation</option>
                 <option value="Template">Template</option>
-                <option value="Slides">Slides</option>
+                <option value="Video">Video</option>
             </select>
 
-            <select id="sortFilter" class="filter-select">
-                <option value="newest">Sort: Newest</option>
-                <option value="popular">Popular</option>
-                <option value="az">A-Z</option>
-            </select>
-
-            <button class="clear-filters" onclick="resetFilters()">Clear Filters</button>
-
+            <button class="btn-clear" onclick="resetFilters()">Clear</button>
             <button class="btn-add" onclick="openModal()">
                 <span>➕</span> Add Resource
             </button>
         </div>
     </div>
 
-    <div class="resource-grid" id="resourceGrid">
-        <!-- Cards will be injected via JS -->
-    </div>
-
-    <div class="loading-sentinel" id="loadingSentinel">
-        <div class="spinner"></div>
-    </div>
+    <!-- Resources Grid -->
+    <section class="resources-section">
+        <div class="resource-grid" id="resourceGrid">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading resources...</p>
+            </div>
+        </div>
+    </section>
 
     <!-- Add Resource Modal -->
     <div class="modal-overlay" id="addResourceModal">
@@ -704,124 +1016,94 @@
                 <h2 class="modal-title">Share a Resource</h2>
                 <button class="modal-close" onclick="closeModal()">×</button>
             </div>
-            <form id="addResourceForm" onsubmit="handleAddResource(event)">
-                <div class="form-group">
-                    <label class="form-label">Title *</label>
-                    <input type="text" class="form-input" id="resourceTitle" name="title" required
-                        placeholder="e.g., Advanced Python Notes">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Description *</label>
-                    <textarea class="form-textarea" id="resourceDesc" name="description" rows="3" required
-                        placeholder="Brief description of the resource..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Upload File or Provide URL</label>
-                    <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.5rem;">Choose a file to
-                        upload OR enter a URL below</p>
-
-                    <input type="file" class="form-input" id="resourceFile" name="file"
-                        accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.txt,.md" style="padding:0.5rem; cursor:pointer;">
-
-                    <div style="text-align:center; margin:0.5rem 0; color:var(--text-secondary); font-weight:600;">OR
+            <div class="modal-body">
+                <form id="addResourceForm" onsubmit="handleAddResource(event)">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-input" name="title" required
+                            placeholder="e.g., Python Complete Guide 2025">
                     </div>
 
-                    <input type="url" class="form-input" id="resourceUrl" name="url"
-                        placeholder="https://example.com/resource.pdf">
+                    <div class="form-group">
+                        <label class="form-label">Description *</label>
+                        <textarea class="form-textarea" name="description" rows="3" required
+                            placeholder="Describe what this resource covers..."></textarea>
+                    </div>
 
-                    <small style="color:var(--text-secondary); font-size:0.75rem;">
-                        * Either upload a file or provide a URL (at least one is required)
-                    </small>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">Category *</label>
+                        <select class="form-select" id="resourceCategory" name="category_id" required>
+                            <option value="">Select category...</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Category *</label>
-                    <select class="form-select" id="resourceCategory" name="category_id" required>
-                        <option value="">Select a category...</option>
-                        <!-- Categories will be loaded dynamically -->
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">Resource File or URL *</label>
+                        <input type="file" class="form-input" id="resourceFile" accept=".pdf,.doc,.docx,.ppt,.zip"
+                            style="padding: 0.6rem;">
+                        <div class="form-divider">OR</div>
+                        <input type="url" class="form-input" name="url" placeholder="https://example.com/resource.pdf">
+                        <span class="form-hint">Upload a file or provide a URL</span>
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Type</label>
-                    <select class="form-select" id="resourceType" name="type">
-                        <option value="PDF">PDF Guide</option>
-                        <option value="Docs">Documentation</option>
-                        <option value="Template">Template</option>
-                        <option value="Slides">Slides</option>
-                        <option value="Snippet">Code Snippet</option>
-                        <option value="Video">Video</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">Cover Image URL (Optional)</label>
+                        <input type="url" class="form-input" id="resourceIcon" name="icon_url"
+                            placeholder="https://example.com/cover-image.jpg">
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Language</label>
-                    <select class="form-select" id="resourceLang" name="language">
-                        <option value="English">English</option>
-                        <option value="Sinhala">Sinhala</option>
-                        <option value="Tamil">Tamil</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <select class="form-select" name="type">
+                            <option value="PDF">PDF</option>
+                            <option value="Docs">Documentation</option>
+                            <option value="Template">Template</option>
+                            <option value="Video">Video</option>
+                            <option value="Slides">Slides</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Level</label>
-                    <select class="form-select" id="resourceLevel" name="level">
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                        <option value="All Levels">All Levels</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">Language</label>
+                        <select class="form-select" name="language">
+                            <option value="English">English</option>
+                            <option value="Sinhala">Sinhala</option>
+                            <option value="Tamil">Tamil</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Cover Image / Thumbnail</label>
-                    <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.5rem;">Upload an image to
-                        display on the resource card</p>
-                    <input type="file" class="form-input" id="resourceIconImage" name="icon_image" accept="image/*"
-                        style="padding:0.5rem; cursor:pointer;">
-                    <small style="color:var(--text-secondary); font-size:0.75rem;">
-                        Recommended: 400x300px or similar aspect ratio
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">File Size (optional)</label>
-                    <input type="text" class="form-input" id="resourceFileSize" name="file_size"
-                        placeholder="e.g., 2.5 MB">
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Share Resource</button>
-            </form>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Share Resource
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Preview Modal -->
     <div class="modal-overlay" id="previewModal">
-        <div class="modal-container" style="max-width: 800px;">
+        <div class="modal-container" style="max-width: 900px;">
             <div class="modal-header">
                 <h2 class="modal-title" id="previewTitle">Preview</h2>
                 <button class="modal-close" onclick="closePreview()">×</button>
             </div>
-            <div id="previewContent"
-                style="min-height: 300px; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); border-radius: 8px;">
-                <!-- Content injected via JS -->
-            </div>
-            <div style="margin-top: 1rem; text-align: right;">
-                <a href="#" id="previewDownloadBtn" class="btn btn-primary" target="_blank">Download File</a>
+            <div class="modal-body">
+                <div id="previewContent"
+                    style="min-height: 500px; background: var(--bg-secondary); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <!-- Content will be injected -->
+                </div>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2025 DevLanka Hub. All rights reserved.</p>
+        <p>&copy; 2025 DevLanka Hub. All rights reserved. Made with ❤️ in Sri Lanka</p>
     </footer>
 
     <script>
         const API_BASE = 'http://127.0.0.1:8000/api';
 
+        // API Services
         const resourceApi = {
             getCategories: async () => {
                 try {
@@ -829,22 +1111,19 @@
                     if (!response.ok) throw new Error('Failed to fetch categories');
                     return await response.json();
                 } catch (error) {
-                    console.error('Error fetching categories:', error);
+                    console.error('Error:', error);
                     return [];
                 }
             },
             getAll: async (category_id = null, skip = 0, limit = 100) => {
                 let query = `${API_BASE}/resources/?skip=${skip}&limit=${limit}`;
-                if (category_id) {
-                    query += `&category_id=${category_id}`;
-                }
-                console.log('Fetching resources from:', query);
+                if (category_id) query += `&category_id=${category_id}`;
                 try {
                     const response = await fetch(query);
-                    if (!response.ok) throw new Error(`Failed to fetch resources: ${response.status} ${response.statusText}`);
+                    if (!response.ok) throw new Error('Failed to fetch resources');
                     return await response.json();
                 } catch (error) {
-                    console.error('Error fetching resources:', error);
+                    console.error('Error:', error);
                     return [];
                 }
             },
@@ -855,173 +1134,134 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-                    if (!response.ok) throw new Error('Failed to create resource');
+                    if (!response.ok) throw new Error('Failed to create');
                     return await response.json();
                 } catch (error) {
-                    console.error('Error creating resource:', error);
+                    console.error('Error:', error);
                     return null;
                 }
             }
         };
-    </script>
-    <script>
+
+        // State
         let allResources = [];
         let currentCategoryId = null;
 
-        async function init() {
-            setupTheme();
-            const urlParams = new URLSearchParams(window.location.search);
-            currentCategoryId = urlParams.get('category_id');
-
-            await renderCategories();
-            await loadResources();
+        // Theme
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const theme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', theme);
+            icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            localStorage.setItem('theme', theme);
         }
 
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        // Render Categories
         async function renderCategories() {
             const categories = await resourceApi.getCategories();
             const grid = document.getElementById('categoriesGrid');
-            if (!grid) return;
 
-            grid.innerHTML = '';
-            const displayCats = categories && categories.length > 0 ? categories : [];
+            document.getElementById('totalCategories').textContent = categories.length;
 
-            displayCats.forEach(cat => {
-                const a = document.createElement('a');
-                a.href = `category.html?category_id=${cat.id}`;
-                a.className = `category-card ${currentCategoryId == cat.id ? 'active' : ''}`;
-                a.innerHTML = `
-                    <div class="category-icon">${cat.icon || '📦'}</div>
-                    <h3 class="category-title">${cat.name}</h3>
-                `;
-                grid.appendChild(a);
-            });
-        }
-
-        async function loadResources() {
-            const grid = document.getElementById('resourceGrid');
-            const sentinel = document.getElementById('loadingSentinel');
-
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Loading resources...</div>';
-            sentinel.style.display = 'flex';
-
-            let resources = [];
-            if (currentCategoryId) {
-                resources = await resourceApi.getAll(currentCategoryId);
-            } else {
-                resources = await resourceApi.getAll();
-            }
-
-            sentinel.style.display = 'none';
-            grid.innerHTML = '';
-
-            if (!resources || resources.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--text-secondary);">No resources found for this category.</p>';
+            if (!categories || categories.length === 0) {
+                grid.innerHTML = '<p style="color: var(--text-secondary); padding: 2rem;">No categories available.</p>';
                 return;
             }
 
+            grid.innerHTML = categories.map(cat => {
+                const iconHtml = cat.icon && cat.icon.startsWith('http')
+                    ? `<img src="${cat.icon}" style="width:40px; height:40px; object-fit:contain;" alt="${cat.name}">`
+                    : `<span class="category-icon">${cat.icon || '📦'}</span>`;
+
+                return `
+                    <a href="?category_id=${cat.id}" class="category-chip ${currentCategoryId == cat.id ? 'active' : ''}">
+                        ${iconHtml}
+                        <span class="category-name">${cat.name}</span>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        // Load Resources
+        async function loadResources() {
+            const grid = document.getElementById('resourceGrid');
+            grid.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading...</p></div>';
+
+            const resources = currentCategoryId
+                ? await resourceApi.getAll(currentCategoryId)
+                : await resourceApi.getAll();
+
             allResources = resources;
+            document.getElementById('totalResources').textContent = resources.length;
+
+            if (!resources || resources.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <h3 class="empty-title">No Resources Found</h3>
+                        <p class="empty-desc">Be the first to share a resource!</p>
+                        <button class="btn btn-primary" onclick="openModal()">Add Resource</button>
+                    </div>
+                `;
+                return;
+            }
+
             renderResourceList(resources);
         }
 
+        // Render Resource List
         function renderResourceList(items) {
             const grid = document.getElementById('resourceGrid');
-            grid.innerHTML = '';
-            items.forEach(item => {
-                grid.appendChild(createCard(item));
-            });
-        }
 
-        function createCard(item) {
-            const card = document.createElement('div');
-            card.className = 'resource-card';
-            const icon = getIconForType(item.type);
+            grid.innerHTML = items.map(item => {
+                const hasImage = item.icon && (item.icon.startsWith('http') || item.icon.startsWith('data:image'));
 
-            // Check if icon is an image URL or emoji
-            const isImageIcon = item.icon && (item.icon.startsWith('http') || item.icon.startsWith('/'));
-
-            // Create card with image background if available
-            if (isImageIcon) {
-                card.innerHTML = `
-                    <div style="
-                        width: 100%;
-                        height: 180px;
-                        background-image: url('${item.icon}');
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
-                        border-radius: 10px 10px 0 0;
-                        margin: -1.5rem -1.5rem 1rem -1.5rem;
-                        position: relative;
-                    ">
-                        <div style="
-                            position: absolute;
-                            top: 10px;
-                            right: 10px;
-                            background: rgba(255,255,255,0.9);
-                            padding: 0.3rem 0.6rem;
-                            border-radius: 6px;
-                        ">
-                            <span class="lang-badge" style="background:transparent; padding:0;">${item.language || 'English'}</span>
+                return `
+                    <div class="resource-card">
+                        <div class="card-image ${hasImage ? '' : 'icon-mode'}">
+                            ${hasImage
+                        ? `<img src="${item.icon}" alt="${item.title}">`
+                        : (item.icon || '📄')}
+                        </div>
+                        <div class="card-content">
+                            <div class="card-badges">
+                                <span class="badge badge-primary">${item.language || 'English'}</span>
+                                <span class="badge badge-secondary">${item.type || 'PDF'}</span>
+                                ${item.level ? `<span class="badge badge-secondary">${item.level}</span>` : ''}
+                            </div>
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-desc">${item.description || 'No description provided.'}</p>
+                            <div class="card-footer">
+                                <button class="card-btn btn-view" onclick="previewResource('${item.title}', '${item.url || '#'}')">
+                                    👁️ Preview
+                                </button>
+                                <a href="${item.url || '#'}" target="_blank" class="card-btn btn-download">
+                                    ⬇️ Download
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <h3 class="card-title">${item.title}</h3>
-                    <p class="card-desc">${item.description}</p>
-                    <div class="card-tags">
-                        <span class="tag">${item.type}</span>
-                        ${item.level ? `<span class="tag">${item.level}</span>` : ''}
-                    </div>
-                    <span class="file-size">${item.file_size || 'N/A'}</span>
-                    <div class="card-actions">
-                        <button class="action-btn btn-view" onclick="previewResource('${item.title}', '${item.type}', '${item.url}')">Preview</button>
-                        <a href="${item.url}" target="_blank" class="action-btn btn-download">Download</a>
-                    </div>
                 `;
-            } else {
-                // Fallback to original emoji/icon design
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="file-icon">${item.icon || icon}</div>
-                        <span class="lang-badge">${item.language || 'English'}</span>
-                    </div>
-                    <h3 class="card-title">${item.title}</h3>
-                    <p class="card-desc">${item.description}</p>
-                    <div class="card-tags">
-                        <span class="tag">${item.type}</span>
-                        ${item.level ? `<span class="tag">${item.level}</span>` : ''}
-                    </div>
-                    <span class="file-size">${item.file_size || 'N/A'}</span>
-                    <div class="card-actions">
-                        <button class="action-btn btn-view" onclick="previewResource('${item.title}', '${item.type}', '${item.url}')">Preview</button>
-                        <a href="${item.url}" target="_blank" class="action-btn btn-download">Download</a>
-                    </div>
-                `;
-            }
-            return card;
+            }).join('');
         }
 
-        function getIconForType(type) {
-            const map = {
-                'PDF': '📄',
-                'DOCX': '📝',
-                'ZIP': '📦',
-                'URL': '🔗',
-                'VIDEO': '🎥'
-            };
-            return map[type] || '📄';
-        }
-
-        function previewResource(title, type, url) {
+        // Preview
+        function previewResource(title, url) {
             const modal = document.getElementById('previewModal');
-            document.getElementById('previewTitle').textContent = title;
             const content = document.getElementById('previewContent');
-            const downloadBtn = document.getElementById('previewDownloadBtn');
-            downloadBtn.href = url;
+            document.getElementById('previewTitle').textContent = title;
 
-            if (type === 'PDF') {
-                content.innerHTML = `<iframe src="${url}" style="width:100%; height:500px; border:none;"></iframe>`;
+            if (url.endsWith('.pdf')) {
+                content.innerHTML = `<iframe src="${url}" style="width:100%; height:600px; border:none; border-radius:8px;"></iframe>`;
             } else {
-                content.innerHTML = `<div style="padding:2rem; text-align:center;">Preview not available for ${type}. Please download the file.</div>`;
+                content.innerHTML = `<div style="padding:3rem; text-align:center;"><p style="color:var(--text-secondary); font-size:1.1rem;">Preview not available. Please download the file.</p></div>`;
             }
+
             modal.classList.add('active');
         }
 
@@ -1029,148 +1269,124 @@
             document.getElementById('previewModal').classList.remove('active');
         }
 
-        function setupTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            const icon = document.getElementById('theme-icon');
-            if (icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        }
-
-        window.toggleTheme = function () {
-            const html = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            const currentTheme = html.getAttribute('data-theme');
-
-            if (currentTheme === 'dark') {
-                html.setAttribute('data-theme', 'light');
-                icon.textContent = '🌙';
-                localStorage.setItem('theme', 'light');
-            } else {
-                html.setAttribute('data-theme', 'dark');
-                icon.textContent = '☀️';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-
-        // Modal for adding resources
-        window.openModal = async () => {
-            // Populate categories dropdown
+        // Modal
+        async function openModal() {
             const categories = await resourceApi.getCategories();
             const select = document.getElementById('resourceCategory');
-            select.innerHTML = '<option value="">Select a category...</option>';
+
+            select.innerHTML = '<option value="">Select category...</option>';
             categories.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat.id;
                 option.textContent = cat.name;
-                if (currentCategoryId && cat.id == currentCategoryId) {
-                    option.selected = true;
-                }
+                if (currentCategoryId && cat.id == currentCategoryId) option.selected = true;
                 select.appendChild(option);
             });
 
             document.getElementById('addResourceModal').classList.add('active');
-        };
+        }
 
-        window.closeModal = () => {
+        function closeModal() {
             document.getElementById('addResourceModal').classList.remove('active');
             document.getElementById('addResourceForm').reset();
-        };
+        }
 
+        // Form Submit
         async function handleAddResource(e) {
             e.preventDefault();
             const form = e.target;
             const formData = new FormData(form);
 
-            const fileInput = document.getElementById('resourceFile');
-            const urlInput = document.getElementById('resourceUrl');
-            const iconImageInput = document.getElementById('resourceIconImage');
-
-            // Validate that either file or URL is provided
-            if (!fileInput.files[0] && !urlInput.value) {
-                alert('Please either upload a file or provide a URL');
-                return;
-            }
-
-            let fileUrl = urlInput.value;
-            let iconUrl = '';
-
-            // If a file is selected, upload it first
-            if (fileInput.files[0]) {
-                const file = fileInput.files[0];
-                const uploadFormData = new FormData();
-                uploadFormData.append('file', file);
-
-                try {
-                    const uploadResponse = await fetch('http://127.0.0.1:8000/api/upload/', {
-                        method: 'POST',
-                        body: uploadFormData
-                    });
-
-                    if (!uploadResponse.ok) {
-                        throw new Error('File upload failed');
-                    }
-
-                    const uploadResult = await uploadResponse.json();
-                    fileUrl = uploadResult.url || uploadResult.file_path;
-                    console.log('File uploaded successfully:', fileUrl);
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    alert('Failed to upload file. Please try again or use a URL instead.');
-                    return;
-                }
-            }
-
-            // If an icon image is selected, upload it
-            if (iconImageInput.files[0]) {
-                const iconFile = iconImageInput.files[0];
-                const iconFormData = new FormData();
-                iconFormData.append('file', iconFile);
-
-                try {
-                    const iconUploadResponse = await fetch('http://127.0.0.1:8000/api/upload/', {
-                        method: 'POST',
-                        body: iconFormData
-                    });
-
-                    if (!iconUploadResponse.ok) {
-                        throw new Error('Icon upload failed');
-                    }
-
-                    const iconUploadResult = await iconUploadResponse.json();
-                    iconUrl = iconUploadResult.url || iconUploadResult.file_path;
-                    console.log('Icon uploaded successfully:', iconUrl);
-                } catch (error) {
-                    console.error('Icon upload error:', error);
-                    // Icon is optional, so just log the error
-                }
-            }
-
-            // Create resource with either uploaded file URL or provided URL
             const data = {
                 title: formData.get('title'),
                 description: formData.get('description'),
-                url: fileUrl,
+                url: formData.get('url') || '#',
                 category_id: parseInt(formData.get('category_id')),
-                icon: iconUrl || '📄',
-                type: formData.get('type') || 'PDF',
-                language: formData.get('language') || 'English',
-                level: formData.get('level') || 'All Levels',
-                file_size: formData.get('file_size') || 'N/A'
+                icon: formData.get('icon_url') || '📄',
+                type: formData.get('type'),
+                language: formData.get('language')
             };
 
-            console.log('Submitting resource:', data);
-
             const result = await resourceApi.create(data);
+
             if (result) {
-                alert('Resource shared successfully! ✅');
+                alert('Resource added successfully! ✅');
                 closeModal();
                 loadResources();
             } else {
-                alert('Failed to share resource. Please try again.');
+                alert('Failed to add resource. Please try again.');
             }
         }
 
+        // Filters
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('langFilter').value = 'all';
+            document.getElementById('typeFilter').value = 'all';
+            renderResourceList(allResources);
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const lang = document.getElementById('langFilter').value;
+            const type = document.getElementById('typeFilter').value;
+
+            const filtered = allResources.filter(item => {
+                const matchSearch = !search ||
+                    item.title.toLowerCase().includes(search) ||
+                    (item.description || '').toLowerCase().includes(search);
+                const matchLang = lang === 'all' || item.language === lang;
+                const matchType = type === 'all' || item.type === type;
+
+                return matchSearch && matchLang && matchType;
+            });
+
+            renderResourceList(filtered);
+        }
+
+        // Init
+        async function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentCategoryId = urlParams.get('category_id');
+
+            await renderCategories();
+            await loadResources();
+
+            // Setup filters
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('langFilter').addEventListener('change', applyFilters);
+            document.getElementById('typeFilter').addEventListener('change', applyFilters);
+        }
+
         init();
+    </script>
+
+    <script>
+        // Auth Check Logic
+        function checkAuthStatus() {
+            const token = localStorage.getItem('access_token');
+            const role = localStorage.getItem('user_role');
+            const navActions = document.querySelector('.nav-actions');
+
+            if (token && navActions) {
+                // Keep Theme Toggle
+                const themeBtn = navActions.querySelector('.theme-toggle');
+                navActions.innerHTML = '';
+                if (themeBtn) navActions.appendChild(themeBtn);
+
+                // Add Profile/Admin button
+                if (role === 'admin') {
+                    navActions.innerHTML += `
+                        <button class="btn btn-outline" style="margin-left:1rem" onclick="window.location.href='admin/dashboard.html'">Admin Panel</button>
+                    `;
+                } else {
+                    navActions.innerHTML += `
+                        <button class="btn btn-outline" style="margin-left:1rem" onclick="window.location.href='profile.html'">Profile</button>
+                    `;
+                }
+            }
+        }
+        checkAuthStatus();
     </script>
 </body>
 

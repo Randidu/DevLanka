@@ -7,6 +7,7 @@ class PathwayStepBase(BaseModel):
     description: Optional[str] = None
     step_type: Optional[str] = "left"
     video_id: Optional[str] = None
+    resource_url: Optional[str] = None
 
 class PathwayStepCreate(PathwayStepBase):
     pass
@@ -26,6 +27,7 @@ class PathwayBase(BaseModel):
     slug: str
     title: str
     description: Optional[str] = None
+    icon: Optional[str] = None
 
 class PathwayCreate(PathwayBase):
     steps: List[PathwayStepCreate]

@@ -19,7 +19,12 @@ from app.routes import (
 )
 
 # Create Database Tables
-Base.metadata.create_all(bind=engine)
+print("--- STARTING DB CREATION ---")
+try:
+    Base.metadata.create_all(bind=engine)
+    print("--- DB CREATION COMPLETE ---")
+except Exception as e:
+    print(f"--- DB CREATION FAILED: {e} ---")
 
 app = FastAPI(title="Sri Lanka Tech Learning & News Platform")
 
@@ -80,8 +85,16 @@ async def profile_page(request: Request):
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request, "title": "Login"})
 
+@app.get("/login.html")
+async def login_html_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request, "title": "Login"})
+
 @app.get("/register")
 async def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request, "title": "Register"})
+
+@app.get("/register.html")
+async def register_html_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request, "title": "Register"})
 
 @app.get("/learning-path")

@@ -18,6 +18,13 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = "sl_tech_platform"
     DATABASE_URL: str = ""
 
+    # Email
+    MAIL_USERNAME: str = "randidu2006@gmail.com" # Example, user should update
+    MAIL_PASSWORD: str = "your_app_password"
+    MAIL_FROM: str = "randidu2006@gmail.com"
+    MAIL_PORT: int = 587
+    MAIL_SERVER: str = "smtp.gmail.com"
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         import urllib.parse
