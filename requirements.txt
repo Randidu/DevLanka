@@ -9,3 +9,4 @@ httpx
 python-slugify
 pydantic-settings
 psycopg2-binary
+email-validator

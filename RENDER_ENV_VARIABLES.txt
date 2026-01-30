@@ -1,0 +1,79 @@
+# ============================================
+# RENDER.COM ENVIRONMENT VARIABLES
+# Copy each variable below to Render Dashboard
+# ============================================
+
+# ============================================
+# 1. DATABASE CONFIGURATION
+# ============================================
+# IMPORTANT: Make sure you copy the COMPLETE Internal Database URL
+# It should include: .singapore-postgres.render.com (or similar region)
+# 
+# Your current URL (INCOMPLETE - needs full hostname):
+# postgresql://devlanka_user:41xICrnnLOmliOcksmgqgp5pTZZMfNFK@dpg-d5uatqq4d50c738ufim0-a/devlanka
+#
+# CORRECT FORMAT should be:
+DATABASE_URL=postgresql://devlanka_user:41xICrnnLOmliOcksmgqgp5pTZZMfNFK@dpg-d5uatqq4d50c738ufim0-a.singapore-postgres.render.com/devlanka
+
+
+# ============================================
+# 2. SECURITY
+# ============================================
+# Generate a new secret key using:
+# python -c "import secrets; print(secrets.token_urlsafe(32))"
+# NEVER use the default key in production!
+SECRET_KEY=CHANGE_THIS_TO_GENERATED_SECRET_KEY
+
+
+# ============================================
+# 3. EMAIL CONFIGURATION (Gmail)
+# ============================================
+MAIL_USERNAME=randidudamsith96@gmail.com
+MAIL_PASSWORD=qntauxpfqznijnpu
+MAIL_FROM=randidudamsith96@gmail.com
+MAIL_PORT=587
+MAIL_SERVER=smtp.gmail.com
+
+
+# ============================================
+# 4. OPTIONAL: CORS ORIGINS (if needed)
+# ============================================
+# ALLOWED_ORIGINS=https://your-frontend-domain.com
+
+
+# ============================================
+# INSTRUCTIONS FOR RENDER.COM:
+# ============================================
+# 1. Go to Render Dashboard
+# 2. Select your Web Service
+# 3. Click "Environment" tab
+# 4. Click "Add Environment Variable"
+# 5. Add each variable ONE BY ONE:
+#
+#    Key: DATABASE_URL
+#    Value: postgresql://devlanka_user:...
+#
+#    Key: SECRET_KEY
+#    Value: <your-generated-key>
+#
+#    Key: MAIL_USERNAME
+#    Value: randidudamsith96@gmail.com
+#
+#    ... and so on
+#
+# 6. Click "Save Changes"
+# 7. Your service will automatically redeploy
+# ============================================
+
+
+# ============================================
+# GENERATE SECRET KEY:
+# ============================================
+# Run this command in your terminal:
+# python -c "import secrets; print(secrets.token_urlsafe(32))"
+#
+# Example output:
+# xK9mP2vN8qR4tY6wE1aS3dF5gH7jL0zX9cV2bN4mQ6
+#
+# Copy that output and use it as your SECRET_KEY
+# ============================================
