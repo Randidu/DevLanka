@@ -66,20 +66,40 @@ async def home(request: Request):
 async def news_page(request: Request):
     return templates.TemplateResponse("news.html", {"request": request, "title": "Tech News"})
 
+@app.get("/news.html")
+async def news_html_page(request: Request):
+    return templates.TemplateResponse("news.html", {"request": request, "title": "Tech News"})
+
 @app.get("/courses")
 async def courses_page(request: Request):
+    return templates.TemplateResponse("courses.html", {"request": request, "title": "Online Courses"})
+
+@app.get("/courses.html")
+async def courses_html_page(request: Request):
     return templates.TemplateResponse("courses.html", {"request": request, "title": "Online Courses"})
 
 @app.get("/tutorials")
 async def tutorials_page(request: Request):
     return templates.TemplateResponse("tutorials.html", {"request": request, "title": "YouTube Tutorials"})
 
+@app.get("/tutorials.html")
+async def tutorials_html_page(request: Request):
+    return templates.TemplateResponse("tutorials.html", {"request": request, "title": "YouTube Tutorials"})
+
 @app.get("/support")
 async def support_page(request: Request):
     return templates.TemplateResponse("support.html", {"request": request, "title": "Support"})
 
+@app.get("/support.html")
+async def support_html_page(request: Request):
+    return templates.TemplateResponse("support.html", {"request": request, "title": "Support"})
+
 @app.get("/profile")
 async def profile_page(request: Request):
+    return templates.TemplateResponse("profile.html", {"request": request, "title": "My Profile"})
+
+@app.get("/profile.html")
+async def profile_html_page(request: Request):
     return templates.TemplateResponse("profile.html", {"request": request, "title": "My Profile"})
 
 @app.get("/login")
@@ -102,8 +122,16 @@ async def register_html_page(request: Request):
 async def learning_path_page(request: Request):
     return templates.TemplateResponse("learning-path.html", {"request": request, "title": "Learning Pathways"})
 
+@app.get("/learning-path.html")
+async def learning_path_html_page(request: Request):
+    return templates.TemplateResponse("learning-path.html", {"request": request, "title": "Learning Pathways"})
+
 @app.get("/category")
 async def category_page(request: Request):
+    return templates.TemplateResponse("category.html", {"request": request, "title": "Resources"})
+
+@app.get("/category.html")
+async def category_html_page(request: Request):
     return templates.TemplateResponse("category.html", {"request": request, "title": "Resources"})
 
 @app.get("/resource-detail")
@@ -117,6 +145,14 @@ async def resource_detail_html_page(request: Request):
 @app.get("/pathways")
 async def pathways_page(request: Request):
     return templates.TemplateResponse("pathways.html", {"request": request, "title": "Pathways"})
+
+@app.get("/pathways.html")
+async def pathways_html_page(request: Request):
+    return templates.TemplateResponse("pathways.html", {"request": request, "title": "Pathways"})
+
+@app.get("/index.html")
+async def index_html_page(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "title": "Home - SL Tech Platform"})
 
 # Admin routes
 @app.get("/admin/dashboard")
