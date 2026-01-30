@@ -27,9 +27,11 @@ class Settings(BaseSettings):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        import urllib.parse
-        encoded_password = urllib.parse.quote_plus(self.POSTGRES_PASSWORD)
-        self.DATABASE_URL = f"postgresql://{self.POSTGRES_USER}:{encoded_password}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        # If DATABASE_URL is not provided, construct it from individual variables
+        if not self.DATABASE_URL:
+            import urllib.parse
+            encoded_password = urllib.parse.quote_plus(self.POSTGRES_PASSWORD)
+            self.DATABASE_URL = f"postgresql://{self.POSTGRES_USER}:{encoded_password}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     class Config:
         env_file = ".env"
