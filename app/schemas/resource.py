@@ -8,6 +8,9 @@ class ResourceBase(BaseModel):
     icon: Optional[str] = None
     category_id: Optional[int] = None
     is_approved: bool = False
+    type: Optional[str] = None
+    language: Optional[str] = "English"
+    images: Optional[str] = None
 
 class ResourceCreate(ResourceBase):
     pass
@@ -18,8 +21,19 @@ class ResourceUpdate(ResourceBase):
     category_id: Optional[int] = None
     is_approved: Optional[bool] = None
 
+class ResourceOwner(BaseModel):
+    id: int
+    full_name: Optional[str] = None
+    avatar: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
 class Resource(ResourceBase):
     id: int
+    owner_id: Optional[int] = None
+    images: Optional[str] = None
+    owner: Optional[ResourceOwner] = None
 
     class Config:
         from_attributes = True

@@ -109,7 +109,8 @@ def login(
         "token_type": "bearer",
         "user_id": user.id,
         "email": user.email,
-        "role": user.role
+        "role": user.role,
+        "full_name": user.full_name
     }
 
 from app.core.deps import get_current_user

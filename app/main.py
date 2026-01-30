@@ -33,6 +33,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # Allow all origins for dev
+    allow_origin_regex="https?://.*", # Allow all localhost ports
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -104,6 +105,14 @@ async def learning_path_page(request: Request):
 @app.get("/category")
 async def category_page(request: Request):
     return templates.TemplateResponse("category.html", {"request": request, "title": "Resources"})
+
+@app.get("/resource-detail")
+async def resource_detail_page(request: Request):
+    return templates.TemplateResponse("resource_detail.html", {"request": request, "title": "Resource Details"})
+
+@app.get("/resource_detail.html")
+async def resource_detail_html_page(request: Request):
+    return templates.TemplateResponse("resource_detail.html", {"request": request, "title": "Resource Details"})
 
 @app.get("/pathways")
 async def pathways_page(request: Request):

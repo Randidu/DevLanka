@@ -25,3 +25,11 @@ class Resource(Base):
     
     category_id = Column(Integer, ForeignKey("resource_categories.id"))
     category = relationship("ResourceCategory", back_populates="resources")
+
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    owner = relationship("app.models.user.User", backref="uploaded_resources")
+    
+    images = Column(Text, nullable=True) # JSON string of image URLs
+    
+    type = Column(String, nullable=True) # PDF, Video, etc.
+    language = Column(String, default="English")

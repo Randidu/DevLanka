@@ -9,6 +9,47 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <style>
+        .crop-container {
+            max-width: 100%;
+            height: 400px;
+            margin: 1rem 0;
+            background: #000;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .crop-container img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .cover-preview {
+            width: 100%;
+            height: 200px;
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .cover-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cover-preview span {
+            color: var(--text-secondary);
+        }
+    </style>
     <style>
         * {
             margin: 0;
@@ -1047,9 +1088,40 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Cover Image URL (Optional)</label>
-                        <input type="url" class="form-input" id="resourceIcon" name="icon_url"
-                            placeholder="https://example.com/cover-image.jpg">
+                        <label class="form-label">Cover Image</label>
+
+                        <!-- Preview Box -->
+                        <div class="cover-preview" id="coverPreviewBox"
+                            onclick="document.getElementById('coverInput').click()" style="cursor: pointer;">
+                            <span id="coverPlaceholder">Click to Upload Cover</span>
+                            <img id="coverPreviewImg" src="" style="display:none;">
+                        </div>
+
+                        <!-- File Input -->
+                        <input type="file" id="coverInput" accept="image/*" style="display:none;"
+                            onchange="handleCoverSelect(this)">
+
+                        <!-- Crop Area -->
+                        <div class="crop-container" id="cropContainer">
+                            <img id="cropImage" src="">
+                        </div>
+
+                        <!-- Buttons for Crop -->
+                        <div id="cropActions" style="display:none; gap: 10px; margin-bottom: 1rem;">
+                            <button type="button" class="btn btn-primary" onclick="confirmCoverCrop()">✅ Save
+                                Crop</button>
+                            <button type="button" class="btn btn-outline" onclick="cancelCoverCrop()">❌ Cancel</button>
+                        </div>
+
+                        <!-- Hidden Input to store the final URL -->
+                        <input type="hidden" name="icon_url" id="finalIconUrl">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Carousel Images (Max 5)</label>
+                        <input type="file" class="form-input" id="carouselImages" accept="image/*" multiple
+                            style="padding: 0.6rem;">
+                        <span class="form-hint">Select up to 5 images from your device</span>
                     </div>
 
                     <div class="form-group">
@@ -1128,10 +1200,20 @@
                 }
             },
             create: async (data) => {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    alert('You must be logged in to add a resource!');
+                    window.location.href = 'login.html';
+                    return null;
+                }
+
                 try {
                     const response = await fetch(`${API_BASE}/resources/`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
                         body: JSON.stringify(data)
                     });
                     if (!response.ok) throw new Error('Failed to create');
@@ -1219,30 +1301,54 @@
             const grid = document.getElementById('resourceGrid');
 
             grid.innerHTML = items.map(item => {
-                const hasImage = item.icon && (item.icon.startsWith('http') || item.icon.startsWith('data:image'));
+                // Try to get a valid image: Icon first, then first from images list
+                let coverImage = item.icon;
+
+                // Parse images if available to find a fallback
+                let firstGalleryImage = null;
+                if (item.images) {
+                    try {
+                        const parsed = JSON.parse(item.images);
+                        if (Array.isArray(parsed) && parsed.length > 0) firstGalleryImage = parsed[0];
+                    } catch {
+                        if (item.images.includes(',')) firstGalleryImage = item.images.split(',')[0].trim();
+                        else firstGalleryImage = item.images;
+                    }
+                }
+
+                // If icon is just the default placeholder '📄' or empty, use gallery image if exists
+                if ((!coverImage || coverImage === '📄') && firstGalleryImage) {
+                    coverImage = firstGalleryImage;
+                }
+
+                const hasImage = coverImage && (coverImage.startsWith('http') || coverImage.startsWith('data:image') || coverImage.startsWith('/'));
+
+                // Truncate description to ~10 words
+                let desc = item.description || 'No description provided.';
+                const words = desc.split(' ');
+                if (words.length > 10) {
+                    desc = words.slice(0, 10).join(' ') + '...';
+                }
 
                 return `
                     <div class="resource-card">
                         <div class="card-image ${hasImage ? '' : 'icon-mode'}">
                             ${hasImage
-                        ? `<img src="${item.icon}" alt="${item.title}">`
-                        : (item.icon || '📄')}
+                        ? `<img src="${coverImage}" alt="${item.title}">`
+                        : (coverImage || '📄')}
                         </div>
                         <div class="card-content">
                             <div class="card-badges">
                                 <span class="badge badge-primary">${item.language || 'English'}</span>
-                                <span class="badge badge-secondary">${item.type || 'PDF'}</span>
+                                <span class="badge badge-secondary">${item.type || 'Resource'}</span>
                                 ${item.level ? `<span class="badge badge-secondary">${item.level}</span>` : ''}
                             </div>
                             <h3 class="card-title">${item.title}</h3>
-                            <p class="card-desc">${item.description || 'No description provided.'}</p>
+                            <p class="card-desc">${desc}</p>
                             <div class="card-footer">
-                                <button class="card-btn btn-view" onclick="previewResource('${item.title}', '${item.url || '#'}')">
-                                    👁️ Preview
+                                <button class="card-btn btn-view" style="width:100%; justify-content:center; background:var(--bg-secondary); color:var(--text-primary); border:2px solid var(--border);" onclick="window.location.href='resource_detail.html?id=${item.id}'">
+                                    View Details →
                                 </button>
-                                <a href="${item.url || '#'}" target="_blank" class="card-btn btn-download">
-                                    ⬇️ Download
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -1294,8 +1400,69 @@
         // Form Submit
         async function handleAddResource(e) {
             e.preventDefault();
+
+            // 1. Check Auth First
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert('You must be logged in to add a resource!');
+                window.location.href = 'login.html';
+                return;
+            }
+
             const form = e.target;
             const formData = new FormData(form);
+
+            // Handle Carousel Uploads
+            const fileInput = document.getElementById('carouselImages');
+            let imagesJson = null;
+
+            if (fileInput.files.length > 0) {
+                if (fileInput.files.length > 5) {
+                    alert('Maximum 5 images allowed!');
+                    return;
+                }
+
+                // Upload logic
+                const uploadData = new FormData();
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    uploadData.append('files', fileInput.files[i]);
+                }
+
+                try {
+                    // Show some loading indicator if needed?
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerText;
+                    submitBtn.innerText = 'Uploading Images...';
+                    submitBtn.disabled = true;
+
+                    // Add Auth Header to Upload too if API requires it (optional but good practice)
+                    // My upload_routes currently doesn't require auth but good to keep in mind.
+
+                    const uploadRes = await fetch(`${API_BASE}/upload/multiple`, {
+                        method: 'POST',
+                        body: uploadData
+                    });
+
+                    if (!uploadRes.ok) throw new Error('Image upload failed');
+                    const uploadResult = await uploadRes.json();
+
+                    if (uploadResult.urls && uploadResult.urls.length > 0) {
+                        imagesJson = JSON.stringify(uploadResult.urls);
+                    }
+
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+
+                } catch (err) {
+                    console.error("Upload error:", err);
+                    alert("Failed to upload images. Please try again.");
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    submitBtn.innerText = 'Share Resource';
+                    submitBtn.disabled = false;
+                    return;
+                }
+            }
 
             const data = {
                 title: formData.get('title'),
@@ -1304,9 +1471,13 @@
                 category_id: parseInt(formData.get('category_id')),
                 icon: formData.get('icon_url') || '📄',
                 type: formData.get('type'),
-                language: formData.get('language')
+                language: formData.get('language'),
+                images: imagesJson
             };
 
+            // We know token exists, so resourceApi.create will typically succeed or fail on server error
+            // (Use the create method that accepts token, or update create method to take it)
+            // Existing create method gets token from storage, so we are good.
             const result = await resourceApi.create(data);
 
             if (result) {
@@ -1314,7 +1485,196 @@
                 closeModal();
                 loadResources();
             } else {
-                alert('Failed to add resource. Please try again.');
+                // Only show this if it was a real server failure, not auth redirect
+                // resourceApi.create returns null on auth fail, but we handled auth above.
+                // It also returns null on catch error.
+                alert('Failed to add resource. Server error likely. Check console.');
+            }
+        }
+
+        // --- Cropper Logic ---
+        let cropper = null;
+        let selectedCoverFile = null; // Store the blob after cropping
+
+        // 1. Select File
+        function handleCoverSelect(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.getElementById('cropImage');
+                    img.src = e.target.result;
+
+                    document.getElementById('cropContainer').style.display = 'block';
+                    document.getElementById('cropActions').style.display = 'flex';
+                    document.getElementById('coverPreviewBox').style.display = 'none';
+
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(img, {
+                        aspectRatio: 16 / 9, // Landscape cover
+                        viewMode: 1
+                    });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // 2. Confirm Crop & Upload IMMEDIATELY (or store blob to upload on submit)
+        // Let's store blob to upload on Submit or upload now?
+        // Uploading now is easier UI feedback.
+        async function confirmCoverCrop() {
+            if (!cropper) return;
+
+            const canvas = cropper.getCroppedCanvas({ width: 800, height: 450 });
+            canvas.toBlob(async (blob) => {
+                if (!blob) return;
+
+                // Show uploading state
+                const btn = document.querySelector('#cropActions .btn-primary');
+                const originalText = btn.innerText;
+                btn.innerText = 'Uploading...';
+                btn.disabled = true;
+
+                // Create form data for upload
+                const formData = new FormData();
+                formData.append('file', blob, 'cover.jpg');
+
+                try {
+                    const response = await fetch(`${API_BASE}/upload/`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) throw new Error("Upload failed");
+                    const data = await response.json();
+
+                    // Success
+                    const url = data.url;
+                    document.getElementById('finalIconUrl').value = url;
+
+                    // Show Preview
+                    document.getElementById('coverPreviewImg').src = url;
+                    document.getElementById('coverPreviewImg').style.display = 'block';
+                    document.getElementById('coverPlaceholder').style.display = 'none';
+
+                    // Cleanup UI
+                    cancelCoverCrop(); // Hide cropper
+
+                    // Restore Preview Box
+                    document.getElementById('coverPreviewBox').style.display = 'flex';
+
+                } catch (e) {
+                    console.error(e);
+                    alert("Failed to upload cover image.");
+                } finally {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            }, 'image/jpeg');
+        }
+
+        function cancelCoverCrop() {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            document.getElementById('cropContainer').style.display = 'none';
+            document.getElementById('cropActions').style.display = 'none';
+            document.getElementById('coverPreviewBox').style.display = 'flex'; // Show preview again
+            document.getElementById('coverInput').value = ''; // Reset input
+        }
+
+        // Restore handleAddResource start (context for replacement)
+        async function handleAddResource(e) {
+            e.preventDefault();
+
+            // 1. Check Auth First
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert('You must be logged in to add a resource!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const form = e.target;
+            const formData = new FormData(form);
+
+            // Handle Carousel Uploads
+            const fileInput = document.getElementById('carouselImages');
+            let imagesJson = null;
+
+            if (fileInput.files.length > 0) {
+                if (fileInput.files.length > 5) {
+                    alert('Maximum 5 images allowed!');
+                    return;
+                }
+
+                // Upload logic
+                const uploadData = new FormData();
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    uploadData.append('files', fileInput.files[i]);
+                }
+
+                try {
+                    // Show some loading indicator if needed?
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerText;
+                    submitBtn.innerText = 'Uploading Images...';
+                    submitBtn.disabled = true;
+
+                    // Add Auth Header to Upload too if API requires it (optional but good practice)
+                    // My upload_routes currently doesn't require auth but good to keep in mind.
+
+                    const uploadRes = await fetch(`${API_BASE}/upload/multiple`, {
+                        method: 'POST',
+                        body: uploadData
+                    });
+
+                    if (!uploadRes.ok) throw new Error('Image upload failed');
+                    const uploadResult = await uploadRes.json();
+
+                    if (uploadResult.urls && uploadResult.urls.length > 0) {
+                        imagesJson = JSON.stringify(uploadResult.urls);
+                    }
+
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+
+                } catch (err) {
+                    console.error("Upload error:", err);
+                    alert("Failed to upload images. Please try again.");
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    submitBtn.innerText = 'Share Resource';
+                    submitBtn.disabled = false;
+                    return;
+                }
+            }
+
+            const data = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                url: formData.get('url') || '#',
+                category_id: parseInt(formData.get('category_id')),
+                icon: formData.get('icon_url') || '📄',
+                type: formData.get('type'),
+                language: formData.get('language'),
+                images: imagesJson
+            };
+
+            // We know token exists, so resourceApi.create will typically succeed or fail on server error
+            // (Use the create method that accepts token, or update create method to take it)
+            // Existing create method gets token from storage, so we are good.
+            const result = await resourceApi.create(data);
+
+            if (result) {
+                alert('Resource added successfully! ✅');
+                closeModal();
+                loadResources();
+            } else {
+                // Only show this if it was a real server failure, not auth redirect
+                // resourceApi.create returns null on auth fail, but we handled auth above.
+                // It also returns null on catch error.
+                alert('Failed to add resource. Server error likely. Check console.');
             }
         }
 

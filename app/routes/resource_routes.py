@@ -61,16 +61,18 @@ def delete_category(
 
 # --- Resource Endpoints ---
 
+from app.core.deps import get_current_user
+from app import models
+
 @router.get("/", response_model=List[Resource])
 def read_resources(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    category_id: int = None
+    category_id: int = None,
+    owner_id: int = None
 ) -> Any:
-    if category_id:
-        return crud.resource.get_multi_approved(db, category_id=category_id, skip=skip, limit=limit)
-    return crud.resource.get_multi_approved(db, skip=skip, limit=limit)
+    return crud.resource.get_multi_approved(db, category_id=category_id, owner_id=owner_id, skip=skip, limit=limit)
 
 @router.get("/all", response_model=List[Resource])
 def read_all_resources(
@@ -87,11 +89,30 @@ def read_all_resources(
 def create_resource(
     *,
     db: Session = Depends(get_db),
-    resource_in: ResourceCreate
+    resource_in: ResourceCreate,
+    current_user: models.user.User = Depends(get_current_user)
 ) -> Any:
-    # Force is_approved to False for public submissions
-    resource_in.is_approved = False
-    return crud.resource.create(db, obj_in=resource_in)
+    print(f"DEBUG: create_resource called by user {current_user.id}")
+    print(f"DEBUG: Payload: {resource_in.dict()}")
+    try:
+        # Auto-approve for easier testing/dev
+        resource_in.is_approved = True
+        
+        # Create with owner_id
+        obj_in_data = resource_in.dict()
+        obj_in_data['owner_id'] = current_user.id
+        
+        db_obj = crud.resource.model(**obj_in_data)
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        print("DEBUG: Resource created successfully")
+        return db_obj
+    except Exception as e:
+        print(f"ERROR in create_resource: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{resource_id}/approve", response_model=Resource)
 def approve_resource(

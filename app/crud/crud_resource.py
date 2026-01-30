@@ -17,11 +17,13 @@ class CRUDResource(CRUDBase[Resource, ResourceCreate, ResourceUpdate]):
         )
 
     def get_multi_approved(
-        self, db: Session, *, category_id: int = None, skip: int = 0, limit: int = 100
+        self, db: Session, *, category_id: int = None, owner_id: int = None, skip: int = 0, limit: int = 100
     ) -> List[Resource]:
         query = db.query(self.model).filter(Resource.is_approved == True)
         if category_id:
             query = query.filter(Resource.category_id == category_id)
+        if owner_id:
+            query = query.filter(Resource.owner_id == owner_id)
         return query.offset(skip).limit(limit).all()
 
 class CRUDResourceCategory(CRUDBase[ResourceCategory, ResourceCategoryCreate, ResourceCategoryUpdate]):

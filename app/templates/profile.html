@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - DevLanka Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <style>
         /* Reusing styles from index.html for consistency */
         * {
@@ -348,8 +350,6 @@
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <span id="theme-icon">🌙</span>
                 </button>
-                <button class="btn btn-outline" onclick="window.location.href='login.html'">Login</button>
-                <button class="btn btn-primary" onclick="window.location.href='register.html'">Register</button>
             </div>
         </div>
     </nav>
@@ -359,8 +359,8 @@
         <div class="profile-header">
             <div class="profile-avatar">👨‍💻</div>
             <div class="profile-info">
-                <h1>Randi User</h1>
-                <p>Full Stack Developer | Tech Enthusiast</p>
+                <h1>Loading...</h1>
+                <p>...</p>
                 <div class="profile-stats">
                     <div class="stat-item">
                         <div class="stat-value">12</div>
@@ -412,24 +412,10 @@
                 </div>
                 <ul class="activity-list">
                     <li class="activity-item">
-                        <div class="activity-icon">📘</div>
+                        <div class="activity-icon">ℹ️</div>
                         <div class="activity-details">
-                            <h4>Python Masterclass</h4>
-                            <p>Completed 3 lessons • 2 hours ago</p>
-                        </div>
-                    </li>
-                    <li class="activity-item">
-                        <div class="activity-icon">🎥</div>
-                        <div class="activity-details">
-                            <h4>React Hooks Tutorial</h4>
-                            <p>Watched video • Yesterday</p>
-                        </div>
-                    </li>
-                    <li class="activity-item">
-                        <div class="activity-icon">📝</div>
-                        <div class="activity-details">
-                            <h4>Tech Quiz</h4>
-                            <p>Scored 90% • 2 days ago</p>
+                            <h4>No recent activity</h4>
+                            <p>Your recent activities will show up here</p>
                         </div>
                     </li>
                 </ul>
@@ -443,24 +429,10 @@
                 </div>
                 <ul class="activity-list">
                     <li class="activity-item">
-                        <div class="activity-icon">📄</div>
+                        <div class="activity-icon">📂</div>
                         <div class="activity-details">
-                            <h4>System Design PDF</h4>
-                            <p>Cheat Sheet</p>
-                        </div>
-                    </li>
-                    <li class="activity-item">
-                        <div class="activity-icon">🤖</div>
-                        <div class="activity-details">
-                            <h4>AI Tools List</h4>
-                            <p>Resource Collection</p>
-                        </div>
-                    </li>
-                    <li class="activity-item">
-                        <div class="activity-icon">🔗</div>
-                        <div class="activity-details">
-                            <h4>Git Commands</h4>
-                            <p>Reference Guide</p>
+                            <h4>No saved resources</h4>
+                            <p>Resources you save will appear here</p>
                         </div>
                     </li>
                 </ul>
@@ -516,8 +488,17 @@
                         style="width:100px; height:100px; border-radius:50%; background:#ddd; margin:0 auto; display:flex; align-items:center; justify-content:center; overflow:hidden; border:3px solid var(--accent); font-size: 3rem;">
                         👤
                     </div>
+
+                    <!-- Crop Container (Hidden by default) -->
+                    <div id="cropContainer" style="display:none; margin-top: 1rem; max-width: 100%; max-height: 400px;">
+                        <img id="imageToCrop" style="max-width: 100%;">
+                        <button type="button" class="btn btn-primary" onclick="confirmCrop()"
+                            style="margin-top:0.5rem;">Confirm Crop</button>
+                    </div>
+
                     <br>
-                    <label for="avatarUpload" class="btn btn-outline" style="font-size:0.8rem; cursor:pointer;">Change
+                    <label id="changePhotoLabel" for="avatarUpload" class="btn btn-outline"
+                        style="font-size:0.8rem; cursor:pointer;">Change
                         Photo</label>
                     <input type="file" id="avatarUpload" accept="image/*" style="display:none"
                         onchange="handleAvatarUpload(this)">
@@ -602,7 +583,18 @@
     </style>
 
     <script>
-        const API_BASE = 'http://127.0.0.1:8000';
+        // Detect environment and set API Base URL explicitly
+        let API_BASE = '';
+        const isLocal = window.location.hostname === '127.0.0.1' ||
+            window.location.hostname === 'localhost' ||
+            window.location.protocol === 'file:';
+
+        if (isLocal) {
+            API_BASE = 'http://127.0.0.1:8000';
+            console.log("Development Mode: using backend at " + API_BASE);
+        } else {
+            console.log("Production Mode: using relative paths");
+        }
 
         const authApi = {
             getMe: async () => {
@@ -611,6 +603,7 @@
                 if (!token) return { error: "No token found locally" };
 
                 try {
+                    console.log(`Fetching profile from: ${API_BASE}/auth/me`);
                     const response = await fetch(`${API_BASE}/auth/me`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -621,16 +614,16 @@
                         return await response.json();
                     } else {
                         const status = response.status;
-                        // If token is invalid (401), clear it
-                        if (status === 401) {
-                            console.warn("Token expired or invalid");
+                        if (status === 401 || status === 403) {
+                            console.warn("Token expired/invalid -> logout");
                             authApi.logout();
-                            return { error: "Session expired (401). Please login again." };
+                            return { error: "Session expired" };
                         }
                         return { error: `Server Error: ${status}` };
                     }
                 } catch (error) {
-                    console.error('Auth check failed', error);
+                    console.error("Connection Error Details:", error);
+                    alert(`Connection Failed!\nTarget: ${API_BASE}/auth/me\nError: ${error.message}\nMake sure backend is running on port 8000.`);
                     return { error: `Network Error: ${error.message}` };
                 }
             },
@@ -652,8 +645,8 @@
                     alert(err.detail || "Update failed");
                     return null;
                 } catch (e) {
-                    console.error(e);
-                    alert("Update failed");
+                    console.error('Update failed', e);
+                    alert("Could not connect to the server. Please ensure the backend is running.");
                     return null;
                 }
             },
@@ -701,37 +694,56 @@
         let currentUser = null;
 
         async function loadProfile() {
+            // Check for local token first
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            let user = null;
+
             try {
                 const result = await authApi.getMe();
-                // Check if result is a user object (has id) or an error object
-                let user = (result && result.id) ? result : null;
+                // If we get a real user object (has ID), use it
+                if (result && result.id) {
+                    user = result;
+                }
+            } catch (e) {
+                console.warn("API check failed, trying fallback", e);
+            }
 
-                // --- 1. Navigation Bar Update ---
-                const navActions = document.querySelector('.nav-actions');
-
-                // --- DEMO MODE: If no user, show Guest Profile ---
-                // Only if the user specifically asked to bypass login check
-                if (!user) {
-                    console.log("Using Guest Profile");
+            // Fallback: If API failed (network error) but we have local data, use it!
+            if (!user) {
+                const storedEmail = localStorage.getItem('user_email');
+                if (storedEmail) {
+                    console.log("Using cached profile data");
                     user = {
-                        id: 9999,
-                        full_name: "Guest User",
-                        email: "guest@devlanka.com",
-                        avatar: "👤",
-                        role: "student"
+                        id: localStorage.getItem('user_id') || 0,
+                        full_name: localStorage.getItem('user_full_name') || "User",
+                        email: storedEmail,
+                        avatar: localStorage.getItem('user_avatar'),
+                        role: localStorage.getItem('user_role') || 'student'
                     };
                 }
+            }
 
-                currentUser = user; // Store globally for modal
+            // --- 1. Navigation Bar Update ---
+            const navActions = document.querySelector('.nav-actions');
 
+            if (!user) {
+                // Definitely no user (API failed AND no local storage) -> Redirect
+                console.warn("No user data found, redirecting to login");
+                authApi.logout();
+                return;
+            }
+
+            currentUser = user; // Store globally for modal
+
+            if (user) {
                 if (user) {
-                    // Check if Logout button already exists
+                    // Ensure Logout button exists
                     if (!document.querySelector('.btn-logout')) {
-                        const loginBtn = navActions.querySelector('button[onclick*="login.html"]');
-                        const registerBtn = navActions.querySelector('button[onclick*="register.html"]');
-                        if (loginBtn) loginBtn.style.display = 'none';
-                        if (registerBtn) registerBtn.style.display = 'none';
-
                         const logoutBtn = document.createElement('button');
                         logoutBtn.className = 'btn btn-outline btn-logout';
                         logoutBtn.textContent = 'Logout';
@@ -748,7 +760,7 @@
                     // Avatar logic
                     if (user.avatar) {
                         const avatarEl = document.querySelector('.profile-avatar');
-                        if (user.avatar.startsWith('http') || user.avatar.startsWith('/')) {
+                        if (user.avatar.startsWith('http') || user.avatar.startsWith('data:image')) {
                             avatarEl.innerHTML = `<img src="${user.avatar}" alt="Profile" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
                         } else {
                             avatarEl.textContent = user.avatar; // If it's an emoji
@@ -763,9 +775,16 @@
 
                     // --- 3. Fetch Data for Dashboard ---
                     // Fetch all news to filter by author (Client-side filtering for now)
-                    const allNews = await newsApi.getAll();
-                    // Filter posts where author_id matches user.id
-                    const myPosts = allNews.filter(post => post.author_id === user.id);
+                    let myPosts = [];
+                    try {
+                        const allNews = await newsApi.getAll();
+                        // Filter posts where author_id matches user.id
+                        if (Array.isArray(allNews)) {
+                            myPosts = allNews.filter(post => post.author_id === user.id);
+                        }
+                    } catch (err) {
+                        console.error("Error loading posts", err);
+                    }
 
                     // --- 4. Update Stats ---
                     const statValues = document.querySelectorAll('.stat-value');
@@ -823,8 +842,6 @@
                         `;
                     }
                 }
-            } catch (error) {
-                console.error("Failed to load profile", error);
             }
         }
 
@@ -864,31 +881,81 @@
             }
         }
 
-        // Handle Avatar Upload
-        async function handleAvatarUpload(input) {
+        let selectedAvatarFile = null;
+        let cropper = null;
+
+        // Handle Avatar Select - Show Cropper
+        function handleAvatarUpload(input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
 
-                // Show local preview immediately
+                // Read file to show in cropper
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    document.getElementById('previewAvatar').innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    const image = document.getElementById('imageToCrop');
+                    image.src = e.target.result;
+
+                    // Show crop container, hide default preview for now
+                    document.getElementById('cropContainer').style.display = 'block';
+                    document.getElementById('previewAvatar').style.display = 'none';
+                    document.getElementById('changePhotoLabel').style.display = 'none'; // Hide button
+
+                    // Destroy old cropper if exists
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    // Init Cropper
+                    cropper = new Cropper(image, {
+                        aspectRatio: 1, // Square for avatar
+                        viewMode: 1,
+                    });
                 }
                 reader.readAsDataURL(file);
-
-                // Upload to server
-                const url = await uploadApi.upload(file);
-                if (url) {
-                    document.getElementById('avatarUrl').value = url;
-                } else {
-                    alert('Image upload failed');
-                }
             }
+        }
+
+        // Confirm Crop Action
+        function confirmCrop() {
+            if (!cropper) return;
+
+            // Get cropped canvas
+            cropper.getCroppedCanvas({
+                width: 300, // Reasonable size for avatar
+                height: 300
+            }).toBlob((blob) => {
+                // Create a new File object from the blob
+                selectedAvatarFile = new File([blob], "avatar_cropped.png", { type: "image/png" });
+
+                // Update Preview UI
+                const url = URL.createObjectURL(blob);
+                document.getElementById('previewAvatar').innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;">`;
+
+                // Switch back UI
+                document.getElementById('cropContainer').style.display = 'none';
+                document.getElementById('previewAvatar').style.display = 'flex';
+                document.getElementById('changePhotoLabel').style.display = 'inline-block'; // Show button again
+
+                // Cleanup
+                cropper.destroy();
+                cropper = null;
+            }, 'image/png');
         }
 
         // Handle Form Submit
         document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // 1. Upload Avatar if changed
+            if (selectedAvatarFile) {
+                const url = await uploadApi.upload(selectedAvatarFile);
+                if (url) {
+                    document.getElementById('avatarUrl').value = url;
+                } else {
+                    alert('Image upload failed');
+                    return;
+                }
+            }
 
             const fullName = document.getElementById('editFullName').value;
             const avatar = document.getElementById('avatarUrl').value;
@@ -916,9 +983,18 @@
             // Call API
             const updatedUser = await authApi.updateMe(payload);
             if (updatedUser) {
+                // Update Local Storage immediately
+                localStorage.setItem('user_full_name', updatedUser.full_name);
+                if (updatedUser.avatar) localStorage.setItem('user_avatar', updatedUser.avatar);
+
+                // Update cache logic
+                currentUser = updatedUser;
+
                 alert("Profile Updated Successfully!");
                 closeEditModal();
-                loadProfile(); // Refresh profile
+
+                // Reload profile data cleanly
+                loadProfile();
             }
         });
 
@@ -945,7 +1021,10 @@
         const icon = document.getElementById('theme-icon');
         if (icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
 
-        loadProfile();
+        // Ensure DOM is fully ready before calling loadProfile
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+        });
     </script>
 </body>
 

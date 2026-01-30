@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Details - DevLanka Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent-primary: #3b82f6;
+            --accent-hover: #2563eb;
+            --border: #e2e8f0;
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent-primary: #60a5fa;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--accent-primary);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Carousel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .carousel-slide {
+            height: 100%;
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Don't crop, show full image */
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 1rem;
+            pointer-events: none;
+        }
+
+        .nav-btn {
+            pointer-events: auto;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: white;
+        }
+
+        /* Author Section */
+        .author-card {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .author-info h3 {
+            margin-bottom: 0.2rem;
+            font-size: 1.1rem;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Content Body */
+        .content-body h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-primary);
+            border: 1px solid var(--border);
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            white-space: pre-line;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--gradient-hero);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-primary);
+        }
+
+        /* More From Author */
+        .related-section {
+            border-top: 1px solid var(--border);
+            padding-top: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .mini-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .mini-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .mini-img {
+            height: 120px;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .mini-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mini-content {
+            padding: 1rem;
+        }
+
+        .mini-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mini-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <a href="javascript:history.back()" class="back-link">← Back</a>
+        </div>
+
+        <div id="loading" style="text-align:center; padding: 3rem;">Loading details...</div>
+
+        <div id="mainContent" style="display:none;">
+
+            <!-- Carousel -->
+            <div class="carousel-container" id="carouselContainer">
+                <div class="carousel-slide" id="carouselSlide">
+                    <!-- Images injected here -->
+                </div>
+                <div class="carousel-nav">
+                    <button class="nav-btn" onclick="prevSlide()">❮</button>
+                    <button class="nav-btn" onclick="nextSlide()">❯</button>
+                </div>
+                <div class="carousel-dots" id="carouselDots"></div>
+            </div>
+
+            <!-- Author & Title -->
+            <div class="content-body">
+                <div class="badges" id="resBadges"></div>
+                <h1 id="resTitle">Resource Title</h1>
+
+                <!-- Author Info -->
+                <div class="author-card" id="authorSection" style="display:none;">
+                    <img src="" alt="Author" class="author-avatar" id="authorAvatar">
+                    <div class="author-info">
+                        <h3 id="authorName">Author Name</h3>
+                        <p>Verified Creator</p>
+                    </div>
+                    <div style="margin-left:auto;">
+                        <!-- Potential follow button or profile link -->
+                    </div>
+                </div>
+
+                <div class="description" id="resDesc">Description goes here...</div>
+
+                <div class="actions">
+                    <a href="#" target="_blank" id="btnVisit" class="btn btn-primary">
+                        🚀 Visit Resource
+                    </a>
+                    <button onclick="shareResource()" class="btn btn-outline">
+                        🔗 Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- More from Author -->
+            <div class="related-section" id="relatedSection" style="display:none;">
+                <h2 class="section-title">More from <span id="relatedAuthorName">this author</span></h2>
+                <div class="related-grid" id="relatedGrid">
+                    <!-- Injected -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base
+        let API_BASE = '';
+        const isLocal = window.location.hostname === '127.0.0.1' ||
+            window.location.hostname === 'localhost' ||
+            window.location.protocol === 'file:';
+        API_BASE = isLocal ? 'http://127.0.0.1:8000/api' : '/api';
+
+        let currentSlide = 0;
+        let totalSlides = 0;
+
+        async function loadDetail() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/resources/${id}`);
+                if (!response.ok) throw new Error("Resource not found");
+                const item = await response.json();
+
+                renderMain(item);
+
+                if (item.owner_id) {
+                    loadRelated(item.owner_id, item.id);
+                }
+
+            } catch (e) {
+                document.getElementById('loading').innerHTML = `<p style="color:red">Error: ${e.message}</p>`;
+            }
+        }
+
+        function renderMain(item) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+
+            // 1. Carousel Images
+            const slideContainer = document.getElementById('carouselSlide');
+            const dotsContainer = document.getElementById('carouselDots');
+            let images = [];
+
+            // Helper to check if string is a URL
+            const isUrl = (s) => s.startsWith('http') || s.startsWith('data:');
+
+            if (item.images) {
+                // If it's a JSON string, parse it. If assume comma separated, split.
+                // Assuming simpler comma-separated or just one logic for now based on current DB
+                try {
+                    images = JSON.parse(item.images);
+                } catch {
+                    images = item.images.split(',');
+                }
+            } else if (item.icon && isUrl(item.icon)) {
+                // Fallback to icon if no gallery
+                images = [item.icon];
+                // Hack: Duplicate logic for "5 images" effect if user wants to see swipe?
+                // No, better to show just one if only one exists.
+            } else {
+                // Fallback placeholder
+                images = ['https://via.placeholder.com/800x400?text=No+Preview+Available'];
+            }
+
+            // FILTER valid images
+            images = images.filter(img => img && img.trim().length > 0);
+            if (images.length === 0) images = ['https://via.placeholder.com/800x400?text=No+Preview+Available'];
+
+            totalSlides = images.length;
+
+            slideContainer.innerHTML = images.map(img => `
+                <div class="carousel-item">
+                    <img src="${img.trim()}" alt="Preview">
+                </div>
+            `).join('');
+
+            // Dots
+            if (totalSlides > 1) {
+                dotsContainer.innerHTML = images.map((_, i) => `
+                    <div class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>
+                `).join('');
+
+                // Auto swipe
+                setInterval(nextSlide, 5000);
+            } else {
+                document.querySelector('.carousel-nav').style.display = 'none';
+            }
+
+            // 2. Info
+            document.getElementById('resTitle').textContent = item.title;
+            document.getElementById('resDesc').textContent = item.description || "No description.";
+
+            // Dynamic Action Button
+            const btnVisit = document.getElementById('btnVisit');
+            const type = (item.type || '').toLowerCase();
+
+            btnVisit.href = item.url || '#';
+
+            if (['pdf', 'zip', 'rar', 'template', 'book', 'ebook'].some(t => type.includes(t))) {
+                btnVisit.innerHTML = '⬇️ Download';
+            } else if (['video', 'course', 'playlist', 'youtube'].some(t => type.includes(t))) {
+                btnVisit.innerHTML = '▶️ Watch Video';
+            } else if (['tool', 'software', 'app'].some(t => type.includes(t))) {
+                btnVisit.innerHTML = '🛠️ Get Tool';
+            } else {
+                btnVisit.innerHTML = '🚀 Visit Resource';
+            }
+
+            // Badges
+            const badgeContainer = document.getElementById('resBadges');
+            if (item.language) badgeContainer.innerHTML += `<span class="badge">${item.language}</span>`;
+            if (item.type) badgeContainer.innerHTML += `<span class="badge" style="border-color:#8b5cf6; color:#8b5cf6;">${item.type}</span>`;
+
+            // 3. Author Profile
+            if (item.owner) {
+                document.getElementById('authorSection').style.display = 'flex';
+                document.getElementById('authorName').textContent = item.owner.full_name || "Unknown Author";
+                document.getElementById('relatedAuthorName').textContent = (item.owner.full_name || "this author").split(' ')[0];
+
+                // Avatar
+                const avatar = item.owner.avatar || `https://ui-avatars.com/api/?name=${item.owner.full_name}&background=random`;
+                document.getElementById('authorAvatar').src = avatar;
+            }
+        }
+
+        async function loadRelated(ownerId, currentId) {
+            try {
+                // We added owner_id support to the API
+                const response = await fetch(`${API_BASE}/resources/?owner_id=${ownerId}&limit=5`);
+                if (!response.ok) return;
+                let data = await response.json();
+
+                // Filter out current
+                data = data.filter(r => r.id !== currentId);
+
+                if (data.length > 0) {
+                    const grid = document.getElementById('relatedGrid');
+                    document.getElementById('relatedSection').style.display = 'block';
+
+                    grid.innerHTML = data.map(item => {
+                        const img = (item.icon && item.icon.startsWith('http')) ? item.icon : 'https://via.placeholder.com/150?text=Resource';
+                        return `
+                            <div class="mini-card" onclick="window.location.href='resource_detail.html?id=${item.id}'">
+                                <div class="mini-img">
+                                    <img src="${img}" alt="${item.title}">
+                                </div>
+                                <div class="mini-content">
+                                    <div class="mini-title">${item.title}</div>
+                                    <div class="mini-type">${item.type || 'Resource'}</div>
+                                </div>
+                            </div>
+                         `;
+                    }).join('');
+                }
+            } catch (e) {
+                console.error("Failed to load related", e);
+            }
+        }
+
+        // Carousel Logic
+        function updateSlide() {
+            const slide = document.getElementById('carouselSlide');
+            slide.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // update dots
+            document.querySelectorAll('.dot').forEach((d, i) => {
+                d.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            if (totalSlides <= 1) return;
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlide();
+        }
+
+        function prevSlide() {
+            if (totalSlides <= 1) return;
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateSlide();
+        }
+
+        // Expose to window for onclick
+        window.nextSlide = nextSlide;
+        window.prevSlide = prevSlide;
+        window.goToSlide = (i) => { currentSlide = i; updateSlide(); };
+
+        function shareResource() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.getElementById('resTitle').textContent,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Link copied!");
+            }
+        }
+
+        loadDetail();
+    </script>
+</body>
+
+</html>

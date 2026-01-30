@@ -15,6 +15,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             hashed_password=get_password_hash(obj_in.password),
             full_name=obj_in.full_name,
             role=obj_in.role,
+            avatar=obj_in.dict().get("avatar")
         )
         db.add(db_obj)
         db.commit()

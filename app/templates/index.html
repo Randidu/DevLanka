@@ -148,6 +148,98 @@
             align-items: center;
         }
 
+        .mobile-toggle {
+            display: none;
+            background: #ff6b35 !important;
+            /* Bright orange */
+            border: 3px solid #ffffff !important;
+            border-radius: 8px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 10px;
+            width: 44px;
+            height: 44px;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .mobile-toggle span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .mobile-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: flex !important;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: var(--bg-card);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 80px;
+                gap: 0;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 20px var(--shadow-lg);
+                z-index: 1000;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-menu li a {
+                display: block;
+                padding: 1.2rem 2rem;
+                font-size: 1.1rem;
+                color: var(--text-primary);
+            }
+
+            .nav-menu li a:hover {
+                background: var(--bg-secondary);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            /* Hide desktop nav actions on mobile */
+            .nav-actions {
+                display: none !important;
+            }
+        }
+
         .theme-toggle {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
@@ -165,6 +257,60 @@
         .theme-toggle:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px var(--shadow-md);
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            transition: background 0.3s ease;
+            margin-left: 1rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-profile:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border);
+        }
+
+        .nav-profile-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-hero);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            overflow: hidden;
+            border: 2px solid var(--bg-primary);
+            box-shadow: 0 2px 5px var(--shadow-sm);
+            flex-shrink: 0;
+        }
+
+        .nav-profile-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-profile-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .nav-profile-email {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .btn {
@@ -987,6 +1133,11 @@
                 <button class="btn btn-outline" onclick="window.location.href='login.html'">Sign In</button>
                 <button class="btn btn-primary" onclick="window.location.href='register.html'">Get Started</button>
             </div>
+            <button class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
@@ -1162,7 +1313,19 @@
     </footer>
 
     <script>
-        const API_BASE = 'http://127.0.0.1:8000/api';
+        // Detect environment and set API Base URL explicitly
+        let API_BASE = '';
+        const isLocal = window.location.hostname === '127.0.0.1' ||
+            window.location.hostname === 'localhost' ||
+            window.location.protocol === 'file:';
+
+        if (isLocal) {
+            API_BASE = 'http://127.0.0.1:8000/api';
+            console.log("Development Mode: using backend at " + API_BASE);
+        } else {
+            console.log("Production Mode: using relative paths");
+            API_BASE = '/api';
+        }
 
         // API Services
         const newsApi = {
@@ -1217,15 +1380,34 @@
             },
             getAll: async (skip = 0, limit = 100) => {
                 try {
-                    const response = await fetch(`${API_BASE}/resources/?skip=${skip}&limit=${limit}`);
-                    if (!response.ok) throw new Error('Failed to fetch resources');
-                    return await response.json();
+                    const url = `${API_BASE}/resources/?skip=${skip}&limit=${limit}`;
+                    console.log("Fetching resources from:", url);
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        const txt = await response.text();
+                        throw new Error(`Failed to fetch resources: ${response.status} - ${txt}`);
+                    }
+                    const data = await response.json();
+                    console.log("Resources loaded:", data.length);
+                    return data;
                 } catch (error) {
-                    console.error('Error fetching resources:', error);
+                    console.error('Error fetching resources DETAILS:', error);
+                    // Only alert if we are in dev mode and it looks like a connection error
+                    if (isLocal && (error.name === 'TypeError' || error.message.includes('Failed to fetch'))) {
+                        alert(`Could not load Resources!\nTarget: ${API_BASE}/resources/\nError: ${error.message}\nEnsure backend is running on port 8000.`);
+                    }
                     return [];
                 }
             }
         };
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.querySelector('.nav-menu');
+            const toggle = document.querySelector('.mobile-toggle');
+            menu.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
 
         // Theme Toggle
         function toggleTheme() {
@@ -1394,39 +1576,56 @@
             }
         }
 
-        async function renderCategories() {
-            const categories = await resourceApi.getCategories();
-            const grid = document.getElementById('categoriesGrid');
+        function renderCategories() {
+            // Wait for categories to load if they haven't yet
+            if (window.categoriesLoading) return;
 
+            const grid = document.getElementById('categoriesGrid');
             if (!grid) return;
 
-            const categoryIcons = {
-                'Web Development': '🌐',
-                'Mobile Apps': '📱',
-                'Data Science': '📊',
-                'AI & Machine Learning': '🤖',
-                'Cyber Security': '🔒',
-                'Cloud Computing': '☁️',
-                'DevOps': '⚙️',
-                'UI/UX Design': '🎨'
-            };
+            // We use the data fetched by resourceApi.getCategories() which should be cached or fetched here
+            // simplified: fetch freshly
+            resourceApi.getCategories().then(categories => {
+                const displayCategories = categories && categories.length > 0
+                    ? categories
+                    : [];
 
-            const displayCategories = categories && categories.length > 0
-                ? categories.slice(0, 8)
-                : [
-                    { id: 1, name: 'Web Development', description: 'Build modern websites' },
-                    { id: 2, name: 'Mobile Apps', description: 'Create mobile applications' },
-                    { id: 3, name: 'Data Science', description: 'Analyze and visualize data' },
-                    { id: 4, name: 'AI & Machine Learning', description: 'Learn intelligent systems' }
-                ];
+                if (displayCategories.length === 0) {
+                    grid.innerHTML = '<p>No categories found.</p>';
+                    return;
+                }
 
-            grid.innerHTML = displayCategories.map(cat => `
-                <div class="category-card" onclick="window.location.href='category.html?category_id=${cat.id}'">
-                    <div class="category-icon">${categoryIcons[cat.name] || cat.icon || '📦'}</div>
-                    <h3 class="category-title">${cat.name}</h3>
-                    <p class="category-desc">${cat.description || 'Explore resources and courses'}</p>
-                </div>
-            `).join('');
+                grid.innerHTML = displayCategories.map(cat => {
+                    // Check if icon is an image URL
+                    let iconContent = '📦';
+                    if (cat.icon && (cat.icon.startsWith('http') || cat.icon.startsWith('/'))) {
+                        iconContent = `<img src="${cat.icon}" alt="${cat.name}" style="width:100%; height:100%; object-fit:contain;">`;
+                    } else if (cat.icon) {
+                        iconContent = cat.icon; // might be an emoji stored in DB
+                    } else {
+                        // Fallback map
+                        const categoryIcons = {
+                            'Web Development': '💻',
+                            'Mobile Apps': '📱',
+                            'Data Science': '📊',
+                            'AI & Machine Learning': '🤖',
+                            'Cyber Security': '🔒',
+                            'Cloud Computing': '☁️',
+                            'DevOps': '⚙️',
+                            'UI/UX Design': '🎨'
+                        };
+                        iconContent = categoryIcons[cat.name] || '📦';
+                    }
+
+                    return `
+                    <div class="category-card" onclick="window.location.href='category.html?category_id=${cat.id}'">
+                        <div class="category-icon" style="overflow:hidden; display:flex; align-items:center; justify-content:center;">${iconContent}</div>
+                        <h3 class="category-title">${cat.name}</h3>
+                        <p class="category-desc">${cat.description || 'Explore resources and courses'}</p>
+                    </div>
+                    `;
+                }).join('');
+            });
         }
 
         async function renderFeaturedPathways() {
@@ -1488,7 +1687,7 @@
             if (!grid) return;
 
             const latestData = resources && resources.length > 0
-                ? resources.slice(0, 6)
+                ? resources.reverse().slice(0, 8)
                 : [];
 
             if (latestData.length === 0) {
@@ -1497,17 +1696,44 @@
             }
 
             grid.innerHTML = latestData.map(item => {
-                const isImg = item.icon && (item.icon.startsWith('http') || item.icon.startsWith('data:image'));
+                // Try to get a valid image: Icon first, then first from images list
+                let coverImage = item.icon;
+
+                // Parse images if available to find a fallback
+                let firstGalleryImage = null;
+                if (item.images) {
+                    try {
+                        const parsed = JSON.parse(item.images);
+                        if (Array.isArray(parsed) && parsed.length > 0) firstGalleryImage = parsed[0];
+                    } catch {
+                        if (item.images.includes(',')) firstGalleryImage = item.images.split(',')[0].trim();
+                        else firstGalleryImage = item.images;
+                    }
+                }
+
+                // If icon is just the default placeholder '📄' or empty, use gallery image if exists
+                if ((!coverImage || coverImage === '📄') && firstGalleryImage) {
+                    coverImage = firstGalleryImage;
+                }
+
+                const isImg = coverImage && (coverImage.startsWith('http') || coverImage.startsWith('data:image') || coverImage.startsWith('/'));
                 const iconContent = isImg
-                    ? `<img src="${item.icon}" alt="${item.title}">`
-                    : (item.icon || '📄');
+                    ? `<img src="${coverImage}" alt="${item.title}">`
+                    : (coverImage || '📄');
+
+                // Truncate description to ~10 words
+                let desc = item.description || 'New resource';
+                const words = desc.split(' ');
+                if (words.length > 10) {
+                    desc = words.slice(0, 10).join(' ') + '...';
+                }
 
                 return `
-                <div class="latest-card" onclick="window.open('${item.url || '#'}', '_blank')">
+                <div class="latest-card" onclick="window.location.href='resource_detail.html?id=${item.id}'">
                     <div class="latest-icon">${iconContent}</div>
                     <div class="latest-info">
                         <h3>${item.title}</h3>
-                        <p>${item.description || 'New resource'}</p>
+                        <p>${desc}</p>
                     </div>
                 </div>
                 `;
@@ -1534,32 +1760,89 @@
         }, observerOptions);
 
         // Auth Check
-        function checkAuthStatus() {
+        // Auth Check
+        async function checkAuthStatus() {
             const token = localStorage.getItem('access_token');
-            const role = localStorage.getItem('user_role');
             const navActions = document.querySelector('.nav-actions');
 
-            if (token && navActions) {
-                // Keep Theme Toggle
-                const themeBtn = navActions.querySelector('.theme-toggle');
-                navActions.innerHTML = '';
-                if (themeBtn) navActions.appendChild(themeBtn);
+            if (!token || !navActions) return;
 
-                // Add Profile/Admin button
-                if (role === 'admin') {
-                    navActions.innerHTML += `
-                        <button class="btn btn-outline" style="margin-left:1rem" onclick="window.location.href='admin/dashboard.html'">Admin Panel</button>
-                    `;
+            // --- Helper: Render Profile UI ---
+            const renderProfile = (userOrData) => {
+                // Ensure we have minimal data
+                const email = userOrData.email || localStorage.getItem('user_email') || 'user@example.com';
+                const role = userOrData.role || localStorage.getItem('user_role') || 'student';
+                const name = userOrData.full_name || localStorage.getItem('user_full_name') || userOrData.username || 'User';
+                const avatar = userOrData.avatar || localStorage.getItem('user_avatar');
+
+                // Save Theme Toggle before clearing
+                const themeBtn = navActions.querySelector('.theme-toggle') || document.createElement('div'); // fallback div if missing
+
+                // Clear Nav Actions
+                navActions.innerHTML = '';
+
+                // Restore Theme Toggle (re-attached)
+                // If it was lost, we might need to recreate it, but usually querySelector finds it.
+                // To be safe, let's clone it if it exists or recreate the HTML if we have to.
+                // Best approach: If we found it, append it.
+                if (themeBtn.tagName) {
+                    navActions.appendChild(themeBtn);
                 } else {
-                    navActions.innerHTML += `
-                        <button class="btn btn-outline" style="margin-left:1rem" onclick="window.location.href='profile.html'">Profile</button>
-                    `;
+                    // Recreate if missing (failsafe)
+                    navActions.innerHTML = `
+                        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                            <span id="theme-icon" style="font-size: 1.3rem;">${document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙'}</span>
+                        </button>
+                     `;
                 }
 
-                // Logout button removed as per request
-                // navActions.innerHTML += `
-                //    <button class="btn btn-primary" style="margin-left:0.5rem" onclick="logout()">Logout</button>
-                // `;
+                // Admin Button
+                if (role === 'admin') {
+                    const adminBtn = document.createElement('button');
+                    adminBtn.className = 'btn btn-outline';
+                    adminBtn.style.marginLeft = '1rem';
+                    adminBtn.textContent = 'Admin Panel';
+                    adminBtn.onclick = () => window.location.href = 'admin/dashboard.html';
+                    navActions.appendChild(adminBtn);
+                }
+
+                // Simple Profile Button (Requested style)
+                const profileBtn = document.createElement('button');
+                profileBtn.className = 'btn btn-outline';
+                profileBtn.style.marginLeft = '1rem';
+                profileBtn.textContent = 'Profile';
+                profileBtn.onclick = () => window.location.href = 'profile.html';
+                navActions.appendChild(profileBtn);
+            };
+
+            // 1. Optimistic Render (Immediate)
+            // If we have a stored email, show it RIGHT AWAY so user sees they are logged in.
+            const storedEmail = localStorage.getItem('user_email');
+            if (storedEmail) {
+                renderProfile({ email: storedEmail });
+            }
+
+            // 2. Fetch Fresh Data (Background)
+            try {
+                const response = await fetch('http://127.0.0.1:8000/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const freshUser = await response.json();
+                    renderProfile(freshUser); // Update with fresh avatar/name
+                } else if (response.status === 401 || response.status === 403) {
+                    console.warn('Token expired or invalid (401/403), logging out.');
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('user_role');
+                    localStorage.removeItem('user_email');
+                    localStorage.removeItem('user_id');
+                    localStorage.removeItem('user_full_name');
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('Auth check network error:', error);
+                // We already rendered the fallback, so we can silently fail or keep the fallback UI.
             }
         }
 

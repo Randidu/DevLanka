@@ -733,7 +733,7 @@
                     const stepsCount = (p.steps && p.steps.length) || 0;
 
                     allPathways.push({
-                        url: `pathway.html?slug=${p.slug}`,
+                        url: `learning-path.html?slug=${p.slug}`,
                         icon: icon,
                         isImg: isImgIcon,
                         title: p.title,
@@ -751,7 +751,7 @@
                 const isImgIcon = p.icon && p.icon.startsWith('http');
 
                 allPathways.push({
-                    url: `pathway.html?custom=${p.id}`,
+                    url: `learning-path.html?custom=${p.id}`,
                     icon: p.icon || '🚀',
                     isImg: isImgIcon,
                     title: p.title,
