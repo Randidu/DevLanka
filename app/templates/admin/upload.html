@@ -145,10 +145,10 @@
         <p style="color:var(--text-secondary); margin-bottom:2rem;">Upload new resources, PDFs, or other assets.</p>
 
         <div class="upload-card">
-            <form action="/api/upload" method="post" enctype="multipart/form-data">
+            <form id="uploadForm">
                 <div class="form-group">
                     <label class="form-label">Title</label>
-                    <input type="text" name="title" class="form-control" placeholder="Resource Title">
+                    <input type="text" name="title" class="form-control" placeholder="Resource Title" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Category</label>
@@ -162,16 +162,71 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">File</label>
-                    <input type="file" name="file" class="form-control" style="padding:0.5rem; background:#f8f9fa;">
+                    <input type="file" name="file" class="form-control" style="padding:0.5rem; background:#f8f9fa;"
+                        required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description (Optional)</label>
-                    <textarea class="form-control" rows="3"></textarea>
+                    <textarea name="description" class="form-control" rows="3"></textarea>
                 </div>
-                <button class="btn btn-success">Upload Resource</button>
+                <button type="submit" class="btn btn-success" id="uploadBtn">Upload Resource</button>
+                <div id="uploadStatus" style="margin-top:1rem; text-align:center;"></div>
             </form>
         </div>
     </div>
+
+    <script>
+        // Smart API URL Detection
+        let API_BASE = '';
+        const hostname = window.location.hostname;
+        const isLocalhost = hostname === '127.0.0.1' || hostname === 'localhost';
+
+        if (isLocalhost) {
+            API_BASE = 'http://127.0.0.1:8000/api';
+            console.log("🔧 Development Mode: using local backend at " + API_BASE);
+        } else if (hostname.includes('onrender.com')) {
+            API_BASE = '/api';
+            console.log("🚀 Production Mode (Render): using relative paths");
+        } else {
+            API_BASE = 'https://devlanka-hub.onrender.com/api';
+            console.log("☁️ Fallback: using Render backend at " + API_BASE);
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('uploadBtn');
+            const status = document.getElementById('uploadStatus');
+            const formData = new FormData(this);
+
+            btn.disabled = true;
+            btn.textContent = 'Uploading...';
+            status.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    status.innerHTML = '<span style="color: green; font-weight: bold;">✅ Upload Successful!</span>';
+                    this.reset();
+                    setTimeout(() => { status.innerHTML = ''; }, 3000);
+                } else {
+                    const error = await response.json();
+                    status.innerHTML = `<span style="color: red;">❌ Upload Failed: ${error.detail || 'Unknown error'}</span>`;
+                }
+            } catch (err) {
+                console.error(err);
+                status.innerHTML = '<span style="color: red;">❌ Connection Error. Check console.</span>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Upload Resource';
+            }
+        });
+    </script>
+
 </body>
 
 </html>

@@ -363,6 +363,25 @@
             </form>
 
             <script>
+                // Smart API URL Detection
+                let AUTH_BASE = '';
+                const hostname = window.location.hostname;
+                const isLocalhost = hostname === '127.0.0.1' || hostname === 'localhost';
+
+                if (isLocalhost) {
+                    // Running locally - use local backend
+                    AUTH_BASE = 'http://127.0.0.1:8000';
+                    console.log("🔧 Development Mode: using local backend at " + AUTH_BASE);
+                } else if (hostname.includes('onrender.com')) {
+                    // Running on Render - use relative paths
+                    AUTH_BASE = '';
+                    console.log("🚀 Production Mode (Render): using relative paths");
+                } else {
+                    // Fallback to Render for any other domain
+                    AUTH_BASE = 'https://devlanka-hub.onrender.com';
+                    console.log("☁️ Fallback: using Render backend at " + AUTH_BASE);
+                }
+
                 const registerForm = document.getElementById('registerForm');
                 const verifyForm = document.getElementById('verifyForm');
                 const authTitle = document.querySelector('.auth-title');
@@ -382,7 +401,7 @@
                     }
 
                     try {
-                        const response = await fetch('https://devlanka-hub.onrender.com/auth/register', {
+                        const response = await fetch(`${AUTH_BASE}/auth/register`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ full_name: fullName, email, password })
@@ -412,7 +431,7 @@
                     const code = document.getElementById('verifyCode').value;
 
                     try {
-                        const response = await fetch('https://devlanka-hub.onrender.com/auth/verify', {
+                        const response = await fetch(`${AUTH_BASE}/auth/verify`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email: userEmail, code })

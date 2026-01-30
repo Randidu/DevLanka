@@ -174,11 +174,16 @@
             <a href="dashboard.html" class="logo">DevLanka Admin</a>
             <div class="nav-links" style="display:flex; gap:1.5rem;">
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="manage_categories.html" class="nav-link">Categories</a>
                 <a href="manage_content.html" class="nav-link">Home Content</a>
+                <a href="manage_tutorials.html" class="nav-link">Tutorials</a>
                 <a href="approvals.html" class="nav-link" style="color:var(--accent)">Approvals</a>
+                <a href="admin_pathways.html" class="nav-link">Pathways</a>
+                <a href="users.html" class="nav-link">Users</a>
+                <a href="tickets.html" class="nav-link">Tickets</a>
                 <a href="upload.html" class="nav-link">Upload</a>
             </div>
-            <a href="../../index.html" class="btn btn-outline"
+            <a href="../index.html" class="btn btn-outline"
                 style="padding:0.4rem 1rem; font-size:0.9rem; text-decoration:none;">Back to Site</a>
         </div>
     </nav>
@@ -216,7 +221,24 @@
     </div>
 
     <script>
-        const API_BASE = 'https://devlanka-hub.onrender.com/api';
+        // Smart API URL Detection
+        let API_BASE = '';
+        const hostname = window.location.hostname;
+        const isLocalhost = hostname === '127.0.0.1' || hostname === 'localhost';
+
+        if (isLocalhost) {
+            // Running locally - use local backend
+            API_BASE = 'http://127.0.0.1:8000/api';
+            console.log("🔧 Development Mode: using local backend at " + API_BASE);
+        } else if (hostname.includes('onrender.com')) {
+            // Running on Render - use relative paths
+            API_BASE = '/api';
+            console.log("🚀 Production Mode (Render): using relative paths");
+        } else {
+            // Fallback to Render for any other domain
+            API_BASE = 'https://devlanka-hub.onrender.com/api';
+            console.log("☁️ Fallback: using Render backend at " + API_BASE);
+        }
 
         async function loadPending() {
             try {
