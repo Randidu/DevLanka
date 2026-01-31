@@ -9,8 +9,16 @@ router = APIRouter()
 UPLOAD_DIR = Path("app/static/uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @router.post("/")
 async def upload_file(file: UploadFile = File(...)):
+    if not allowed_file(file.filename):
+        raise HTTPException(status_code=400, detail="File type not allowed. Only images are permitted.")
+    
     try:
         # Generate a unique filename to avoid collisions
         file_extension = file.filename.split(".")[-1]
@@ -20,9 +28,8 @@ async def upload_file(file: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
             
-        # Return the URL
-        # Note: Ideally domain should be dynamic, but for now strict 127.0.0.1:8000
-        url = f"http://127.0.0.1:8000/static/uploads/{unique_filename}"
+        # Return relative path for better deployment compatibility
+        url = f"/static/uploads/{unique_filename}"
         return {"url": url}
         
     except Exception as e:
