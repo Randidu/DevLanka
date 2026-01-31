@@ -64,7 +64,7 @@ def seed_db():
                     duration="15 hours",
                     level="Intermediate",
                     thumbnail="🐍",
-                    url="https://example.com/courses/python",
+                    url="https://docs.python.org/3/",
                     price=0.0,
                     is_free=True
                 ),
@@ -75,7 +75,7 @@ def seed_db():
                     duration="20 hours",
                     level="Advanced",
                     thumbnail="⚛️",
-                    url="https://example.com/courses/frontend",
+                    url="https://nextjs.org/docs",
                     price=2500.0,
                     is_free=False
                 )
@@ -117,14 +117,14 @@ def seed_db():
                 Resource(
                     title="HTML/CSS Cheat Sheet",
                     description="Comprehensive guide to all CSS properties and HTML tags.",
-                    url="https://example.com/resources/css-cheatsheet.pdf",
+                    url="https://www.w3schools.com/css/css_intro.asp",
                     icon="📄",
                     category_id=web_cat.id
                 ),
                 Resource(
                     title="Flutter UI Kit",
                     description="Clean architecture UI components for Flutter apps.",
-                    url="https://example.com/resources/flutter-ui-kit.zip",
+                    url="https://flutter.dev/docs",
                     icon="📱",
                     category_id=mobile_cat.id
                 )
