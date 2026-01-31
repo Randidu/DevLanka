@@ -39,6 +39,10 @@ async def upload_multiple_files(files: list[UploadFile] = File(...)):
     urls = []
     try:
         for file in files:
+            # Add security check for multiple uploads too!
+            if not allowed_file(file.filename):
+                raise HTTPException(status_code=400, detail=f"File {file.filename} type not allowed. Only images are permitted.")
+
             file_extension = file.filename.split(".")[-1]
             unique_filename = f"{uuid.uuid4()}.{file_extension}"
             file_path = UPLOAD_DIR / unique_filename
@@ -46,14 +50,13 @@ async def upload_multiple_files(files: list[UploadFile] = File(...)):
             with open(file_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
             
-            # Using relative path for flexibility, frontend can prepend API_BASE if needed, 
-            # OR full path if we want consistency with single upload.
-            # Let's use full path based on existing code style (though relative /static/... is often safer for deployments)
-            # The existing code hardcodes 127.0.0.1:8000, let's keep consistent but maybe use relative path logic in future.
-            url = f"http://127.0.0.1:8000/static/uploads/{unique_filename}"
+            # Using relative path for flexibility
+            url = f"/static/uploads/{unique_filename}"
             urls.append(url)
             
         return {"urls": urls}
         
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Could not save files: {e}")

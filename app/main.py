@@ -32,8 +32,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all origins for dev
-    allow_origin_regex="https?://.*", # Allow all localhost ports
+    allow_origins=["*"], # Still allow all origins to avoid breaking dev, but regex will restrict
+    allow_origin_regex="https?://(localhost|127\.0\.0\.1|.*\.onrender\.com)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

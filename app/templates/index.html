@@ -1677,7 +1677,7 @@
 
             grid.innerHTML = displayPathways.map(p => {
                 // Determine Icon (URL or Emoji)
-                const isUrl = p.icon && p.icon.startsWith('http');
+                const isUrl = p.icon && (p.icon.startsWith('http') || p.icon.startsWith('/'));
                 const iconHtml = isUrl
                     ? `<img src="${p.icon}" style="width:72px; height:72px; object-fit:cover; border-radius:12px; margin-bottom:1.5rem;" alt="${p.title}">`
                     : `<div class="pathway-icon-home">${p.icon || '🚀'}</div>`;

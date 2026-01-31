@@ -858,7 +858,7 @@
             }
 
             grid.innerHTML = courses.map(course => {
-                const hasImage = course.thumbnail && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('data:image'));
+                const hasImage = course.thumbnail && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('data:image') || course.thumbnail.startsWith('/'));
                 const shortDesc = course.description
                     ? (course.description.length > 120 ? course.description.substring(0, 120) + '...' : course.description)
                     : 'Learn and master this comprehensive course with expert instruction.';

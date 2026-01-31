@@ -95,8 +95,8 @@ def create_resource(
     print(f"DEBUG: create_resource called by user {current_user.id}")
     print(f"DEBUG: Payload: {resource_in.dict()}")
     try:
-        # Auto-approve for easier testing/dev
-        resource_in.is_approved = True
+        # Set to False by default for security, admin must approve
+        resource_in.is_approved = False
         
         # Create with owner_id
         obj_in_data = resource_in.dict()

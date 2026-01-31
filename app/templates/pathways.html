@@ -845,7 +845,7 @@
             // Process database pathways
             if (dbPathways && dbPathways.length > 0) {
                 dbPathways.forEach(p => {
-                    const isImgIcon = p.icon && p.icon.startsWith('http');
+                    const isImgIcon = p.icon && (p.icon.startsWith('http') || p.icon.startsWith('/'));
                     const icon = isImgIcon ? p.icon : (p.icon || iconMap[p.slug] || '💻');
                     const stepsCount = (p.steps && p.steps.length) || 0;
 
