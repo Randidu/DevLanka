@@ -156,6 +156,113 @@
             color: white;
         }
 
+        /* Mobile specific styles */
+        .mobile-toggle {
+            display: none;
+            background: #ff6b35 !important;
+            border: 3px solid #ffffff !important;
+            border-radius: 8px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 10px;
+            width: 44px;
+            height: 44px;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toggle:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+        }
+
+        .mobile-toggle span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .mobile-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .mobile-nav-item {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: flex !important;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: var(--bg-primary);
+                display: flex !important;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 80px;
+                gap: 0;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 20px var(--shadow);
+                z-index: 1000;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-menu li a {
+                display: block;
+                padding: 1.2rem 2rem;
+                font-size: 1.1rem;
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .nav-actions {
+                display: none !important;
+            }
+
+            .mobile-nav-item {
+                display: block;
+                border-top: 1px solid var(--border);
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+                padding: 2rem;
+            }
+
+            .profile-stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
         /* Profile Specific Styles */
         .profile-container {
             max-width: 1200px;
@@ -318,17 +425,6 @@
         .copyright {
             color: var(--text-secondary);
         }
-
-        @media (max-width: 768px) {
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .nav-menu {
-                display: none;
-            }
-        }
     </style>
 </head>
 
@@ -345,12 +441,21 @@
                 <li><a href="category.html">Resources</a></li>
                 <li><a href="support.html">Support</a></li>
                 <li><a href="profile.html">Profile</a></li>
+                <!-- Mobile Only Menu Items -->
+                <li class="mobile-nav-item"><a href="#" onclick="toggleTheme(); return false">Switch Theme 🌓</a></li>
+                <li class="mobile-nav-item"><a href="#"
+                        onclick="localStorage.clear(); window.location.href='index.html'; return false">Logout</a></li>
             </ul>
             <div class="nav-actions">
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <span id="theme-icon">🌙</span>
                 </button>
             </div>
+            <button class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
@@ -1003,6 +1108,14 @@
                 loadProfile();
             }
         });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.querySelector('.nav-menu');
+            const toggle = document.querySelector('.mobile-toggle');
+            menu.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
 
         // Theme Toggle Logic
         function toggleTheme() {
