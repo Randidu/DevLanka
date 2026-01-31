@@ -114,6 +114,10 @@
             align-items: center;
         }
 
+        .mobile-nav-item {
+            display: none;
+        }
+
         .nav-menu a {
             color: var(--text-secondary);
             text-decoration: none;
@@ -212,6 +216,10 @@
                 transition: right 0.3s ease;
                 box-shadow: -5px 0 20px var(--shadow-lg);
                 z-index: 1000;
+            }
+
+            .mobile-nav-item {
+                display: block;
             }
 
             .nav-menu li {
@@ -1125,6 +1133,13 @@
                 <li><a href="tutorials.html">Tutorials</a></li>
                 <li><a href="category.html">Resources</a></li>
                 <li><a href="support.html">Support</a></li>
+                <!-- Mobile Only Menu Items -->
+                <li class="mobile-nav-item mobile-guest"><a href="login.html">Sign In</a></li>
+                <li class="mobile-nav-item mobile-guest"><a href="register.html">Register</a></li>
+                <li class="mobile-nav-item mobile-user" style="display:none"><a href="profile.html">My Profile</a></li>
+                <li class="mobile-nav-item mobile-admin" style="display:none"><a href="admin/dashboard.html">Admin
+                        Panel</a></li>
+                <li class="mobile-nav-item"><a href="#" onclick="toggleTheme(); return false">Switch Theme 🌓</a></li>
             </ul>
             <div class="nav-actions">
                 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -1818,6 +1833,13 @@
                 profileBtn.textContent = 'Profile';
                 profileBtn.onclick = () => window.location.href = 'profile.html';
                 navActions.appendChild(profileBtn);
+
+                // Update Mobile Menu (Hide Guest, Show User)
+                document.querySelectorAll('.mobile-guest').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.mobile-user').forEach(el => el.style.display = 'block');
+                if (role === 'admin') {
+                    document.querySelectorAll('.mobile-admin').forEach(el => el.style.display = 'block');
+                }
             };
 
             // 1. Optimistic Render (Immediate)
