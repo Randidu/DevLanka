@@ -488,9 +488,9 @@
             API_BASE = '/api';
             console.log("🚀 Production Mode (Render): using relative paths");
         } else {
-            // Fallback to Render for any other domain
-            API_BASE = 'https://devlanka-hub.onrender.com/api';
-            console.log("☁️ Fallback: using Render backend at " + API_BASE);
+            // Use current origin for both Render and Custom Domains (Dynamic)
+            API_BASE = window.location.origin + '/api';
+            console.log("☁️ Production Mode: using backend at " + API_BASE);
         }
 
         // Support Form Handling

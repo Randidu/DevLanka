@@ -377,9 +377,9 @@
                     AUTH_BASE = '';
                     console.log("🚀 Production Mode (Render): using relative paths");
                 } else {
-                    // Fallback to Render for any other domain
-                    AUTH_BASE = 'https://devlanka-hub.onrender.com';
-                    console.log("☁️ Fallback: using Render backend at " + AUTH_BASE);
+                    // Use current origin for both Render and Custom Domains (Dynamic)
+                    AUTH_BASE = window.location.origin;
+                    console.log("☁️ Production Mode: using backend at " + AUTH_BASE);
                 }
 
                 const registerForm = document.getElementById('registerForm');
