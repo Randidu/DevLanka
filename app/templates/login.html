@@ -357,12 +357,10 @@
         if (isLocalhost) {
             AUTH_BASE = 'http://127.0.0.1:8000';
             console.log("🔧 Development Mode: using local backend");
-        } else if (hostname.includes('onrender.com')) {
-            AUTH_BASE = '';
-            console.log("🚀 Production Mode (Render)");
         } else {
-            AUTH_BASE = 'https://devlanka-hub.onrender.com';
-            console.log("☁️ Fallback: using Render backend");
+            // Use current origin for both Render and Custom Domains
+            AUTH_BASE = window.location.origin;
+            console.log("🚀 Production Mode: using backend at " + AUTH_BASE);
         }
 
         const loginForm = document.getElementById('loginForm');

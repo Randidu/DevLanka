@@ -21,7 +21,8 @@ def seed_db():
             admin_user = User(
                 full_name="Admin User",
                 email="admin@devlanka.com",
-                hashed_password="hashed_password_here", # In a real app, use pwd_context.hash()
+                # Password is 'admin123'
+                hashed_password="$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW", 
                 role=UserRole.ADMIN,
                 is_active=True
             )
