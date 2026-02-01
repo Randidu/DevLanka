@@ -177,3 +177,65 @@ def update_user(
         raise HTTPException(status_code=404, detail="User not found")
     user = crud.user.update(db, db_obj=user, obj_in=user_in)
     return user
+
+import uuid
+from datetime import datetime
+from app.utils.email import send_password_reset_email
+from app.core.security import get_password_hash
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+@router.post("/forgot-password")
+def forgot_password(
+    request: ForgotPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    user = crud.user.get_by_email(db, email=request.email)
+    if not user:
+        # Return 200 even if user not found to prevent email enumeration
+        return {"message": "If this email exists, a password reset link has been sent."}
+
+    # Generate Token
+    token = str(uuid.uuid4())
+    user.reset_token = token
+    user.reset_token_expires = datetime.utcnow() + timedelta(minutes=30)
+    db.add(user)
+    db.commit()
+
+    # Construct Link
+    base_url = "http://127.0.0.1:8000"
+    if settings.POSTGRES_SERVER != "localhost":
+         base_url = "https://youtube-video-downloader-x1hn.onrender.com"
+    
+    reset_link = f"{base_url}/reset-password.html?token={token}"
+    
+    send_password_reset_email(user.email, reset_link)
+    
+    return {"message": "Password reset link sent"}
+
+@router.post("/reset-password")
+def reset_password(
+    request: ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    user = db.query(crud.user.model).filter(crud.user.model.reset_token == request.token).first()
+    
+    if not user:
+         raise HTTPException(status_code=400, detail="Invalid or expired token")
+    
+    if user.reset_token_expires < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Token expired")
+        
+    # Update Password
+    user.hashed_password = get_password_hash(request.new_password)
+    user.reset_token = None
+    user.reset_token_expires = None
+    db.add(user)
+    db.commit()
+    
+    return {"message": "Password updated successfully"}

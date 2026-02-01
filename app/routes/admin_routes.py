@@ -49,3 +49,34 @@ async def manage_tutorials(request: Request):
 @router.get("/upload.html")
 async def upload_content(request: Request):
     return templates.TemplateResponse("admin/upload.html", {"request": request, "title": "Upload Content"})
+
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+from app import crud
+from app.models.user import User
+from app.models.resource import Resource
+from app.models.support import SupportTicket, TicketStatus
+from app.models.news import News
+
+@router.get("/stats")
+def get_admin_stats(db: Session = Depends(get_db)):
+    user_count = db.query(User).count()
+    
+    # Resource has is_approved
+    resource_count = db.query(Resource).filter(Resource.is_approved == True).count()
+    pending_resources = db.query(Resource).filter(Resource.is_approved == False).count()
+    
+    # News does NOT have is_approved yet, assuming all represent published or 0 pending.
+    # To fix the 500 error, we remove the filter on is_approved for News.
+    # If approval is needed for News, we need to add the column first.
+    pending_news = 0 
+    
+    # SupportTicket use Enum
+    ticket_count = db.query(SupportTicket).filter(SupportTicket.status == TicketStatus.OPEN).count()
+    
+    return {
+        "users": user_count,
+        "resources": resource_count,
+        "pending_approvals": pending_resources + pending_news,
+        "open_tickets": ticket_count
+    }

@@ -21,7 +21,10 @@ class NewsUpdate(NewsBase):
 class News(NewsBase):
     id: int
     published_at: datetime
+    likes: int = 0
     author_id: Optional[int] = None
+    author_name: Optional[str] = None
+    author_avatar: Optional[str] = None
 
     class Config:
         from_attributes = True

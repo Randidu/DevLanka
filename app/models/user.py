@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Enum
+from sqlalchemy import Column, Integer, String, Boolean, Enum, TIMESTAMP
 from sqlalchemy.orm import relationship
 import enum
 from app.core.database import Base
@@ -19,7 +19,10 @@ class User(Base):
     avatar = Column(String, nullable=True)
     verification_code = Column(String, nullable=True)
     is_verified = Column(Boolean, default=False)
+    reset_token = Column(String, nullable=True)
+    reset_token_expires = Column(TIMESTAMP(timezone=False), nullable=True)
     
     # Relationships
     tickets = relationship("app.models.support.SupportTicket", back_populates="user")
     news_posts = relationship("app.models.news.News", back_populates="author")
+    comments = relationship("app.models.comment.Comment", back_populates="author")

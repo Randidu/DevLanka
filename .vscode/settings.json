@@ -5,5 +5,6 @@
         "**/*.sass",
         "**/*.ts",
         "app/static/uploads/**"
-    ]
+    ],
+    "liveServer.settings.port": 5501
 }

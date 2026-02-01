@@ -154,7 +154,7 @@
             <!-- Approvals -->
             <a href="approvals.html" class="dash-card">
                 <div class="card-icon">🔔</div>
-                <div class="card-title">Pending Approvals</div>
+                <div class="card-title">Pending Approvals <span id="stat-approvals" class="badge">...</span></div>
                 <div class="card-desc">Review submitted resources and news.</div>
             </a>
 
@@ -189,7 +189,7 @@
             <!-- Users -->
             <a href="users.html" class="dash-card">
                 <div class="card-icon">👥</div>
-                <div class="card-title">Users</div>
+                <div class="card-title">Users <span id="stat-users" class="badge">...</span></div>
                 <div class="card-desc">Manage user accounts and permissions.</div>
             </a>
 
@@ -203,11 +203,57 @@
             <!-- Tickets -->
             <a href="tickets.html" class="dash-card">
                 <div class="card-icon">🎫</div>
-                <div class="card-title">Tickets</div>
+                <div class="card-title">Tickets <span id="stat-tickets" class="badge">...</span></div>
                 <div class="card-desc">View and resolve support tickets.</div>
             </a>
         </div>
     </div>
+
+    <style>
+        .badge {
+            background-color: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
+    </style>
+
+    <script>
+        // Fix syntax error in function definition
+        async function loadStats() {
+            try {
+                // Determine API Base URL
+                let API_BASE = '';
+                if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+                    API_BASE = 'http://127.0.0.1:8000';
+                } else {
+                    API_BASE = window.location.origin;
+                }
+
+                const response = await fetch(`${API_BASE}/admin/stats`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('stat-approvals').innerText = `(${data.pending_approvals})`;
+                    document.getElementById('stat-users').innerText = `(${data.users})`;
+                    document.getElementById('stat-tickets').innerText = `(${data.open_tickets})`;
+
+                    if (data.pending_approvals > 0) document.getElementById('stat-approvals').style.backgroundColor = '#ef4444';
+                    if (data.open_tickets > 0) document.getElementById('stat-tickets').style.backgroundColor = '#ef4444';
+                }
+            } catch (error) {
+                console.error("Failed to load stats", error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadStats);
+    </script>
 </body>
 
 </html>

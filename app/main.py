@@ -70,6 +70,10 @@ async def news_page(request: Request):
 async def news_html_page(request: Request):
     return templates.TemplateResponse("news.html", {"request": request, "title": "Tech News"})
 
+@app.get("/create_news.html")
+async def create_news_page(request: Request):
+    return templates.TemplateResponse("create_news.html", {"request": request, "title": "Create News"})
+
 @app.get("/courses")
 async def courses_page(request: Request):
     return templates.TemplateResponse("courses.html", {"request": request, "title": "Online Courses"})
@@ -117,6 +121,14 @@ async def register_page(request: Request):
 @app.get("/register.html")
 async def register_html_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request, "title": "Register"})
+
+@app.get("/forgot-password.html")
+async def forgot_password_page(request: Request):
+    return templates.TemplateResponse("forgot-password.html", {"request": request, "title": "Forgot Password"})
+
+@app.get("/reset-password.html")
+async def reset_password_page(request: Request):
+    return templates.TemplateResponse("reset-password.html", {"request": request, "title": "Reset Password"})
 
 @app.get("/learning-path")
 async def learning_path_page(request: Request):

@@ -14,6 +14,8 @@ class News(Base):
     content = Column(Text)
     category = Column(String, index=True) # AI, Web, Mobile, etc.
     published_at = Column(DateTime(timezone=True), server_default=func.now())
+    likes = Column(Integer, default=0)
     author_id = Column(Integer, ForeignKey("users.id"))
 
     author = relationship("app.models.user.User", back_populates="news_posts")
+    comments = relationship("app.models.comment.Comment", back_populates="news", cascade="all, delete-orphan")

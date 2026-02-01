@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create News - DevLanka Hub</title>
+    <title>Create News Post - DevLanka Hub</title>
+    <!-- Reuse Admin/Styles for consistency -->
     <style>
-        /* Core Styles from index.html (Theme & Nav) */
         * {
             margin: 0;
             padding: 0;
@@ -14,539 +14,407 @@
         }
 
         :root {
-            /* Theme Variables matching index.html */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-card: rgba(255, 255, 255, 0.7);
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
             --text-primary: #1a1a1a;
-            --text-secondary: #666666;
+            --text-secondary: #65676b;
             --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --border: rgba(0, 0, 0, 0.1);
-            --shadow: rgba(0, 0, 0, 0.1);
-            --gradient-start: #3b82f6;
-            --gradient-end: #8b5cf6;
-
-            /* Facebook-like Design Vars (blended) */
-            --fb-bg: #f0f2f5;
-            --fb-card-bg: #ffffff;
-            --fb-text: #050505;
-            --fb-text-secondary: #65676b;
-            --fb-accent: #1b74e4;
-            --fb-hover: #e4e6eb;
-            --fb-border: #dbdee1;
-            --fb-input-bg: #f0f2f5;
-        }
-
-        [data-theme="dark"] {
-            /* Theme Variables matching index.html */
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: rgba(30, 41, 59, 0.7);
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --accent: #60a5fa;
-            --accent-hover: #3b82f6;
-            --border: rgba(255, 255, 255, 0.1);
-            --shadow: rgba(0, 0, 0, 0.3);
-
-            /* Facebook-like Design Vars (Dark) */
-            --fb-bg: #18191a;
-            --fb-card-bg: #242526;
-            --fb-text: #e4e6eb;
-            --fb-text-secondary: #b0b3b8;
-            --fb-accent: #2374e1;
-            --fb-hover: #3a3b3c;
-            --fb-border: #3e4042;
-            --fb-input-bg: #3a3b3c;
+            --border: #dbdee1;
+            --danger: #dc2626;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--fb-bg);
-            /* Use FB bg for news page */
-            color: var(--fb-text);
-            transition: background 0.3s ease, color 0.3s ease;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Navbar Styles from index.html */
-        nav {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 1rem 5%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 2px 10px var(--shadow);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            align-items: center;
-        }
-
-        .nav-menu a {
+            background: var(--bg-primary);
             color: var(--text-primary);
-            text-decoration: none;
-            transition: color 0.3s;
-            font-weight: 500;
-        }
-
-        .nav-menu a:hover {
-            color: var(--accent);
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .theme-toggle {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            padding: 0.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.05);
-        }
-
-        .btn {
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px var(--shadow);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-outline:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-        }
-
-        /* Create Page Layout */
-        .create-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            width: 90%;
-        }
-
-        .card {
-            background: var(--fb-card-bg);
-            border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .card-header {
-            border-bottom: 1px solid var(--fb-border);
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--fb-text);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--fb-text);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--fb-border);
-            border-radius: 6px;
-            background: var(--fb-input-bg);
-            color: var(--fb-text);
-            font-size: 1rem;
-            transition: border-color 0.2s;
-            outline: none;
-        }
-
-        .form-control:focus {
-            border-color: var(--accent);
-            background: var(--fb-card-bg);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 150px;
-        }
-
-        .image-preview {
-            width: 100%;
-            height: 300px;
-            background: var(--fb-input-bg);
-            border: 2px dashed var(--fb-border);
-            border-radius: 8px;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            margin-top: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
+            padding: 2rem;
         }
 
-        .image-preview:hover {
+        .post-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .post-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+        }
+
+        .post-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e4e6eb;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .close-btn:hover {
+            background: #d8dadf;
+        }
+
+        .post-body {
+            padding: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e4e6eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1.2rem;
+            /* Larger for title */
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 0.8rem;
+            border: 1px solid transparent;
+            /* Invisible border initially */
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            resize: none;
+            outline: none;
+        }
+
+        .form-textarea:focus {
             border-color: var(--accent);
         }
 
-        .image-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-        }
-
-        .image-preview.has-image img {
-            display: block;
-        }
-
-        .image-preview.has-image .placeholder-text {
-            display: none;
-        }
-
-        .actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--fb-border);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Footer */
-        footer {
-            background: var(--bg-secondary);
-            padding: 3rem 5%;
-            border-top: 1px solid var(--border);
-            margin-top: auto;
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .image-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 2rem;
             text-align: center;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            background: #f7f8fa;
         }
 
-        .copyright {
-            color: var(--text-secondary);
+        .image-upload-area:hover {
+            border-color: var(--accent);
+            background: #f0f7ff;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: 8px;
+            display: none;
+            margin-bottom: 1rem;
+        }
+
+        .post-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .post-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .post-btn:hover {
+            background: #2563eb;
+        }
+
+        .post-btn:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        select.category-select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            margin-left: 10px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 
 <body>
-    <!-- Navbar from index.html -->
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo" style="text-decoration: none;">DevLanka Hub</a>
-            <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="news.html">Tech News</a></li>
-                <li><a href="courses.html">Courses</a></li>
-                <li><a href="tutorials.html">YouTube Tutorials</a></li>
-                <li><a href="category.html">Resources</a></li>
-                <li><a href="support.html">Support</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <span id="theme-icon">🌙</span>
-                </button>
-                <div
-                    style="background: var(--accent); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                    U</div>
-            </div>
+
+    <div class="post-container">
+        <div class="post-header">
+            <h2>Create Post</h2>
+            <a href="news.html" class="close-btn">×</a>
         </div>
-    </nav>
 
-    <div class="create-container">
-        <div class="card">
-            <div class="card-header">
-                <h1 class="card-title">Create News Post</h1>
-                <a href="news.html" class="btn btn-outline">Cancel</a>
-            </div>
-
-            <form id="createPostForm" onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Title</label>
-                    <input type="text" class="form-control" name="title" placeholder="Enter post title..." required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select class="form-control" name="category" required>
-                        <option value="">Select a category</option>
-                        <option value="ai">Artificial Intelligence</option>
-                        <option value="web">Web Development</option>
-                        <option value="mobile">Mobile Apps</option>
-                        <option value="cybersecurity">Cyber Security</option>
-                        <option value="startups">Startups</option>
+        <div class="post-body">
+            <div class="user-info">
+                <div class="avatar" id="userAvatar">U</div>
+                <div>
+                    <div class="user-name" id="userName">User</div>
+                    <select class="category-select" id="postCategory">
+                        <option value="General">General</option>
+                        <option value="AI">AI & ML</option>
+                        <option value="Web">Web Dev</option>
+                        <option value="Mobile">Mobile Apps</option>
+                        <option value="Cyber Security">Cyber Security</option>
+                        <option value="Startups">Startups</option>
                     </select>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Short Description</label>
-                    <input type="text" class="form-control" name="description"
-                        placeholder="Brief summary of the news..." required>
-                </div>
+            <div class="form-group">
+                <input type="text" id="postTitle" class="form-input" placeholder="Give your post a title..." required>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Cover Image</label>
-                    <div class="image-preview" onclick="document.getElementById('imageInput').click()">
-                        <div class="placeholder-text">
-                            <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">📷</span>
-                            Click to upload image
-                        </div>
-                        <img id="previewImg" src="" alt="Preview">
-                    </div>
-                    <input type="file" id="imageInput" name="image" accept="image/*" style="display: none;"
-                        onchange="handleImagePreview(this)">
-                </div>
+            <div class="form-group">
+                <textarea id="postContent" class="form-textarea" placeholder="What's on your mind?"></textarea>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Content</label>
-                    <textarea class="form-control" name="content"
-                        placeholder="Write your full article here..."></textarea>
-                </div>
+            <div class="image-upload-area" onclick="document.getElementById('postImage').click()">
+                <p>📷 Add Photo/Video</p>
+                <input type="file" id="postImage" accept="image/*" style="display: none" onchange="previewFile()">
+            </div>
 
-                <div class="actions">
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Publish Post</button>
-                </div>
-            </form>
+            <img id="imgPreview" class="preview-image" alt="Preview">
+
+            <!-- Hidden input for URL after upload -->
+            <input type="hidden" id="imageUrl">
+        </div>
+
+        <div class="post-footer">
+            <button class="post-btn" onclick="submitPost()" id="submitBtn">Post</button>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="copyright">
-                <p>&copy; 2025 DevLanka Hub. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        // Smart API URL Detection
-        let API_BASE = '';
-        const hostname = window.location.hostname;
-        const isLocalhost = hostname === '127.0.0.1' || hostname === 'localhost';
-
-        if (isLocalhost) {
-            // Running locally - use local backend
-            API_BASE = 'http://127.0.0.1:8000/api';
-            console.log("🔧 Development Mode: using local backend at " + API_BASE);
-        } else if (hostname.includes('onrender.com')) {
-            // Running on Render - use relative paths
-            API_BASE = '/api';
-            console.log("🚀 Production Mode (Render): using relative paths");
-        } else {
-            // Use current origin for both Render and Custom Domains (Dynamic)
-            API_BASE = window.location.origin + '/api';
-            console.log("☁️ Production Mode: using backend at " + API_BASE);
+        // Check Auth
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            alert('Please login to create posts.');
+            window.location.href = 'login.html';
         }
 
-        // Image Preview
-        function handleImagePreview(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const preview = document.getElementById('previewImg');
-                    const container = document.querySelector('.image-preview');
-                    preview.src = e.target.result;
-                    container.classList.add('has-image');
+        // Set User Info
+        // (Ideally fetch from /auth/me, but using localstorage for speed if available, or just placeholder)
+        const fullName = localStorage.getItem('db_fail_fallback_name') || 'User'; // Fallback
+        document.getElementById('userName').innerText = fullName;
+        document.getElementById('userAvatar').innerText = fullName.charAt(0);
+
+        // Fetch user info properly
+        async function fetchUser() {
+            let AUTH_BASE = '';
+            if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+                AUTH_BASE = 'http://127.0.0.1:8000';
+            } else {
+                AUTH_BASE = window.location.origin;
+            }
+
+            try {
+                const response = await fetch(`${AUTH_BASE}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('userName').innerText = user.full_name;
+                    document.getElementById('userAvatar').innerText = user.full_name.charAt(0);
                 }
-                reader.readAsDataURL(input.files[0]);
+            } catch (e) { console.error(e); }
+        }
+        fetchUser();
+
+        function previewFile() {
+            const preview = document.querySelector('#imgPreview');
+            const file = document.querySelector('#postImage').files[0];
+            const reader = new FileReader();
+
+            const uploadArea = document.querySelector('.image-upload-area');
+
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+                uploadArea.innerText = "✅ Image Selected (Click to change)";
+                // simulate uploaded URL for now or implement real upload logic
+                // In a real app, we'd upload to valid server here.
+                // We'll mimic this by assuming backend can take base64 or separate upload.
+                // For this demo, let's keep it simple. If we want real upload, we need /api/upload.
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
             }
         }
 
-        // Form Submission
-        async function handleSubmit(e) {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
+        async function submitPost() {
+            const titleElement = document.getElementById('postTitle');
+            const contentElement = document.getElementById('postContent');
+            const categoryElement = document.getElementById('postCategory');
+            // Re-fetch input to be safe
+            const fileInput = document.getElementById('postImage');
 
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Publishing...';
+            if (!titleElement || !contentElement || !fileInput) {
+                console.error("Critical DOM elements missing");
+                alert("Error: Page not fully loaded. Please refresh.");
+                return;
+            }
 
-            try {
-                // 1. Upload Image if selected
-                let imageUrl = 'https://via.placeholder.com/800x400?text=News+Image';
-                const fileInput = document.getElementById('imageInput');
+            const title = titleElement.value;
+            const content = contentElement.value;
+            const category = categoryElement.value;
 
-                if (fileInput.files && fileInput.files[0]) {
-                    const uploadData = new FormData();
-                    uploadData.append('file', fileInput.files[0]);
+            if (!title.trim() || !content.trim()) {
+                alert('Please provide title and content.');
+                return;
+            }
 
-                    try {
-                        const uploadRes = await fetch(`${API_BASE}/upload/`, {
-                            method: 'POST',
-                            body: uploadData
-                        });
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = 'Processing...';
+            btn.disabled = true;
 
-                        if (uploadRes.ok) {
-                            const result = await uploadRes.json();
-                            imageUrl = result.url;
-                        } else {
-                            console.error('Image upload failed, using placeholder');
+            let API_BASE = '';
+            if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+                API_BASE = 'http://127.0.0.1:8000';
+            } else {
+                API_BASE = window.location.origin;
+            }
+
+            // 1. Upload Image if exists
+            let imageUrl = null;
+            if (fileInput.files && fileInput.files.length > 0) {
+                console.log("File selected. Starting upload...");
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                try {
+                    btn.innerText = 'Uploading Image...';
+                    const uploadRes = await fetch(`${API_BASE}/api/upload/`, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Authorization': `Bearer ${token}`
                         }
-                    } catch (err) {
-                        console.error('Error uploading image', err);
+                    });
+
+                    if (uploadRes.ok) {
+                        const data = await uploadRes.json();
+                        imageUrl = data.url;
+                        console.log("Upload successful. URL:", imageUrl);
+                    } else {
+                        const errText = await uploadRes.text();
+                        console.error("Upload failed:", errText);
+                        alert("Image upload failed: " + errText);
+                        btn.innerText = 'Post';
+                        btn.disabled = false;
+                        return;
                     }
+                } catch (e) {
+                    console.error("Upload exception:", e);
+                    alert("Image upload error. Check console.");
+                    btn.innerText = 'Post';
+                    btn.disabled = false;
+                    return;
                 }
+            } else {
+                console.log("No file selected.");
+            }
 
-                // 2. Create Post
-                const title = formData.get('title');
-                const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+            // 2. Create Post
+            btn.innerText = 'Publishing...';
+            try {
+                const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
-                const payload = {
+                const postData = {
                     title: title,
-                    slug: slug,
-                    category: formData.get('category'),
-                    short_description: formData.get('description'),
-                    content: formData.get('content'),
+                    slug: slug + '-' + Date.now(),
+                    content: content,
+                    category: category,
+                    short_description: content.substring(0, 100) + '...',
                     image_url: imageUrl
                 };
 
-                const token = localStorage.getItem('token');
-                const headers = {
-                    'Content-Type': 'application/json'
-                };
-                if (token) headers['Authorization'] = `Bearer ${token}`;
+                console.log("Submitting Post Data:", postData);
 
-                const res = await fetch(`${API_BASE}/news/`, {
+                const response = await fetch(`${API_BASE}/api/news/`, {
                     method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify(payload)
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(postData)
                 });
 
-                if (res.ok) {
-                    alert('News post created successfully!');
+                if (response.ok) {
                     window.location.href = 'news.html';
                 } else {
-                    const err = await res.json();
-                    alert('Failed to create post: ' + (err.detail || 'Unknown error'));
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Publish Post';
+                    const err = await response.json();
+                    alert('Failed to post: ' + JSON.stringify(err));
+                    btn.innerText = 'Post';
+                    btn.disabled = false;
                 }
             } catch (error) {
-                console.error(error);
-                alert('Error submitting form');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Publish Post';
+                console.error("Submission error:", error);
+                alert('An error occurred during post submission.');
+                btn.innerText = 'Post';
+                btn.disabled = false;
             }
         }
-
-        // Theme Logic
-        function setupTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        }
-
-        function toggleTheme() {
-            const html = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            const currentTheme = html.getAttribute('data-theme');
-
-            if (currentTheme === 'dark') {
-                html.setAttribute('data-theme', 'light');
-                icon.textContent = '🌙';
-                localStorage.setItem('theme', 'light');
-            } else {
-                html.setAttribute('data-theme', 'dark');
-                icon.textContent = '☀️';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-
-        // Run
-        setupTheme();
     </script>
 </body>
 

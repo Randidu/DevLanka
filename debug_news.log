@@ -1,0 +1,2 @@
+INCOMING: {'title': 'wqe', 'slug': 'wqe-1769861404967', 'image_url': None, 'short_description': 'wqe...', 'content': 'wqe', 'category': 'General'}
+FINAL TO DB: {'title': 'wqe', 'slug': 'wqe-1769861404967', 'image_url': None, 'short_description': 'wqe...', 'content': 'wqe', 'category': 'General', 'author_id': 3}
