@@ -190,33 +190,122 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>Pending Resource Approvals</h1>
+            <h1>Resource Approvals</h1>
             <div id="count-badge"
                 style="background:var(--accent); color:white; padding:0.2rem 0.8rem; border-radius:20px; font-weight:bold;">
                 0</div>
         </div>
 
-        <!-- Resources Section -->
-        <h2 style="margin-bottom:1rem;color:var(--text-secondary);">Resources</h2>
+        <!-- TABS -->
+        <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border);">
+            <button class="btn tab-btn" onclick="switchTab('pending')" id="tab-pending"
+                style="border-radius:0; border:none; border-bottom:2px solid var(--accent); background:transparent; color:var(--accent); font-size:1rem; padding:0.8rem 1.5rem;">Pending</button>
+            <button class="btn tab-btn" onclick="switchTab('approved')" id="tab-approved"
+                style="border-radius:0; border:none; border-bottom:2px solid transparent; background:transparent; color:var(--text-secondary); font-size:1rem; padding:0.8rem 1.5rem;">Approved</button>
+        </div>
 
-        <div class="card">
-            <table id="approvalsTable">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;">Img</th>
-                        <th style="width: 30%;">Title / Description</th>
-                        <th>Category</th>
-                        <th>Link</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="approvalsList">
-                    <!-- JS will populate -->
-                </tbody>
-            </table>
-            <div id="emptyState" class="empty-state" style="display:none;">
-                <h3>No pending resource approvals</h3>
+        <!-- PENDING Resources Section -->
+        <div id="pending-section">
+            <h2 style="margin-bottom:1rem;color:var(--text-secondary);">Pending Resources</h2>
+            <div class="card">
+                <table id="approvalsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">Img</th>
+                            <th style="width: 30%;">Title / Description</th>
+                            <th>Category</th>
+                            <th>Link</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approvalsList">
+                        <!-- JS will populate -->
+                    </tbody>
+                </table>
+                <div id="emptyState" class="empty-state" style="display:none;">
+                    <h3>No pending resource approvals</h3>
+                </div>
             </div>
+        </div>
+
+        <!-- APPROVED Resources Section -->
+        <div id="approved-section" style="display:none;">
+            <h2 style="margin-bottom:1rem;color:var(--text-secondary);">Approved Resources</h2>
+            <div class="card">
+                <table id="approvedTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">Img</th>
+                            <th style="width: 30%;">Title / Description</th>
+                            <th>Category</th>
+                            <th>Link</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approvedList">
+                        <!-- JS will populate -->
+                    </tbody>
+                </table>
+                <div id="approvedEmptyState" class="empty-state" style="display:none;">
+                    <h3>No approved resources found</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index:2000;">
+        <div class="modal-card"
+            style="background:var(--bg-card); padding:2rem; border-radius:12px; width:90%; max-width:500px;">
+            <h2 style="margin-bottom:1.5rem;">Edit Resource</h2>
+            <form id="editForm" onsubmit="handleUpdate(event)">
+                <input type="hidden" id="editId">
+
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Title</label>
+                    <input type="text" id="editTitle"
+                        style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px;" required>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Description</label>
+                    <textarea id="editDesc"
+                        style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px; min-height:80px;"
+                        required></textarea>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Category ID (Optional)</label>
+                    <input type="number" id="editCategory"
+                        style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px;">
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">URL</label>
+                    <input type="url" id="editUrl"
+                        style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px;" required>
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Icon URL / Emoji</label>
+                    <input type="text" id="editIcon"
+                        style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px;">
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Upload Local Image</label>
+                    <input type="file" id="editFileInput" class="form-control" accept="image/*"
+                        style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px;">
+                    <small style="color: var(--text-secondary); display: block; margin-top: 0.25rem;">Selecting a file
+                        will override the URL/Emoji above.</small>
+                </div>
+
+                <div style="margin-top:2rem; text-align:right; gap:0.5rem; display:flex; justify-content:flex-end;">
+                    <button type="button" class="btn btn-view" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-approve">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -227,33 +316,63 @@
         const isLocalhost = hostname === '127.0.0.1' || hostname === 'localhost';
 
         if (isLocalhost) {
-            // Running locally - use local backend
             API_BASE = 'http://127.0.0.1:8000/api';
             console.log("🔧 Development Mode: using local backend at " + API_BASE);
         } else if (hostname.includes('onrender.com')) {
-            // Running on Render - use relative paths
             API_BASE = '/api';
             console.log("🚀 Production Mode (Render): using relative paths");
         } else {
-            // Fallback to Render for any other domain
-            API_BASE = 'https://devlanka-hub.onrender.com/api';
-            console.log("☁️ Fallback: using Render backend at " + API_BASE);
+            API_BASE = window.location.origin + '/api';
+            console.log("☁️ Fallback: using detected backend at " + API_BASE);
+        }
+
+        let pendingCount = 0;
+
+        function switchTab(tab) {
+            const pendingSec = document.getElementById('pending-section');
+            const approvedSec = document.getElementById('approved-section');
+            const tabPending = document.getElementById('tab-pending');
+            const tabApproved = document.getElementById('tab-approved');
+
+            if (tab === 'pending') {
+                pendingSec.style.display = 'block';
+                approvedSec.style.display = 'none';
+
+                tabPending.style.borderBottom = '2px solid var(--accent)';
+                tabPending.style.color = 'var(--accent)';
+
+                tabApproved.style.borderBottom = '2px solid transparent';
+                tabApproved.style.color = 'var(--text-secondary)';
+
+                loadPending();
+            } else {
+                pendingSec.style.display = 'none';
+                approvedSec.style.display = 'block';
+
+                tabApproved.style.borderBottom = '2px solid var(--accent)';
+                tabApproved.style.color = 'var(--accent)';
+
+                tabPending.style.borderBottom = '2px solid transparent';
+                tabPending.style.color = 'var(--text-secondary)';
+
+                loadApproved();
+            }
         }
 
         async function loadPending() {
             try {
-                // Fetch unapproved resources
                 const response = await fetch(`${API_BASE}/resources/all?approved=false`);
                 if (!response.ok) throw new Error('Failed to fetch pending resources');
 
                 const pending = await response.json();
+                pendingCount = pending.length;
 
                 const tbody = document.getElementById('approvalsList');
                 const emptyState = document.getElementById('emptyState');
                 const table = document.getElementById('approvalsTable');
                 const count = document.getElementById('count-badge');
 
-                count.textContent = pending.length;
+                count.textContent = pendingCount;
                 tbody.innerHTML = '';
 
                 if (pending.length === 0) {
@@ -266,7 +385,6 @@
                 emptyState.style.display = 'none';
 
                 pending.forEach(item => {
-                    // Check if icon is an image URL
                     const isImg = item.icon && (item.icon.startsWith('http') || item.icon.startsWith('data:image'));
                     const imgHtml = isImg
                         ? `<img src="${item.icon}" class="resource-thumb" alt="icon">`
@@ -279,22 +397,14 @@
                             <div style="font-weight:600; margin-bottom:0.25rem;">${item.title}</div>
                             <div class="meta-info">${item.description || 'No description'}</div>
                         </td>
+                        <td><span class="status-badge">${item.category_id || 'General'}</span></td>
                         <td>
-                            <span class="status-badge">${item.category_id || 'General'}</span>
-                        </td>
-                        <td>
-                            <a href="${item.url}" target="_blank" class="btn btn-view">
-                                <span>🔗</span> View
-                            </a>
+                            <a href="${item.url}" target="_blank" class="btn btn-view"><span>🔗</span> View</a>
                         </td>
                         <td>
                             <div style="display:flex; gap:0.5rem;">
-                                <button class="btn btn-approve" onclick="approveItem(${item.id})">
-                                    ✓ Approve
-                                </button>
-                                <button class="btn btn-reject" onclick="rejectItem(${item.id})">
-                                    ✗ Reject
-                                </button>
+                                <button class="btn btn-approve" onclick="approveItem(${item.id})">✓ Approve</button>
+                                <button class="btn btn-reject" onclick="rejectItem(${item.id})">✗ Reject</button>
                             </div>
                         </td>
                     `;
@@ -302,44 +412,168 @@
                 });
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to load pending approvals');
+            }
+        }
+
+        async function loadApproved() {
+            try {
+                const response = await fetch(`${API_BASE}/resources/all?approved=true`);
+                if (!response.ok) throw new Error('Failed to fetch approved resources');
+
+                const approved = await response.json();
+
+                const tbody = document.getElementById('approvedList');
+                const emptyState = document.getElementById('approvedEmptyState');
+                const table = document.getElementById('approvedTable');
+                const count = document.getElementById('count-badge');
+
+                // Keep pending count in badge or hide it? 
+                // For now, let's just keep the pending count or maybe show approved count?
+                // The badge was originally for pending count. Let's leave it as is for now.
+
+                tbody.innerHTML = '';
+
+                if (approved.length === 0) {
+                    table.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                table.style.display = 'table';
+                emptyState.style.display = 'none';
+
+                approved.forEach(item => {
+                    const isImg = item.icon && (item.icon.startsWith('http') || item.icon.startsWith('data:image'));
+                    const imgHtml = isImg
+                        ? `<img src="${item.icon}" class="resource-thumb" alt="icon">`
+                        : `<div class="resource-thumb" style="display:flex;align-items:center;justify-content:center;font-size:1.5rem;">${item.icon || '📄'}</div>`;
+
+                    const tr = document.createElement('tr');
+                    // Store item data in data attribute for easy edit
+                    tr.dataset.item = JSON.stringify(item);
+
+                    tr.innerHTML = `
+                        <td>${imgHtml}</td>
+                        <td>
+                            <div style="font-weight:600; margin-bottom:0.25rem;">${item.title}</div>
+                            <div class="meta-info">${item.description || 'No description'}</div>
+                        </td>
+                        <td><span class="status-badge">${item.category_id || 'General'}</span></td>
+                        <td>
+                            <a href="${item.url}" target="_blank" class="btn btn-view"><span>🔗</span> View</a>
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:0.5rem;">
+                                <button class="btn btn-view" onclick='openEditModal(this)'>✎ Edit</button>
+                                <button class="btn btn-reject" onclick="rejectItem(${item.id})">🗑 Delete</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error:', error);
             }
         }
 
         async function approveItem(id) {
             try {
-                const response = await fetch(`${API_BASE}/resources/${id}/approve`, {
-                    method: 'PUT'
-                });
-
-                if (response.ok) {
-                    // alert('Resource approved successfully!');
-                    loadPending(); // Refresh list
-                } else {
-                    alert('Failed to approve resource');
-                }
+                const response = await fetch(`${API_BASE}/resources/${id}/approve`, { method: 'PUT' });
+                if (response.ok) loadPending();
+                else alert('Failed to approve resource');
             } catch (error) {
                 console.error('Error approving:', error);
             }
         }
 
         async function rejectItem(id) {
-            if (!confirm('Are you sure you want to PERMANENTLY delete this request?')) return;
-
+            if (!confirm('Are you sure you want to PERMANENTLY delete this resource?')) return;
             try {
-                const response = await fetch(`${API_BASE}/resources/${id}`, {
-                    method: 'DELETE'
-                });
-
+                const response = await fetch(`${API_BASE}/resources/${id}`, { method: 'DELETE' });
                 if (response.ok) {
-                    loadPending(); // Refresh list
-                } else {
-                    alert('Failed to delete resource');
-                }
+                    if (document.getElementById('pending-section').style.display !== 'none') loadPending();
+                    else loadApproved();
+                } else alert('Failed to delete resource');
             } catch (error) {
                 console.error('Error deleting:', error);
             }
         }
+
+        // --- Edit Modal Logic ---
+        const editModal = document.getElementById('editModal');
+        const editForm = document.getElementById('editForm');
+
+        function openEditModal(btnElement) {
+            const tr = btnElement.closest('tr');
+            if (!tr) return;
+            // The item is stringified in data-item
+            const item = JSON.parse(tr.dataset.item);
+
+            document.getElementById('editId').value = item.id;
+            document.getElementById('editTitle').value = item.title;
+            document.getElementById('editDesc').value = item.description || '';
+            document.getElementById('editCategory').value = item.category_id || '';
+            document.getElementById('editUrl').value = item.url;
+            document.getElementById('editIcon').value = item.icon || '';
+            document.getElementById('editFileInput').value = ''; // Clear file input
+
+            editModal.style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            editModal.style.display = 'none';
+        }
+
+        async function handleUpdate(e) {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            let iconValue = document.getElementById('editIcon').value;
+
+            // Handle File Upload
+            const fileInput = document.getElementById('editFileInput');
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                await new Promise((resolve) => {
+                    reader.onload = function (e) {
+                        iconValue = e.target.result; // Base64
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            const payload = {
+                title: document.getElementById('editTitle').value,
+                description: document.getElementById('editDesc').value,
+                category_id: parseInt(document.getElementById('editCategory').value) || null,
+                url: document.getElementById('editUrl').value,
+                icon: iconValue
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/resources/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('Resource updated successfully!');
+                    closeEditModal();
+                    loadApproved();
+                } else {
+                    alert('Failed to update resource. Check console for details.');
+                }
+            } catch (error) {
+                console.error('Error updating:', error);
+                alert('An error occurred while updating.');
+            }
+        }
+
+        editModal.addEventListener('click', (e) => {
+            if (e.target === editModal) closeEditModal();
+        });
 
         // Init
         loadPending();
