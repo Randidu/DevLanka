@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevLanka Code Editor</title>
+    <style>
+        :root {
+            --bg-dark: #1e1e1e;
+            --bg-darker: #151515;
+            --text-light: #e0e0e0;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --border: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        nav {
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border);
+            padding: 0.8rem 1.5rem;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        select {
+            background: #2d2d2d;
+            color: white;
+            border: 1px solid var(--border);
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-run {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-run:hover {
+            opacity: 0.9;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: #888;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            border-color: #666;
+            color: white;
+        }
+
+        .main-area {
+            flex: 1;
+            display: flex;
+            height: calc(100vh - 60px);
+            width: 100%;
+        }
+
+        /* Resizable layout */
+        .editor-wrapper {
+            width: 50%;
+            /* Initial split */
+            display: flex;
+            flex-direction: column;
+            background: #1e1e1e;
+        }
+
+        #editor {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            font-size: 14px;
+        }
+
+        /* The Draggable Resizer */
+        #resizer {
+            width: 8px;
+            background: #2d2d2d;
+            cursor: col-resize;
+            transition: background 0.2s;
+            z-index: 10;
+            flex-shrink: 0;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+        }
+
+        #resizer:hover,
+        #resizer.active {
+            background: var(--accent);
+        }
+
+        .output-container {
+            flex: 1;
+            /* Takes remaining space */
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            position: relative;
+            min-width: 200px;
+        }
+
+        .output-header {
+            padding: 0.5rem 1rem;
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: #888;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #outputFrame {
+            flex: 1;
+            border: none;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">
+            DevLanka Playground
+        </a>
+        <div class="controls">
+            <select id="languageSelect">
+                <option value="html">HTML / CSS / JS</option>
+                <option value="python">Python</option>
+                <option value="java">Java (Preview)</option>
+            </select>
+            <button class="btn btn-run" id="runBtn">
+                <span>▶</span> Run Code
+            </button>
+            <a href="index.html" class="btn btn-back">Back to Site</a>
+        </div>
+    </nav>
+
+    <div class="main-area" id="mainArea">
+        <div class="editor-wrapper" id="leftPane">
+            <div id="editor"></div>
+        </div>
+
+        <div id="resizer"></div>
+
+        <div class="output-container" id="rightPane">
+            <div class="output-header">
+                OUTPUT <span id="statusText"></span>
+            </div>
+            <iframe id="outputFrame"></iframe>
+            <div id="consoleOutput"
+                style="display:none; padding: 1rem; font-family: monospace; white-space: pre-wrap; flex: 1; overflow-y: auto; background: #fff; color: #333; font-size: 14px; border-top: 1px solid #eee;">
+            </div>
+            <div id="loader"
+                style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #3b82f6; font-weight: bold; background: white; padding: 10px 20px; border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                Running Python...</div>
+        </div>
+    </div>
+
+    <!-- Ace Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/mode-html.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/mode-python.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/mode-java.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/theme-monokai.js"></script>
+
+    <!-- Pyodide for Python Execution -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+
+    <script>
+        // --- Code Snippets ---
+        const snippets = {
+            html: [
+                '<!DOCTYPE html>',
+                '<ht' + 'ml>',
+                '<he' + 'ad>',
+                '    <style>',
+                '        body { font-family: sans-serif; text-align: center; padding: 2rem; }',
+                '        h1 { color: #3b82f6; }',
+                '        button { padding: 10px 20px; font-size: 1rem; cursor: pointer; background: #3b82f6; color: white; border: none; border-radius: 4px; }',
+                '        button:hover { background: #2563eb; }',
+                '    </style>',
+                '</he' + 'ad>',
+                '<bo' + 'dy>',
+                '    <h1>Hello DevLanka! 🇱🇰</h1>',
+                '    <p>This is a live preview of Ace Editor.</p>',
+                '    <button onclick="alert(\'It works!\')">Click Me</button>',
+                '</bo' + 'dy>',
+                '</ht' + 'ml>'
+            ].join('\n'),
+            python: [
+                '# Python Code runs in your browser!',
+                'def greet(name):',
+                '    return f"Hello, {name} from Python!"',
+                '',
+                'print(greet("DevLanka User"))',
+                '',
+                '# Math example',
+                'numbers = [1, 2, 3, 4, 5]',
+                'squared = [x**2 for x in numbers]',
+                'print(f"Squared numbers: {squared}")'
+            ].join('\n'),
+            java: [
+                'public class Main {',
+                '    public static void main(String[] args) {',
+                '        System.out.println("Hello from Java!");',
+                '        // Note: Java execution requires a backend server.',
+                '        // This editor currently supports Syntax Highlighting only.',
+                '    }',
+                '}'
+            ].join('\n')
+        };
+
+        // --- Initialize Ace Editor ---
+        let editor;
+        try {
+            editor = ace.edit("editor");
+            editor.setTheme("ace/theme/monokai");
+            editor.getSession().setMode("ace/mode/html");
+            editor.setValue(snippets.html, -1);
+
+            editor.setOptions({
+                fontSize: "14pt",
+                showPrintMargin: false,
+                showGutter: true,
+                highlightActiveLine: true,
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true,
+            });
+        } catch (e) {
+            console.error("Ace init error:", e);
+            document.getElementById('editor').innerHTML = '<p style="padding:1rem">Error loading editor</p>';
+        }
+
+        // --- Resizer Logic ---
+        const resizer = document.getElementById('resizer');
+        const leftPane = document.getElementById('leftPane');
+        const mainArea = document.getElementById('mainArea');
+
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            resizer.classList.add('active');
+            document.body.style.cursor = 'col-resize';
+
+            // Disable pointer events on iframes to allow dragging over them
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => iframe.style.pointerEvents = 'none');
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+
+            const containerWidth = mainArea.getBoundingClientRect().width;
+            const newLeftWidth = (e.clientX / containerWidth) * 100;
+
+            // Constrain between 10% and 90%
+            if (newLeftWidth > 10 && newLeftWidth < 90) {
+                leftPane.style.width = newLeftWidth + '%';
+                // Trigger editor resize
+                editor.resize();
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                resizer.classList.remove('active');
+                document.body.style.removeProperty('cursor');
+
+                // Re-enable pointer events
+                const iframes = document.querySelectorAll('iframe');
+                iframes.forEach(iframe => iframe.style.removeProperty('pointer-events'));
+
+                editor.resize(); // Final resize
+            }
+        });
+
+        // --- Python Engine ---
+        let pyodide = null;
+        let isPyodideLoading = false;
+
+        async function initPyodide() {
+            if (pyodide) return pyodide;
+            if (isPyodideLoading) return;
+
+            isPyodideLoading = true;
+            try {
+                pyodide = await loadPyodide();
+                console.log("Pyodide Ready");
+            } catch (err) {
+                console.error("Pyodide Load Error", err);
+                alert("Failed to load Python environment.");
+            } finally {
+                isPyodideLoading = false;
+            }
+        }
+
+        // --- Event Listeners ---
+
+        // Language Switcher
+        document.getElementById('languageSelect').addEventListener('change', function () {
+            const lang = this.value;
+            const outputFrame = document.getElementById('outputFrame');
+            const consoleOutput = document.getElementById('consoleOutput');
+            const status = document.getElementById('statusText');
+
+            status.innerText = '';
+
+            // Set text based on language
+            if (lang === 'html') {
+                editor.getSession().setMode("ace/mode/html");
+                editor.setValue(snippets.html, -1);
+                outputFrame.style.display = 'block';
+                consoleOutput.style.display = 'none';
+            } else if (lang === 'python') {
+                editor.getSession().setMode("ace/mode/python");
+                editor.setValue(snippets.python, -1);
+
+                outputFrame.style.display = 'none';
+                consoleOutput.style.display = 'block';
+                consoleOutput.innerText = 'Initializing Python Environment (One-time download)...';
+
+                initPyodide().then(() => {
+                    consoleOutput.innerText = 'Ready to run Python code. Click "Run Code".';
+                });
+            } else if (lang === 'java') {
+                editor.getSession().setMode("ace/mode/java");
+                editor.setValue(snippets.java, -1);
+
+                outputFrame.style.display = 'none';
+                consoleOutput.style.display = 'block';
+                consoleOutput.innerText = '// Java syntax highlighting is enabled.\n// Browser-based Java execution is experimental and requires a backend server.';
+            }
+        });
+
+        // Run Functionality
+        document.getElementById('runBtn').addEventListener('click', async () => {
+            const lang = document.getElementById('languageSelect').value;
+            const code = editor.getValue();
+
+            if (lang === 'html') {
+                const frame = document.getElementById('outputFrame');
+                const status = document.getElementById('statusText');
+                frame.src = 'about:blank';
+                setTimeout(() => {
+                    const doc = frame.contentWindow.document;
+                    doc.open();
+                    doc.write(code);
+                    doc.close();
+                    showStatus('✓ Rendered');
+                }, 50);
+            } else if (lang === 'python') {
+                // Run Python
+                const consoleOutput = document.getElementById('consoleOutput');
+                const loader = document.getElementById('loader');
+
+                loader.style.display = 'block';
+                loader.innerText = 'Running Python...';
+                consoleOutput.innerText = ''; // Clear previous output
+
+                try {
+                    if (!pyodide) {
+                        consoleOutput.innerText = "Loading Python engine...";
+                        await initPyodide();
+                    }
+
+                    // Redirect stdout
+                    pyodide.setStdout({
+                        batched: (msg) => { consoleOutput.innerText += msg + '\n'; }
+                    });
+
+                    await pyodide.runPythonAsync(code);
+                    showStatus('✓ Executed');
+                } catch (err) {
+                    consoleOutput.innerText += `\nError:\n${err}`;
+                    showStatus('✗ Error', 'red');
+                } finally {
+                    loader.style.display = 'none';
+                }
+            } else if (lang === 'java') {
+                const consoleOutput = document.getElementById('consoleOutput');
+                consoleOutput.innerText = 'Compiling Java...\n';
+
+                setTimeout(() => {
+                    consoleOutput.innerText += '\n[Info] Client-side Java execution is currently not supported.\nTo run Java securely requires a dedicated backend server.';
+                    showStatus('Not Supported', 'orange');
+                }, 800);
+            }
+        });
+
+        function showStatus(text, color = '#10b981') {
+            const status = document.getElementById('statusText');
+            status.innerText = text;
+            status.style.color = color;
+            setTimeout(() => status.innerText = '', 2000);
+        }
+
+        // Keyboard Shortcut
+        document.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                document.getElementById('runBtn').click();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -2,7 +2,8 @@ from typing import List, Any
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app import crud
-from app.schemas.support import SupportTicket, SupportTicketCreate, SupportTicketUpdate
+from app.schemas.support import SupportTicket, SupportTicketCreate, SupportTicketUpdate, TicketReply, TicketReplyCreate
+from app.models.support import TicketReply as TicketReplyModel
 from app.core.database import get_db
 
 router = APIRouter()
@@ -53,6 +54,27 @@ def read_ticket(
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
     return ticket
+
+@router.post("/{ticket_id}/reply", response_model=TicketReply)
+def create_reply(
+    *,
+    db: Session = Depends(get_db),
+    ticket_id: int,
+    reply_in: TicketReplyCreate,
+    user_id: int
+) -> Any:
+    """
+    Reply to a support ticket.
+    """
+    ticket = crud.support.get(db, id=ticket_id)
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    
+    db_obj = TicketReplyModel(ticket_id=ticket_id, user_id=user_id, **reply_in.dict())
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
 
 @router.put("/{ticket_id}", response_model=SupportTicket)
 def update_ticket(

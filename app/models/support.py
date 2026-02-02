@@ -26,4 +26,18 @@ class SupportTicket(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Use string for relationship to avoid circular import
+    # Use string for relationship to avoid circular import
     user = relationship("app.models.user.User", back_populates="tickets")
+    replies = relationship("TicketReply", back_populates="ticket", cascade="all, delete-orphan")
+
+class TicketReply(Base):
+    __tablename__ = "ticket_replies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticket_id = Column(Integer, ForeignKey("support_tickets.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    message = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    ticket = relationship("SupportTicket", back_populates="replies")
+    user = relationship("app.models.user.User")

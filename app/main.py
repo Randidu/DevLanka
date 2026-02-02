@@ -166,6 +166,10 @@ async def pathways_html_page(request: Request):
 async def index_html_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "title": "Home - SL Tech Platform"})
 
+@app.get("/editor.html")
+async def editor_page(request: Request):
+    return templates.TemplateResponse("editor.html", {"request": request, "title": "Code Playground"})
+
 # Admin routes
 @app.get("/admin/dashboard")
 async def admin_dashboard(request: Request):

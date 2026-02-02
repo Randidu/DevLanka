@@ -183,26 +183,98 @@
 
         <!-- content -->
         <div class="main-content" id="detailView" style="display:none;">
-            <h2 id="editTitle">Edit Pathway</h2>
-            <div class="form-group">
-                <label class="form-label">Title</label>
-                <div id="dTitle" style="padding:0.5rem; background:#eee; border-radius:4px;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <h2 id="editHeading">Edit Pathway</h2>
+                <button class="btn btn-primary" form="editPathwayForm">Save Changes</button>
             </div>
-            <div class="form-group">
-                <label class="form-label">Description</label>
-                <div id="dDesc" style="padding:0.5rem; background:#eee; border-radius:4px;"></div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Slug</label>
-                <div id="dSlug" style="font-family:monospace; color:var(--accent);"></div>
-            </div>
-            <p>To edit detailed steps, please delete and recreate or use direct DB access for now.</p>
+
+            <form id="editPathwayForm" onsubmit="handleSave(event)">
+                <input type="hidden" id="editId">
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" id="editTitle" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Slug (URL)</label>
+                        <input type="text" id="editSlug" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="editDesc" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Icon URL (Emoji or Image)</label>
+                    <input type="text" id="editIcon" class="form-control" placeholder="e.g. 🐍">
+                </div>
+
+                <hr style="margin:2rem 0; border:0; border-top:1px solid var(--border);">
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <h3>Learning Steps</h3>
+                    <button type="button" class="btn btn-outline" onclick="addStep()">+ Add Step</button>
+                </div>
+
+                <div id="stepsContainer" style="display:flex; flex-direction:column; gap:1rem;">
+                    <!-- Steps injected here -->
+                </div>
+            </form>
         </div>
         <div class="main-content" id="emptyMsg">
-            <h2>Select a pathway</h2>
-            <p style="color:var(--text-secondary)">Choose a pathway from the left to view details.</p>
+            <div style="text-align:center; padding:3rem;">
+                <h2 style="margin-bottom:0.5rem;">Manage Pathways</h2>
+                <p style="color:var(--text-secondary)">Select a pathway from the list to edit its content and steps.</p>
+            </div>
         </div>
     </div>
+
+    <!-- Template for a Step Item (Hidden) -->
+    <template id="stepTemplate">
+        <div class="step-card"
+            style="background:#f8fafc; padding:1rem; border-radius:8px; border:1px solid var(--border); position:relative;">
+            <div style="position:absolute; right:10px; top:10px;">
+                <button type="button" class="btn-remove-step"
+                    style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem;">×</button>
+            </div>
+            <div style="display:grid; grid-template-columns: 80px 1fr; gap:1rem; margin-bottom:0.5rem;">
+                <div>
+                    <label style="font-size:0.8rem; font-weight:600;">Step #</label>
+                    <input type="number" class="step-num form-control" style="padding:0.4rem;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; font-weight:600;">Title</label>
+                    <input type="text" class="step-title form-control" style="padding:0.4rem;">
+                </div>
+            </div>
+            <div style="margin-bottom:0.5rem;">
+                <label style="font-size:0.8rem; font-weight:600;">Description</label>
+                <textarea class="step-desc form-control" rows="2" style="padding:0.4rem;"></textarea>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem;">
+                <div>
+                    <label style="font-size:0.8rem; font-weight:600;">Type</label>
+                    <select class="step-type form-control" style="padding:0.4rem;">
+                        <option value="left">Left (Content)</option>
+                        <option value="right">Right (Content)</option>
+                        <option value="video">Video</option>
+                        <option value="quiz">Quiz</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; font-weight:600;">Video ID</label>
+                    <input type="text" class="step-vid form-control" placeholder="YouTube ID" style="padding:0.4rem;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; font-weight:600;">Resource URL</label>
+                    <input type="text" class="step-url form-control" placeholder="https://" style="padding:0.4rem;">
+                </div>
+            </div>
+        </div>
+    </template>
 
     <script>
         // Smart API URL Detection
@@ -274,18 +346,116 @@
             }
         }
 
-        function showDetails(pathway, element) {
+        async function showDetails(pathway, element) {
             document.querySelectorAll('.pathway-item').forEach(i => i.classList.remove('active'));
             element.classList.add('active');
 
-            document.getElementById('emptyMsg').style.display = 'none';
-            const view = document.getElementById('detailView');
-            view.style.display = 'block';
+            try {
+                // Fetch full details to ensure we have steps
+                const res = await fetch(`${API_BASE}/pathways/${pathway.slug}`);
+                if (!res.ok) throw new Error("Failed to fetch details");
+                const fullPathway = await res.json();
 
-            document.getElementById('editTitle').textContent = pathway.title;
-            document.getElementById('dTitle').textContent = pathway.title;
-            document.getElementById('dDesc').textContent = pathway.description || 'No description';
-            document.getElementById('dSlug').textContent = pathway.slug;
+                document.getElementById('emptyMsg').style.display = 'none';
+                const view = document.getElementById('detailView');
+                view.style.display = 'block';
+
+                document.getElementById('editId').value = fullPathway.id;
+                document.getElementById('editTitle').value = fullPathway.title;
+                document.getElementById('editSlug').value = fullPathway.slug;
+                document.getElementById('editDesc').value = fullPathway.description || '';
+                document.getElementById('editIcon').value = fullPathway.icon || '';
+
+                renderSteps(fullPathway.steps || []);
+
+            } catch (e) {
+                console.error(e);
+                alert("Error loading pathway details");
+            }
+        }
+
+        function renderSteps(steps) {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = '';
+            // Sort by step number
+            steps.sort((a, b) => a.step_number - b.step_number);
+
+            steps.forEach(step => addStep(step));
+        }
+
+        function addStep(data = null) {
+            const container = document.getElementById('stepsContainer');
+            const template = document.getElementById('stepTemplate');
+            const clone = template.content.cloneNode(true);
+
+            const card = clone.querySelector('.step-card');
+
+            // Populate if data exists
+            if (data) {
+                card.querySelector('.step-num').value = data.step_number;
+                card.querySelector('.step-title').value = data.title;
+                card.querySelector('.step-desc').value = data.description || '';
+                card.querySelector('.step-type').value = data.step_type || 'left';
+                card.querySelector('.step-vid').value = data.video_id || '';
+                card.querySelector('.step-url').value = data.resource_url || '';
+            } else {
+                // Auto-increment step number logic could go here
+                const count = container.children.length + 1;
+                card.querySelector('.step-num').value = count;
+            }
+
+            // Remove handler
+            card.querySelector('.btn-remove-step').onclick = function () {
+                card.remove();
+            };
+
+            container.appendChild(clone);
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+
+            // Gather Main Data
+            const payload = {
+                title: document.getElementById('editTitle').value,
+                slug: document.getElementById('editSlug').value,
+                description: document.getElementById('editDesc').value,
+                icon: document.getElementById('editIcon').value,
+                steps: []
+            };
+
+            // Gather Steps
+            const stepCards = document.querySelectorAll('.step-card');
+            stepCards.forEach(card => {
+                payload.steps.push({
+                    step_number: parseInt(card.querySelector('.step-num').value) || 0,
+                    title: card.querySelector('.step-title').value,
+                    description: card.querySelector('.step-desc').value,
+                    step_type: card.querySelector('.step-type').value,
+                    video_id: card.querySelector('.step-vid').value || null,
+                    resource_url: card.querySelector('.step-url').value || null
+                });
+            });
+
+            try {
+                const res = await fetch(`${API_BASE}/pathways/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert('Pathway updated successfully!');
+                    loadPathways(); // Refresh list
+                } else {
+                    const err = await res.json();
+                    alert('Failed to update: ' + (err.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error submitting form');
+            }
         }
 
         loadPathways();

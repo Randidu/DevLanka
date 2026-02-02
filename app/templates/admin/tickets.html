@@ -83,6 +83,10 @@
             color: var(--text-primary);
         }
 
+        .btn-outline:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
         .empty-state {
             background: var(--bg-card);
             padding: 4rem;
@@ -90,6 +94,27 @@
             border-radius: 12px;
             color: var(--text-secondary);
             border: 1px solid var(--border);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
         }
     </style>
 </head>
@@ -115,14 +140,313 @@
     </nav>
 
     <div class="container">
-        <h1>Support Tickets</h1>
-        <div style="margin:2rem 0;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
+            <h1>Support Tickets</h1>
+            <div style="display:flex; gap:1rem;">
+                <select id="statusFilter" style="padding:0.5rem; border-radius:6px; border:1px solid var(--border);"
+                    onchange="loadTickets()">
+                    <option value="">All Statuses</option>
+                    <option value="open">Open</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="closed">Closed</option>
+                </select>
+                <button class="btn btn-outline" onclick="loadTickets()">🔄 Refresh</button>
+            </div>
+        </div>
 
-        <div class="empty-state">
-            <h2>Ticket System Integrating...</h2>
-            <p>We are currently connecting this module to the support service.</p>
+        <div class="card"
+            style="background:var(--bg-card); border-radius:8px; border:1px solid var(--border); overflow:hidden;">
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr style="background:#f8fafc; text-align:left;">
+                        <th style="padding:1rem; border-bottom:1px solid var(--border);">ID</th>
+                        <th style="padding:1rem; border-bottom:1px solid var(--border);">Subject</th>
+                        <th style="padding:1rem; border-bottom:1px solid var(--border);">User ID</th>
+                        <th style="padding:1rem; border-bottom:1px solid var(--border);">Priority</th>
+                        <th style="padding:1rem; border-bottom:1px solid var(--border);">Status</th>
+                        <th style="padding:1rem; border-bottom:1px solid var(--border);">Date</th>
+                        <th style="padding:1rem; border-bottom:1px solid var(--border);">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ticketList">
+                    <!-- JS -->
+                </tbody>
+            </table>
+            <div id="emptyState" class="empty-state" style="display:none;">
+                <h3>No tickets found</h3>
+            </div>
         </div>
     </div>
+
+    <!-- Ticket Detail Modal -->
+    <div class="modal-overlay" id="ticketModal">
+        <div class="modal-card" style="max-height:90vh; overflow-y:auto; display:flex; flex-direction:column;">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:1rem;">
+                <h2 id="modalTitle">Ticket Details</h2>
+                <button class="btn btn-outline" onclick="closeModal()" style="padding:0.2rem 0.6rem;">✕</button>
+            </div>
+
+            <div style="margin-bottom:1.5rem; background:#f8fafc; padding:1rem; border-radius:8px;">
+                <p><strong>Subject:</strong> <span id="viewSubject"></span></p>
+                <p style="margin-top:0.5rem;"><strong>Message:</strong></p>
+                <p id="viewMessage" style="color:var(--text-secondary); white-space: pre-wrap; font-size:0.95rem;"></p>
+            </div>
+
+            <!-- Replies Area -->
+            <div style="flex:1; margin-bottom:1.5rem;" id="adminRepliesArea">
+                <!-- JS will pop -->
+            </div>
+
+            <!-- Actions Form -->
+            <div style="border-top:1px solid var(--border); padding-top:1.5rem;">
+                <h3 style="margin-bottom:1rem; font-size:1.1rem;">Update & Reply</h3>
+
+                <form id="updateForm" onsubmit="handleUpdate(event)">
+                    <input type="hidden" id="editId">
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Status</label>
+                            <select id="editStatus"
+                                style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px;">
+                                <option value="open">Open</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Priority</label>
+                            <select id="editPriority"
+                                style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px;">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Reply to User</label>
+                        <textarea id="adminReplyInput"
+                            style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px; min-height:80px;"
+                            placeholder="Type a response..."></textarea>
+                    </div>
+
+                    <div style="text-align:right;">
+                        <button type="button" class="btn btn-outline" onclick="closeModal()">Close</button>
+                        <button type="submit" class="btn" style="background:var(--accent); color:white;">Update &
+                            Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ... (Smart API Authorization code remains same, assume it is there) ...
+        let API_BASE = '';
+        const hostname = window.location.hostname;
+        const isLocalhost = hostname === '127.0.0.1' || hostname === 'localhost';
+
+        if (isLocalhost) {
+            API_BASE = 'http://127.0.0.1:8000/api';
+        } else if (hostname.includes('onrender.com')) {
+            API_BASE = '/api';
+        } else {
+            API_BASE = window.location.origin + '/api';
+        }
+
+        async function loadTickets() {
+            try {
+                const response = await fetch(`${API_BASE}/support/`);
+                if (!response.ok) throw new Error('Failed to fetch tickets');
+
+                let tickets = await response.json();
+
+                // Client-side filtering
+                const filter = document.getElementById('statusFilter').value;
+                if (filter) {
+                    tickets = tickets.filter(t => t.status === filter);
+                }
+
+                // Sort by ID desc
+                tickets.sort((a, b) => b.id - a.id);
+
+                const tbody = document.getElementById('ticketList');
+                const emptyState = document.getElementById('emptyState');
+
+                tbody.innerHTML = '';
+
+                if (tickets.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+
+                tickets.forEach(ticket => {
+                    const date = new Date(ticket.created_at).toLocaleDateString();
+
+                    let statusColor = '#3b82f6'; // open - blue
+                    if (ticket.status === 'in_progress') statusColor = '#eab308'; // yellow
+                    if (ticket.status === 'closed') statusColor = '#10b981'; // green
+
+                    let priorityColor = '#94a3b8'; // low
+                    if (ticket.priority === 'medium') priorityColor = '#f97316';
+                    if (ticket.priority === 'high') priorityColor = '#ef4444';
+
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid var(--border)';
+
+                    // Store ID only, we will fetch details
+                    tr.dataset.id = ticket.id;
+
+                    tr.innerHTML = `
+                        <td style="padding:1rem;">#${ticket.id}</td>
+                        <td style="padding:1rem; font-weight:600;">${ticket.subject}</td>
+                        <td style="padding:1rem;">User ${ticket.user_id}</td>
+                        <td style="padding:1rem;">
+                            <span style="color:${priorityColor}; font-weight:600; text-transform:capitalize;">${ticket.priority}</span>
+                        </td>
+                        <td style="padding:1rem;">
+                            <span style="background:${statusColor}20; color:${statusColor}; padding:0.25rem 0.75rem; border-radius:20px; font-size:0.85rem; font-weight:600; text-transform:capitalize;">
+                                ${ticket.status.replace(/_/g, ' ')}
+                            </span>
+                        </td>
+                        <td style="padding:1rem; color:var(--text-secondary); font-size:0.9rem;">${date}</td>
+                        <td style="padding:1rem;">
+                            <button class="btn btn-outline" onclick='openModal(this)'>Manage</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error(error);
+                // alert('Error loading tickets');
+            }
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('ticketModal');
+        let currentTicketId = null;
+
+        async function openModal(btn) {
+            const tr = btn.closest('tr');
+            currentTicketId = tr.dataset.id;
+
+            try {
+                // Fetch details to get replies
+                const res = await fetch(`${API_BASE}/support/${currentTicketId}`);
+                if (!res.ok) throw new Error("Failed");
+                const ticket = await res.json();
+
+                document.getElementById('editId').value = ticket.id;
+                document.getElementById('modalTitle').textContent = `Manage Ticket #${ticket.id}`;
+                document.getElementById('viewSubject').textContent = ticket.subject;
+                document.getElementById('viewMessage').textContent = ticket.message;
+                document.getElementById('editStatus').value = ticket.status;
+                document.getElementById('editPriority').value = ticket.priority;
+                document.getElementById('adminReplyInput').value = '';
+
+                // Render Replies
+                const repliesArea = document.getElementById('adminRepliesArea');
+                repliesArea.innerHTML = '';
+
+                if (ticket.replies && ticket.replies.length > 0) {
+                    repliesArea.innerHTML = '<h4 style="margin-bottom:1rem; color:var(--text-secondary);">Conversation History</h4>';
+                    ticket.replies.forEach(reply => {
+                        const isAdmin = reply.user_id != ticket.user_id; // Simple logic: if not ticket owner, assume admin or support
+                        // Ideally we check if reply.user.role is admin but we might not have that info yet.
+                        // Wait, reply.user_id is the author of reply. ticket.user_id is author of ticket.
+
+                        // For Admin View:
+                        // User (Ticket Owner) -> Left
+                        // Admin (Me/Other Admins) -> Right (Blue)
+
+                        const isTicketOwner = reply.user_id == ticket.user_id;
+
+                        const div = document.createElement('div');
+                        div.style.marginBottom = '1rem';
+                        div.style.display = 'flex';
+                        div.style.flexDirection = 'column';
+                        div.style.alignItems = isTicketOwner ? 'flex-start' : 'flex-end';
+
+                        div.innerHTML = `
+                            <div style="background:${isTicketOwner ? 'var(--bg-primary)' : 'var(--accent)'}; color:${isTicketOwner ? 'var(--text-primary)' : 'white'}; padding:0.8rem 1.2rem; border-radius:12px; max-width:80%; box-shadow:0 1px 2px rgba(0,0,0,0.05); border:1px solid ${isTicketOwner ? 'var(--border)' : 'transparent'};">
+                                <div style="font-size:0.8rem; opacity:0.8; margin-bottom:0.2rem;">${isTicketOwner ? 'User' : 'Admin'}</div>
+                                <div style="white-space:pre-wrap;">${reply.message}</div>
+                            </div>
+                            <div style="font-size:0.75rem; color:var(--text-tertiary); margin-top:0.2rem;">${new Date(reply.created_at).toLocaleString()}</div>
+                        `;
+                        repliesArea.appendChild(div);
+                    });
+                } else {
+                    repliesArea.innerHTML = '<p style="font-style:italic; color:var(--text-secondary);">No replies yet.</p>';
+                }
+
+                modal.style.display = 'flex';
+            } catch (e) {
+                console.error(e);
+                alert("Error loading ticket details");
+            }
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        async function handleUpdate(e) {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const status = document.getElementById('editStatus').value;
+            const priority = document.getElementById('editPriority').value;
+            const replyMsg = document.getElementById('adminReplyInput').value;
+
+            try {
+                // 1. Update Details
+                const response = await fetch(`${API_BASE}/support/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status, priority })
+                });
+
+                if (!response.ok) throw new Error("Failed to update ticket");
+
+                // 2. Send Reply (if any)
+                if (replyMsg.trim()) {
+                    // We need current admin user ID. 
+                    // Admin panel usually has user_id stored? 
+                    // Let's check dashboard. Usually stored in localStorage 'user_id'
+                    const adminId = localStorage.getItem('user_id');
+
+                    const replyRes = await fetch(`${API_BASE}/support/${id}/reply?user_id=${adminId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: replyMsg })
+                    });
+
+                    if (!replyRes.ok) alert("Ticket updated but failed to send reply");
+                }
+
+                alert('Ticket updated successfully');
+                closeModal();
+                loadTickets();
+
+            } catch (error) {
+                console.error(error);
+                alert('Error updating ticket');
+            }
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Init
+        loadTickets();
+    </script>
 </body>
 
 </html>
