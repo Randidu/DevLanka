@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+    from app import main
+  File "C:\Users\randi\OneDrive\Desktop\DevLanka\app\__init__.py", line 4, in <module>
+    from app.core.database import engine, Base
+  File "C:\Users\randi\OneDrive\Desktop\DevLanka\app\core\database.py", line 3, in <module>
+    from app.config import settings
+  File "C:\Users\randi\OneDrive\Desktop\DevLanka\app\config.py", line 39, in <module>
+    settings = Settings()
+  File "C:\Users\randi\OneDrive\Desktop\DevLanka\app\config.py", line 29, in __init__
+    super().__init__(**kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\randi\AppData\Local\Programs\Python\Python313\Lib\site-packages\pydantic_settings\main.py", line 194, in __init__
+    super().__init__(
+    ~~~~~~~~~~~~~~~~^
+        **__pydantic_self__._settings_build_values(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<27 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\randi\AppData\Local\Programs\Python\Python313\Lib\site-packages\pydantic\main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Settings
+openai_api_key
+  Extra inputs are not permitted [type=extra_forbidden, input_value='sk-proj-9pC7oB4F6qrv6Sow...VOqYQMsjLS_GaQw25unyPgA', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/extra_forbidden
