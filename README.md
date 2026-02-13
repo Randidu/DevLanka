@@ -12,7 +12,7 @@ A comprehensive platform for tech news, online courses, and learning resources.
   - **static/**: Static assets (CSS, JS, Images)
   - **utils/**: Utility functions and decorators
 - **uploads/**: User uploaded content
-- **tests/**: Unit and integration tests
+
 
 ## Run Locally
 
