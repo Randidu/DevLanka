@@ -1,5 +1,4 @@
 # Sri Lanka Tech Learning & News Platform
-
 A comprehensive platform for tech news, online courses, and learning resources.
 
 ## Project Structure
